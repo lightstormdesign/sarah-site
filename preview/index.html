@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#0b0a1a">
+<title>Hall of Records · Private Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="media/giza-mobile-empty.jpg" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/giza-mobile-cutout.webp" media="(max-aspect-ratio: 9/10)">
+<!--
+  The Hall of Records: private hero preview for Sarah Breskman Cosme. Built by LightStorm; not public.
+
+  The rule this page keeps: Sarah is never AI-generated. She is her real photo (a cutout lying exactly
+  over the empty plate), and that photo dissolves out here, in code, before anything else moves. The
+  journey that follows is environment only:
+    - with media/hall-transition-{mobile,desktop}.mp4 present (Kling clip 1 + clip 2, joined), it plays
+      that, starting on the empty plate (the same frame, so the cut is invisible);
+    - without it, the same two beats are staged in code from the empty plate: the camera glides to the
+      pyramid's base as dusk deepens, a seam of light opens, and you pass through into the chamber.
+  ?auto starts the journey on its own after 3.5 s (for a hands-free screen recording); ?sim forces the
+  staged version even when the video is there.
+-->
+<style>
+  :root {
+    --ink: #0b0a1a;
+    --ivory: #f6eedd;
+    --gold-1: #f7e6b0;
+    --gold-2: #d9b25f;
+    --gold-3: #a77b2c;
+    --blue: #7fd6ff;
+    --gold-text: linear-gradient(180deg, #fff3cf 0%, #f0d38a 38%, #c9973f 70%, #f3dc9c 100%);
+    --ease: cubic-bezier(.22, .61, .36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--ink); color: var(--ivory); overflow: hidden; }
+  body { font-family: "Cormorant Garamond", Georgia, serif; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+
+  .view { position: fixed; inset: 0; overflow: hidden; background: var(--ink); }
+
+  /* the plate: one fixed-size stage in the photo's own pixels, scaled to cover the screen */
+  .stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .cam { position: absolute; inset: 0; transform-origin: 50% 50%; will-change: transform; }
+  .cam.drift { animation: drift 22s ease-in-out infinite alternate; }
+  @keyframes drift { from { transform: scale(1); } to { transform: scale(1.045); } }
+  .plate, .her { position: absolute; display: block; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+  .plate { left: 0; top: 0; width: 100%; height: 100%; }
+  .her { transition: opacity 1.7s var(--ease), filter 1.7s var(--ease); }
+  .her.go { opacity: 0; filter: brightness(1.7) saturate(.6); }
+
+  /* dusk: the light deepening as the camera moves (opacity only, no blend modes) */
+  .dusk { position: absolute; inset: 0; opacity: 0; pointer-events: none;
+    background:
+      radial-gradient(70% 22% at var(--gx, 50%) var(--gy, 70%), rgba(255, 168, 92, .42), transparent 70%),
+      linear-gradient(180deg, rgba(14, 12, 44, .9) 0%, rgba(40, 26, 70, .62) 30%, rgba(110, 56, 46, .34) 55%, rgba(20, 12, 30, .5) 78%, rgba(8, 6, 18, .85) 100%); }
+  .slit { position: absolute; width: 14px; height: 120px; margin-left: -7px; margin-top: -120px; opacity: 0; pointer-events: none;
+    left: var(--gx, 50%); top: var(--gy, 70%); transform-origin: 50% 100%; transform: scaleY(.2);
+    background: radial-gradient(50% 50% at 50% 60%, #fff 0%, #ffe9b0 30%, rgba(255, 200, 110, .5) 60%, transparent 100%);
+    box-shadow: 0 0 40px 18px rgba(255, 210, 130, .45), 0 0 120px 40px rgba(127, 214, 255, .18); }
+
+  .tv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; }
+  .tv.on { opacity: 1; }
+  /* (an all-but-invisible layer over a playing video keeps iOS from putting it on a stall-prone direct path) */
+  .keep { position: absolute; inset: 0; background: rgba(0, 0, 0, .01); pointer-events: none; }
+
+  /* legibility veils over the photo */
+  .veil { position: absolute; inset: 0; pointer-events: none; transition: opacity 1.2s ease; }
+  .veil.top { background: linear-gradient(180deg, rgba(11, 9, 30, .78) 0%, rgba(11, 9, 30, .42) 20%, rgba(11, 9, 30, 0) 38%); }
+  .veil.bottom { background: linear-gradient(0deg, rgba(10, 8, 20, .78) 0%, rgba(10, 8, 20, .3) 18%, rgba(10, 8, 20, 0) 32%); }
+  .veil.warm { background: radial-gradient(120% 50% at 50% 72%, rgba(255, 176, 96, .16), transparent 70%); }
+  .desk .veil.top { background: linear-gradient(90deg, rgba(11, 9, 30, .82) 0%, rgba(11, 9, 30, .45) 30%, rgba(11, 9, 30, 0) 52%); }
+  .gone { opacity: 0 !important; }
+
+  /* the chamber (staged in code until clip 2 exists) */
+  .chamber { position: absolute; inset: 0; opacity: 0; pointer-events: none; transform: scale(1.12); transition: opacity 1.4s ease, transform 7s var(--ease);
+    background: radial-gradient(70% 45% at 50% 42%, #134a7c 0%, #0a2448 38%, #050f24 70%, #03081a 100%); }
+  .chamber.on { opacity: 1; transform: scale(1); }
+  .chamber svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .desk .chamber svg { left: 50%; width: auto; aspect-ratio: 9 / 16; transform: translateX(-50%);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); }
+  .crystal-glow { animation: breathe 5.5s ease-in-out infinite; transform-origin: 540px 830px; }
+  @keyframes breathe { 0%, 100% { opacity: .75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.06); } }
+  .ring { animation: turn 60s linear infinite; transform-origin: 0 0; }   /* turns flat on the floor, inside the perspective squash */
+  @keyframes turn { to { transform: rotate(360deg); } }
+
+  .bloom { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .7s ease;
+    background: radial-gradient(circle at var(--gx, 50%) var(--gy, 70%), #fffaf0 0%, #ffe6ad 30%, #f2c46c 60%, #c88b3a 100%); }
+  .bloom.on { opacity: 1; }
+
+  .dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+  /* ---------- the hero copy ---------- */
+  .title { position: absolute; left: 0; right: 0; top: calc(env(safe-area-inset-top) + 7.2svh); text-align: center; padding: 0 20px; pointer-events: none; }
+  .desk .title { left: 7vw; right: auto; top: 50%; transform: translateY(-58%); text-align: left; max-width: 44vw; }
+  .eyebrow { font-family: "Cinzel", serif; font-weight: 500; font-size: 11px; letter-spacing: .38em; text-transform: uppercase; color: var(--gold-1); opacity: .9; }
+  .desk .eyebrow { font-size: 13px; }
+  h1 { margin: 14px 0 12px; font-family: "Cinzel", serif; font-weight: 500; text-transform: uppercase; line-height: 1.04; letter-spacing: .06em;
+    font-size: min(8.6vw, 44px); background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 2px 14px rgba(0, 0, 0, .45)); }
+  h1 span { display: block; }
+  h1 .first { font-size: .78em; letter-spacing: .22em; }
+  .desk h1 { font-size: min(5vw, 76px); }
+  .tagline { font-style: italic; font-size: 21px; letter-spacing: .02em; color: var(--ivory); text-shadow: 0 1px 12px rgba(0, 0, 0, .6); }
+  .desk .tagline { font-size: 27px; }
+  .rule { display: block; width: 72px; height: 1px; margin: 16px auto 0; background: linear-gradient(90deg, transparent, var(--gold-2), transparent); }
+  .desk .rule { margin-left: 0; background: linear-gradient(90deg, var(--gold-2), transparent); }
+
+  .title > * { opacity: 0; transform: translateY(10px); transition: opacity 1.6s var(--ease), transform 1.6s var(--ease); }
+  .ready .title > * { opacity: 1; transform: none; }
+  .ready .title > :nth-child(2) { transition-delay: .25s; }
+  .ready .title > :nth-child(3) { transition-delay: .7s; }
+  .ready .title > :nth-child(4) { transition-delay: .9s; }
+  .leaving .title > * { opacity: 0; transform: translateY(-8px); transition: opacity .7s ease, transform .9s ease; transition-delay: 0s; }
+
+  .begin { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 8.5svh); transform: translate(-50%, 12px);
+    font: 500 12.5px/1 "Cinzel", serif; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-1);
+    padding: 17px 26px 16px 30px; border: 1px solid rgba(240, 211, 138, .65); border-radius: 999px; cursor: pointer;
+    background: rgba(12, 10, 28, .38); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    box-shadow: 0 0 0 0 rgba(240, 211, 138, .0), inset 0 0 18px rgba(240, 211, 138, .12);
+    opacity: 0; pointer-events: none; transition: opacity 1.2s var(--ease), transform 1.2s var(--ease), background .3s ease; white-space: nowrap; }
+  .desk .begin { left: 7vw; bottom: auto; top: calc(50% + 150px); transform: translate(0, 12px); }
+  .begin.show { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); animation: halo 3.2s ease-in-out 1.2s infinite; }
+  .desk .begin.show { transform: translate(0, 0); }
+  .begin:active { background: rgba(240, 211, 138, .16); }
+  .begin:focus-visible { outline: 1px solid var(--gold-1); outline-offset: 4px; }
+  @keyframes halo { 0%, 100% { box-shadow: 0 0 0 0 rgba(240, 211, 138, .0), inset 0 0 18px rgba(240, 211, 138, .12); }
+                    50% { box-shadow: 0 0 28px 2px rgba(240, 211, 138, .32), inset 0 0 22px rgba(240, 211, 138, .2); } }
+  .leaving .begin { opacity: 0; pointer-events: none; animation: none; transition: opacity .5s ease; }
+
+  /* ---------- the landing: three doorways ---------- */
+  .landing { position: absolute; inset: 0; display: flex; flex-direction: column; padding: calc(env(safe-area-inset-top) + 7.2svh) 16px calc(env(safe-area-inset-bottom) + 3.5svh); text-align: center; pointer-events: none; }
+  .landing .doors { margin-top: auto; }
+  .landing.on { pointer-events: auto; }
+  .landing > * { opacity: 0; transform: translateY(14px); transition: opacity 1.4s var(--ease), transform 1.4s var(--ease); }
+  .landing.on > * { opacity: 1; transform: none; }
+  .landing.on > :nth-child(2) { transition-delay: .3s; }
+  .landing.on > :nth-child(3) { transition-delay: .6s; }
+  .landing.on > :nth-child(4) { transition-delay: 0s; }
+  .landing.on > :nth-child(5) { transition-delay: 1.8s; }
+  .landing h2 { margin: 12px 0 8px; font: 500 min(6.3vw, 46px)/1.1 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase;
+    background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .landing .lede { font-style: italic; font-size: 19px; color: #e7e1d3; text-shadow: 0 1px 10px rgba(3, 8, 26, .9); }
+  .doors { display: flex; justify-content: center; gap: min(4vw, 36px); max-width: 760px; margin: 0 auto; }
+  .door { flex: 1 1 0; max-width: 200px; background: none; border: 0; color: inherit; cursor: pointer; font: inherit; text-align: center;
+    opacity: 0; transform: translateY(18px); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); }
+  .landing.on .door { opacity: 1; transform: none; }
+  .landing.on .door:nth-child(1) { transition-delay: .9s; }
+  .landing.on .door:nth-child(2) { transition-delay: 1.15s; }
+  .landing.on .door:nth-child(3) { transition-delay: 1.4s; }
+  .door svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .door .glow { transition: opacity .6s ease; opacity: .55; animation: doorpulse 4.8s ease-in-out infinite; }
+  .door:nth-child(2) .glow { animation-delay: -1.6s; }
+  .door:nth-child(3) .glow { animation-delay: -3.2s; }
+  @keyframes doorpulse { 0%, 100% { opacity: .45; } 50% { opacity: .8; } }
+  .door:hover .glow, .door.lit .glow { opacity: 1; animation: none; }
+  .door b { display: block; margin-top: 12px; font: 500 12px/1.3 "Cinzel", serif; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-1); }
+  .door small { display: block; margin-top: 5px; font-style: italic; font-size: 14.5px; line-height: 1.25; color: #d9d2c2; }
+  .door:focus-visible { outline: 1px solid var(--gold-1); outline-offset: 6px; border-radius: 8px; }
+  .credit { margin-top: 3.4svh; font: 400 9.5px/1 "Cinzel", serif; letter-spacing: .32em; text-transform: uppercase; color: rgba(240, 211, 138, .62); }
+  .credit button { background: none; border: 0; color: inherit; font: inherit; letter-spacing: inherit; cursor: pointer; text-transform: inherit; padding: 6px; }
+  .note { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 1.4svh); transform: translateX(-50%); font-style: italic; font-size: 14px; color: #e8dfca; opacity: 0; transition: opacity .5s ease; white-space: nowrap; pointer-events: none; }
+  .note.on { opacity: .9; }
+
+  @media (min-width: 760px) and (min-aspect-ratio: 9/10) {
+    .landing { padding-bottom: 6vh; }
+    .door b { font-size: 14px; }
+    .door small { font-size: 17px; }
+    .landing .lede { font-size: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cam.drift, .crystal-glow, .ring, .begin.show, .door .glow { animation: none; }
+  }
+</style>
+</head>
+<body>
+<main class="view" id="view">
+  <div class="stage" id="stage">
+    <div class="cam drift" id="cam">
+      <img class="plate" id="plate" alt="" decoding="async">
+      <img class="her" id="her" alt="Sarah Breskman Cosme at the Pyramid of Khafre, Giza" decoding="async">
+    </div>
+  </div>
+  <div class="dusk" id="dusk"></div>
+  <div class="slit" id="slit"></div>
+  <video class="tv" id="tv" muted playsinline preload="none" tabindex="-1" aria-hidden="true"></video>
+  <div class="keep" hidden id="keep"></div>
+
+  <div class="chamber" id="chamber" aria-hidden="true">
+    <svg viewBox="0 0 1080 1920" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="g-gold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff0c2"/><stop offset=".45" stop-color="#e2b964"/><stop offset="1" stop-color="#8a6225"/>
+        </linearGradient>
+        <linearGradient id="g-pillar" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#c99a45" stop-opacity=".05"/><stop offset=".5" stop-color="#f3d58e" stop-opacity=".38"/><stop offset="1" stop-color="#c99a45" stop-opacity=".05"/>
+        </linearGradient>
+        <radialGradient id="g-core" cx=".5" cy=".5" r=".5">
+          <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".25" stop-color="#bff0ff" stop-opacity=".7"/>
+          <stop offset=".6" stop-color="#3fb6ff" stop-opacity=".22"/><stop offset="1" stop-color="#0a2448" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="g-face-l" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#e9fbff" stop-opacity=".95"/><stop offset=".6" stop-color="#6fcfff" stop-opacity=".55"/><stop offset="1" stop-color="#1a5f9e" stop-opacity=".5"/>
+        </linearGradient>
+        <linearGradient id="g-face-r" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#bfeeff" stop-opacity=".8"/><stop offset=".6" stop-color="#2f8fd6" stop-opacity=".5"/><stop offset="1" stop-color="#0d3a6e" stop-opacity=".55"/>
+        </linearGradient>
+        <linearGradient id="g-ray" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stop-color="#bff0ff" stop-opacity=".28"/><stop offset="1" stop-color="#bff0ff" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="g-floor" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0d3157" stop-opacity="0"/><stop offset="1" stop-color="#020611" stop-opacity=".9"/>
+        </linearGradient>
+      </defs>
+      <!-- the vault: a great arch and the colonnades running back to the crystal -->
+      <path d="M150 1920 V640 Q150 170 540 150 Q930 170 930 640 V1920" fill="none" stroke="url(#g-gold)" stroke-opacity=".42" stroke-width="3"/>
+      <path d="M210 1920 V660 Q210 230 540 212 Q870 230 870 660 V1920" fill="none" stroke="url(#g-gold)" stroke-opacity=".2" stroke-width="1.5"/>
+      <g fill="url(#g-pillar)">
+        <polygon points="0,1920 96,1920 96,300 0,250"/>
+        <polygon points="984,1920 1080,1920 1080,250 984,300"/>
+        <polygon points="250,1520 300,1490 300,520 250,500"/>
+        <polygon points="780,1490 830,1520 830,500 780,520"/>
+        <polygon points="350,1380 380,1366 380,600 350,590"/>
+        <polygon points="700,1366 730,1380 730,590 700,600"/>
+      </g>
+      <!-- light falling from above -->
+      <polygon points="470,0 610,0 700,1200 380,1200" fill="url(#g-ray)" opacity=".55"/>
+      <polygon points="300,0 360,0 520,1150 420,1150" fill="url(#g-ray)" opacity=".25"/>
+      <polygon points="720,0 780,0 660,1150 560,1150" fill="url(#g-ray)" opacity=".25"/>
+      <!-- the crystal -->
+      <g class="crystal-glow"><circle cx="540" cy="830" r="420" fill="url(#g-core)"/></g>
+      <g transform="translate(540 830) scale(.82)">
+        <polygon points="0,-330 -96,-150 -96,170 0,300" fill="url(#g-face-l)"/>
+        <polygon points="0,-330 96,-150 96,170 0,300" fill="url(#g-face-r)"/>
+        <polygon points="0,-330 -96,-150 0,-120 96,-150" fill="#f4feff" opacity=".55"/>
+        <path d="M0 -330 L0 300 M-96 -150 L0 -120 L96 -150" stroke="#ffffff" stroke-opacity=".55" stroke-width="2" fill="none"/>
+        <path d="M-96 -150 V170 L0 300 L96 170 V-150 L0 -330 Z" fill="none" stroke="url(#g-gold)" stroke-width="3" stroke-opacity=".8"/>
+      </g>
+      <!-- the floor: a reflecting pool and a turning ring of sacred geometry -->
+      <rect x="0" y="1180" width="1080" height="740" fill="url(#g-floor)"/>
+      <ellipse cx="540" cy="1090" rx="230" ry="34" fill="#9fe4ff" opacity=".18"/>
+      <g transform="translate(540 1470) scale(1 .28)" fill="none" stroke="url(#g-gold)" stroke-opacity=".5">
+        <g class="ring">
+          <circle r="430" stroke-width="3"/><circle r="380" stroke-width="1.5"/>
+          <circle r="190" cx="0" cy="-190" stroke-width="1.2"/><circle r="190" cx="0" cy="190" stroke-width="1.2"/>
+          <circle r="190" cx="-165" cy="-95" stroke-width="1.2"/><circle r="190" cx="165" cy="95" stroke-width="1.2"/>
+          <circle r="190" cx="-165" cy="95" stroke-width="1.2"/><circle r="190" cx="165" cy="-95" stroke-width="1.2"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="veil warm" id="vWarm"></div>
+  <div class="veil top" id="vTop"></div>
+  <div class="veil bottom" id="vBottom"></div>
+  <canvas class="dust" id="dust" aria-hidden="true"></canvas>
+  <div class="bloom" id="bloom"></div>
+
+  <header class="title" id="title">
+    <p class="eyebrow">The Holistic Hypnotist</p>
+    <h1><span class="first">Sarah</span><span>Breskman Cosme</span></h1>
+    <p class="tagline">Remember who you are.</p>
+    <span class="rule"></span>
+  </header>
+  <button class="begin" id="begin" type="button">Begin the journey</button>
+
+  <section class="landing" id="landing" aria-label="The Hall of Records">
+    <p class="eyebrow">Within the pyramid</p>
+    <h2>The Hall of Records</h2>
+    <p class="lede">Every soul keeps a record. Choose your doorway.</p>
+    <div class="doors">
+      <button class="door" type="button" data-room="Sessions">
+        <svg viewBox="0 0 120 180" aria-hidden="true"><use href="#arch"/></svg>
+        <b>Sessions</b><small>QHHT &amp; past lives</small>
+      </button>
+      <button class="door" type="button" data-room="Courses &amp; Books">
+        <svg viewBox="0 0 120 180" aria-hidden="true"><use href="#arch"/></svg>
+        <b>Courses &amp; Books</b><small>Atlantis, Avalon &amp; the Sphinx</small>
+      </button>
+      <button class="door" type="button" data-room="Events &amp; Trips">
+        <svg viewBox="0 0 120 180" aria-hidden="true"><use href="#arch"/></svg>
+        <b>Events &amp; Trips</b><small>Live hypnosis, Egypt &amp; community</small>
+      </button>
+    </div>
+    <p class="credit">Private preview · Site by LightStorm · <button type="button" id="replay">Replay</button></p>
+  </section>
+  <p class="note" id="note"></p>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="arch-stroke" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0c2"/><stop offset=".5" stop-color="#e2b964"/><stop offset="1" stop-color="#9a6e2a"/></linearGradient>
+      <radialGradient id="arch-light" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="#e9fbff" stop-opacity=".9"/><stop offset=".35" stop-color="#7fd6ff" stop-opacity=".55"/><stop offset="1" stop-color="#0a2448" stop-opacity="0"/></radialGradient>
+      <symbol id="arch" viewBox="0 0 120 180">
+        <path class="glow" d="M14 176 V68 Q14 12 60 8 Q106 12 106 68 V176 Z" fill="url(#arch-light)"/>
+        <path d="M14 176 V68 Q14 12 60 8 Q106 12 106 68 V176" fill="none" stroke="url(#arch-stroke)" stroke-width="2"/>
+        <path d="M24 176 V72 Q24 24 60 20 Q96 24 96 72 V176" fill="none" stroke="url(#arch-stroke)" stroke-width=".8" stroke-opacity=".6"/>
+        <path d="M60 8 V2 M54 4 H66" stroke="#f0d38a" stroke-width="1.2"/>
+        <path d="M4 176 H116" stroke="url(#arch-stroke)" stroke-width="1.4"/>
+      </symbol>
+    </defs>
+  </svg>
+</main>
+
+<script>
+(() => {
+  "use strict";
+  // ---------- the two framings (from plates/cutouts.json) ----------
+  const SETS = {
+    mobile:  { w: 1080, h: 1920, plate: "media/giza-mobile-empty.jpg", her: "media/giza-mobile-cutout.webp",
+               cut: { x: 400, y: 1083, w: 635, h: 837 }, base: [458, 1362], fx: 0.57, fy: 0.46,
+               video: "media/hall-transition-mobile.mp4" },
+    desktop: { w: 1920, h: 1080, plate: "media/giza-desktop-empty.jpg", her: "media/giza-desktop-cutout.webp",
+               cut: { x: 994, y: 536, w: 413, h: 544 }, base: [1032, 718], fx: 0.5, fy: 0.55,
+               video: "media/hall-transition-desktop.mp4" },
+  };
+  const Q = new URLSearchParams(location.search);
+  const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = (id) => document.getElementById(id);
+  const view = $("view"), stage = $("stage"), cam = $("cam"), plate = $("plate"), her = $("her");
+  const dusk = $("dusk"), slit = $("slit"), tv = $("tv"), keep = $("keep"), chamber = $("chamber"), bloom = $("bloom");
+  const begin = $("begin"), landing = $("landing"), note = $("note");
+  const timers = [];
+  const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
+
+  let set = null, fit = { s: 1, ox: 0, oy: 0 }, phase = "hero", videoReady = false, videoUrl = "";
+
+  // ---------- layout: cover the screen with the plate, keeping Sarah and the pyramid in frame ----------
+  function choose() {
+    const W = view.clientWidth, H = view.clientHeight;
+    const next = W / H < 0.9 ? SETS.mobile : SETS.desktop;
+    document.documentElement.classList.toggle("desk", next === SETS.desktop);
+    if (next !== set) {
+      set = next;
+      stage.style.width = set.w + "px"; stage.style.height = set.h + "px";
+      plate.src = set.plate; her.src = set.her;
+      Object.assign(her.style, { left: set.cut.x + "px", top: set.cut.y + "px", width: set.cut.w + "px", height: set.cut.h + "px" });
+      if (phase === "hero") cam.style.transformOrigin = `${set.base[0]}px ${set.base[1]}px`;
+      probeVideo();
+    }
+    const s = Math.max(W / set.w, H / set.h);
+    const ox = Math.min(0, Math.max(W - set.w * s, W / 2 - set.fx * set.w * s));
+    const oy = Math.min(0, Math.max(H - set.h * s, H / 2 - set.fy * set.h * s));
+    fit = { s, ox, oy };
+    stage.style.transform = `translate(${ox.toFixed(1)}px, ${oy.toFixed(1)}px) scale(${s.toFixed(5)})`;
+    // the transition video is framed exactly like the plate (its first frame is the plate)
+    tv.style.objectPosition = `${(set.fx * 100).toFixed(1)}% ${(set.fy * 100).toFixed(1)}%`;
+    dust.resize();
+  }
+
+  // ---------- the real transition, when it exists: downloaded whole once the hero is up ----------
+  function probeVideo() {
+    videoReady = false;
+    if (Q.has("sim")) return;
+    fetch(set.video, { method: "HEAD" }).then((r) => {
+      if (!r.ok || !(r.headers.get("content-type") || "").includes("video")) return;
+      const want = set;
+      later(() => fetch(want.video).then((r2) => r2.blob()).then((b) => {
+        if (want !== set || phase !== "hero") return;
+        if (videoUrl) URL.revokeObjectURL(videoUrl);
+        videoUrl = URL.createObjectURL(b); tv.src = videoUrl; tv.preload = "auto"; tv.load();   // load only; never play-and-pause on iOS
+        videoReady = true;
+      }).catch(() => {}), 1200);
+    }).catch(() => {});
+  }
+
+  // ---------- gold dust: ambient motes, and Sarah dissolving into light ----------
+  const dust = (() => {
+    const cv = $("dust"), ctx = cv.getContext("2d");
+    let dpr = 1, W = 0, H = 0, motes = [], burst = [], raf = 0, last = 0, tint = "gold";
+    const sprite = (r, g, b) => {
+      const c = document.createElement("canvas"); c.width = c.height = 32;
+      const x = c.getContext("2d"), gr = x.createRadialGradient(16, 16, 0, 16, 16, 16);
+      gr.addColorStop(0, `rgba(255,255,255,1)`); gr.addColorStop(.25, `rgba(${r},${g},${b},.9)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      x.fillStyle = gr; x.fillRect(0, 0, 32, 32); return c;
+    };
+    const GOLD = sprite(244, 205, 120), BLUE = sprite(150, 220, 255);
+    function resize() {
+      dpr = Math.min(devicePixelRatio || 1, 2); W = view.clientWidth; H = view.clientHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    }
+    function seedMotes(n) {
+      motes = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, r: .6 + Math.random() * 1.6,
+        vx: (Math.random() - .5) * 6, vy: -(3 + Math.random() * 9), a: .15 + Math.random() * .45, p: Math.random() * 6.28 }));
+    }
+    // points sampled from Sarah's cutout (its alpha), in screen space
+    function release(img, rect) {
+      const k = 6, w = Math.max(1, Math.round(img.naturalWidth / k)), h = Math.max(1, Math.round(img.naturalHeight / k));
+      const c = document.createElement("canvas"); c.width = w; c.height = h;
+      const x = c.getContext("2d"); x.drawImage(img, 0, 0, w, h);
+      let data; try { data = x.getImageData(0, 0, w, h).data; } catch (e) { return; }
+      const pts = [];
+      for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) if (data[(j * w + i) * 4 + 3] > 170) pts.push([i / w, j / h]);
+      const max = W < 700 ? 650 : 900;
+      for (let n = 0; n < max && pts.length; n++) {
+        const [u, v] = pts[(Math.random() * pts.length) | 0];
+        const sx = rect.left + (u + (Math.random() - .5) / w) * rect.width, sy = rect.top + (v + (Math.random() - .5) / h) * rect.height;
+        burst.push({ x: sx, y: sy, vx: (Math.random() - .5) * 30, vy: -(18 + Math.random() * 60), r: .7 + Math.random() * 1.9,
+          t: -(0.15 + (1 - v) * .35 + Math.random() * .9), life: 1.3 + Math.random() * 1.6, p: Math.random() * 6.28 });
+      }
+    }
+    function frame(now) {
+      raf = requestAnimationFrame(frame);
+      const dt = Math.min(.05, (now - (last || now)) / 1000); last = now;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = "lighter";
+      const spr = tint === "blue" ? BLUE : GOLD;
+      for (const m of motes) {
+        m.p += dt; m.x += (m.vx + Math.sin(m.p * .7) * 4) * dt; m.y += m.vy * dt;
+        if (m.y < -10) { m.y = H + 10; m.x = Math.random() * W; }
+        const s = m.r * 6; ctx.globalAlpha = m.a * (.6 + .4 * Math.sin(m.p * 1.3)); ctx.drawImage(spr, m.x - s / 2, m.y - s / 2, s, s);
+      }
+      for (let i = burst.length - 1; i >= 0; i--) {
+        const b = burst[i]; b.t += dt; if (b.t < 0) { continue; }
+        if (b.t > b.life) { burst.splice(i, 1); continue; }
+        const u = b.t / b.life; b.p += dt * 3;
+        b.x += (b.vx + Math.sin(b.p) * 14) * dt; b.y += b.vy * dt; b.vy *= (1 - .25 * dt);
+        const s = b.r * 6 * (1 - u * .4); ctx.globalAlpha = Math.min(1, b.t * 5) * (1 - u) * .95;
+        ctx.drawImage(GOLD, b.x - s / 2, b.y - s / 2, s, s);
+      }
+      ctx.globalAlpha = 1;
+    }
+    return {
+      resize, release,
+      start(n) { resize(); seedMotes(n); if (!raf) raf = requestAnimationFrame(frame); },
+      chamber() { tint = "blue"; seedMotes(W < 700 ? 70 : 110); },
+      reset() { tint = "gold"; burst = []; seedMotes(W < 700 ? 34 : 50); },
+    };
+  })();
+
+  // ---------- the hero ----------
+  function whenLoaded(img) { return img.complete && img.naturalWidth ? Promise.resolve() : new Promise((r) => { img.onload = r; img.onerror = r; }); }
+  function heroUp() {
+    Promise.all([whenLoaded(plate), whenLoaded(her)]).then(() => Promise.all([plate.decode?.().catch(() => {}), her.decode?.().catch(() => {})]))
+      .then(() => {
+        view.classList.add("ready");
+        dust.start(view.clientWidth < 700 ? 34 : 50);
+        later(() => begin.classList.add("show"), REDUCED ? 300 : 2000);
+        if (Q.has("auto")) later(go, 3500);
+      });
+  }
+
+  // ---------- the journey ----------
+  function go() {
+    if (phase !== "hero") return;
+    phase = "dissolve";
+    view.classList.add("leaving");
+    // 1. Sarah's real photo dissolves into gold light, in code, before anything else moves
+    const rect = her.getBoundingClientRect();
+    if (!REDUCED) dust.release(her, rect);
+    her.classList.add("go");
+    later(() => { her.hidden = true; (videoReady ? playVideo : staged)(); }, REDUCED ? 900 : 1750);
+  }
+
+  // the real two clips (joined): plays on the empty plate, ends on the chamber
+  function playVideo() {
+    phase = "video";
+    cam.classList.remove("drift");
+    keep.hidden = false;
+    const fail = later(staged, 4000);   // no picture within 4 s: stage it instead
+    tv.play().then(() => {
+      const shown = () => { clearTimeout(fail); tv.classList.add("on"); later(() => { stage.style.visibility = "hidden"; }, 200); veils(false); };
+      if (tv.requestVideoFrameCallback) tv.requestVideoFrameCallback(shown); else later(shown, 120);
+    }).catch(() => { clearTimeout(fail); staged(); });
+    tv.ontimeupdate = () => { if (tv.duration && tv.currentTime > tv.duration - 1.6) openLanding(true); };
+    tv.onended = () => openLanding(true);
+    later(() => openLanding(true), 16000);   // failsafe
+  }
+
+  // the same two beats, staged from the empty plate until the clips exist
+  function staged() {
+    if (phase === "staged" || phase === "landing") return;
+    phase = "staged";
+    tv.classList.remove("on"); stage.style.visibility = "";
+    // clip 1: the camera glides toward the pyramid's base as the light deepens to dusk
+    const cs = getComputedStyle(cam).transform;          // carry on from wherever the drift is
+    cam.classList.remove("drift"); cam.style.transform = cs === "none" ? "" : cs;
+    cam.style.transformOrigin = `${set.base[0]}px ${set.base[1]}px`;   // the base stays put on screen; everything grows around it
+    void cam.offsetWidth;
+    const T = REDUCED ? 1.2 : 5.2;
+    cam.style.transition = `transform ${T}s cubic-bezier(.45,0,.75,1)`;
+    cam.style.transform = `scale(${REDUCED ? 1.1 : 2.5})`;
+    dusk.style.transition = `opacity ${T * .8}s ease-in`; dusk.style.opacity = "1";
+    veils(false);
+    later(() => { slit.style.transition = `opacity 1.4s ease, transform ${T * .55}s cubic-bezier(.3,0,.2,1)`; slit.style.opacity = "1"; slit.style.transform = "scaleY(1.4)"; }, T * 380);
+    // clip 2: through the seam of light, into the chamber
+    const b = set.base, gx = (fit.ox + b[0] * fit.s) / view.clientWidth * 100 + "%", gy = (fit.oy + b[1] * fit.s) / view.clientHeight * 100 + "%";
+    [dusk, slit, bloom].forEach((el) => { el.style.setProperty("--gx", gx); el.style.setProperty("--gy", gy); });
+    later(() => bloom.classList.add("on"), T * 1000 - 500);
+    later(() => {
+      chamber.classList.add("on"); stage.style.visibility = "hidden"; dust.chamber();
+      bloom.style.transition = "opacity 1.6s ease"; bloom.classList.remove("on");
+      later(() => openLanding(false), 900);
+    }, T * 1000 + 300);
+  }
+
+  function veils(on) { ["vTop", "vBottom", "vWarm"].forEach((id) => $(id).classList.toggle("gone", !on)); }
+
+  function openLanding(overVideo) {
+    if (phase === "landing") return;
+    phase = "landing";
+    if (overVideo) { tv.style.transition = "filter 2s ease"; tv.style.filter = "blur(5px) brightness(.55)"; dust.chamber(); }
+    $("vBottom").classList.remove("gone");
+    landing.classList.add("on");
+  }
+
+  // doorways: in the preview they glow and say where they lead
+  document.querySelectorAll(".door").forEach((d) => d.addEventListener("click", () => {
+    document.querySelectorAll(".door").forEach((x) => x.classList.toggle("lit", x === d));
+    note.textContent = `${d.dataset.room}: this doorway opens in the full build`;
+    note.classList.add("on"); clearTimeout(note._t); note._t = setTimeout(() => note.classList.remove("on"), 2600);
+  }));
+
+  function replay() {
+    timers.splice(0).forEach(clearTimeout);
+    phase = "hero";
+    view.classList.remove("leaving"); landing.classList.remove("on"); begin.classList.remove("show");
+    chamber.classList.remove("on"); bloom.classList.remove("on"); bloom.style.transition = "";
+    her.hidden = false; her.classList.remove("go");
+    stage.style.visibility = ""; cam.style.transition = "none"; cam.style.transform = ""; cam.classList.add("drift");
+    cam.style.transformOrigin = `${set.base[0]}px ${set.base[1]}px`;
+    dusk.style.transition = "none"; dusk.style.opacity = "0";
+    slit.style.transition = "none"; slit.style.opacity = "0"; slit.style.transform = "";
+    tv.pause(); tv.classList.remove("on"); tv.style.filter = ""; keep.hidden = true; if (videoReady) tv.currentTime = 0;
+    veils(true); dust.reset();
+    later(() => begin.classList.add("show"), 1600);
+  }
+
+  begin.addEventListener("click", go);
+  $("replay").addEventListener("click", replay);
+  addEventListener("resize", () => choose());
+  choose();
+  heroUp();
+})();
+</script>
+</body>
+</html>
