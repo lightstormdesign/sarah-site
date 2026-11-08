@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=8" media="(max-aspect-ratio: 9/10)">
-<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=8" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=9" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=9" media="(max-aspect-ratio: 9/10)">
 <!--
   The Hall of Records: private preview for Sarah Breskman Cosme. Built by LightStorm; not public.
 
@@ -53,7 +53,7 @@
   .plate { left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
   video.plate { transition: opacity .6s ease; }
   .is-hidden { opacity: 0; }
-  .her { transition: opacity 1.7s var(--ease), filter 1.7s var(--ease); }
+  .her { transition: opacity 1.7s var(--ease), filter 1.7s var(--ease); transform-origin: 50% 100%; will-change: transform; }
   .her.go { opacity: 0; filter: brightness(1.7) saturate(.6); }
 
   /* the staged journey: dusk deepening and a seam of light opening in the pyramid (opacity/transform only) */
@@ -186,7 +186,7 @@
 
   <!-- 1. the hero: the pyramid loop, Sarah's real photo on top -->
   <div class="stage" id="stage">
-    <div class="cam drift" id="cam">
+    <div class="cam" id="cam">
       <img class="plate" id="plateStill" alt="" decoding="async">
       <video class="plate is-hidden" id="plateVid" muted loop playsinline preload="auto" tabindex="-1" aria-hidden="true"></video>
       <img class="her" id="her" alt="Sarah Breskman Cosme at the Pyramid of Khafre, Giza" decoding="async">
@@ -254,7 +254,7 @@
 //  - every full-bleed layer shares one framing; the page never scrolls; media carry a cache-buster
 (() => {
   "use strict";
-  const MV = "?v=8";   // bump whenever a video or still is replaced, or phones keep the old file
+  const MV = "?v=9";   // bump whenever a video or still is replaced, or phones keep the old file
   const SETS = {
     mobile:  { w: 1080, h: 1920, still: "media/hall-hero-mobile.jpg", loop: "media/hall-hero-mobile.mp4",
                her: "media/sarah-cutout-mobile.webp", cut: { x: 482, y: 872, w: 578, h: 1048 },
@@ -406,11 +406,56 @@
       .then(() => Promise.all([plateStill.decode?.().catch(() => {}), her.decode?.().catch(() => {})]))
       .then(() => {
         view.classList.add("ready");
+        startHer();
         dust.start(view.clientWidth < 700 ? 30 : 46);
         later(() => begin.classList.add("show"), REDUCED ? 300 : 2000);
         later(warmUp, 1200);
         if (Q.has("auto")) later(go, 3500);
       });
+  }
+
+  // ---------- Sarah in depth (TREV's portal): one rigid real photo, never warped. She drifts toward you on a
+  // diagonal, growing a little and rising off the bottom edge, back to centre, then the same to the other
+  // side; a mouse or (on Android) the phone's tilt leads it, the drift carrying on beneath, smaller ----------
+  const ME_PX = 12, ME_SCALE = 0.03, ME_SIDE = 0.6, ME_MOVE_S = 20, ME_PAUSE_S = 5;
+  let inX = 0, inY = 0, tiltLive = false, herRaf = 0;
+  // a real mouse only (phones have none), and never the browser's synthetic 0,0 move at load
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches)
+    addEventListener("pointermove", (e) => { if (e.pointerType !== "mouse" || (e.clientX === 0 && e.clientY === 0)) return;
+      inX = e.clientX / innerWidth * 2 - 1; inY = e.clientY / innerHeight * 2 - 1; });
+  if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission !== "function") {
+    addEventListener("deviceorientation", (e) => { if (e.gamma == null) return; tiltLive = true;
+      inX = Math.max(-1, Math.min(1, e.gamma / 25)); inY = Math.max(-1, Math.min(1, (e.beta - 45) / 30)); });
+  }
+  function startHer() {
+    let px = 0, py = 0, vx = 0, vy = 0, t0 = null, last = 0;
+    const frame = (now) => {
+      herRaf = requestAnimationFrame(frame);
+      if (t0 === null) { t0 = now; last = now; }
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      const t = (now - t0) / 1000, half = ME_MOVE_S + ME_PAUSE_S, ph = t % (2 * half);
+      const inMove = (ph % half) < ME_MOVE_S, u = (ph % half) / ME_MOVE_S;
+      const autoNear = inMove ? (1 - Math.cos(2 * Math.PI * u)) / 2 : 0, autoSide = (ph < half ? -1 : 1) * autoNear;
+      const led = tiltLive || inX !== 0 || inY !== 0, w = led ? 0.45 : 1;
+      const aSide = Math.max(-1, Math.min(1, autoSide * w + (led ? inX : 0)));
+      const aNear = Math.max(0, Math.min(1, autoNear * w + (led ? Math.abs(inX) * 0.85 + Math.max(0, -inY) * 0.4 : 0)));
+      vx += ((aSide - px) * 26 - vx * 8.5) * dt; vy += ((aNear - py) * 26 - vy * 8.5) * dt;
+      px += vx * dt; py += vy * dt;
+      const m = REDUCED ? 0 : 1, k = fit.s || 1, near = Math.max(0, Math.min(1, py));
+      // forward she rises and grows (about her bottom edge); back, she sinks a touch below it
+      her.style.transform = `translate(${(px * ME_PX * ME_SIDE * m / k).toFixed(2)}px, ${((1 - near) * ME_PX * 0.585 * m / k).toFixed(2)}px) scale(${(1 + ME_SCALE * near * m).toFixed(4)})`;
+    };
+    cancelAnimationFrame(herRaf); herRaf = requestAnimationFrame(frame);
+  }
+  function stopHer() { cancelAnimationFrame(herRaf); herRaf = 0; }
+
+  // the hero loop settles onto its first frame (= the transition's first frame) without a visible jump:
+  // near its end it simply plays out (its last frame is its first); otherwise it crossfades to the still
+  function settleLoop() {
+    if (plateVid.hidden || plateVid.classList.contains("is-hidden") || !plateVid.duration) return;
+    const left = plateVid.duration - plateVid.currentTime;
+    if (left <= 1.6) { plateVid.loop = false; return; }
+    plateVid.style.transition = "opacity 1.4s ease"; plateVid.classList.add("is-hidden");
   }
 
   // ---------- the journey ----------
@@ -430,18 +475,23 @@
     // Sarah's real photo dissolves into gold light, in code; the loop settles onto its first frame
     if (!REDUCED) dust.release(her, her.getBoundingClientRect());
     her.classList.add("go");
-    later(() => { plateVid.classList.add("is-hidden"); }, 600);
-    later(() => {
-      her.hidden = true; plateVid.pause();
-      if (!useVideo) return staged();
-      const t0 = performance.now();
-      const lift = () => {
-        if (drawing) return playing();
-        if (performance.now() - t0 > ENTER_WAIT_MS) { tv.pause(); keep.hidden = true; return staged(); }
-        later(lift, 100);
-      };
-      lift();
-    }, REDUCED ? 900 : DISSOLVE_MS);
+    settleLoop();
+    stopHer();
+    const D = REDUCED ? 900 : DISSOLVE_MS, t0 = performance.now();
+    later(() => { her.hidden = true; }, D);
+    if (!useVideo) { later(() => { plateVid.pause(); staged(); }, D); return; }
+    // once the transition is drawing (still on its held first frame), the background crossfades into it
+    // under her falling dust, so Kling's re-rendered frame never cuts in; then the hero lifts away
+    let faded = false;
+    const lift = () => {
+      const el = performance.now() - t0;
+      if (drawing && !faded && el >= 850) { faded = true;
+        [plateStill, plateVid].forEach((e) => { e.style.transition = "opacity .8s ease"; e.style.opacity = "0"; }); }
+      if (drawing && faded && el >= D) { plateVid.pause(); return playing(); }
+      if (el > D + ENTER_WAIT_MS) { tv.pause(); keep.hidden = true; plateVid.pause(); return staged(); }
+      later(lift, 50);
+    };
+    lift();
   }
 
   // the transition is drawing: lift the hero off it (identical frame underneath), watch it, hand over to the Hall
@@ -495,16 +545,13 @@
   }
 
   // the Hall: its loop restarts on the frame the transition ends on and fades in over it, both moving;
-  // the diamond starts slow and eases up to its full spin; then the words and the doorways rise
+  // then the words and the doorways rise
   function arrive(fromVideo) {
     if (phase === "landing") return;
     phase = "landing";
     try { hallVid.currentTime = 0; } catch (e) { /* not loaded yet: the still shows */ }
-    hallVid.playbackRate = REDUCED ? 1 : 0.3;
     showWhenPlaying(hallVid);
     hallVid.play().catch(() => {});
-    if (!REDUCED) { const t0 = performance.now(); const iv = every(() => {
-      const u = Math.min(1, (performance.now() - t0) / 2600); hallVid.playbackRate = 0.3 + 0.7 * (1 - Math.pow(1 - u, 2)); if (u >= 1) clearInterval(iv); }, 100); }
     hall.classList.add("on"); dust.hall();
     later(() => {
       stage.style.visibility = "hidden"; dusk.style.opacity = "0"; slit.style.opacity = "0";
@@ -526,14 +573,16 @@
     stopAll();
     phase = "hero";
     view.classList.remove("leaving"); landing.classList.remove("on"); credit.classList.remove("on"); begin.classList.remove("show");
-    hall.classList.remove("on", "doors-on"); hallVid.pause(); hallVid.playbackRate = 1; bloom.classList.remove("on"); bloom.style.transition = "";
+    hall.classList.remove("on", "doors-on"); hallVid.pause(); bloom.classList.remove("on"); bloom.style.transition = "";
     her.hidden = false; her.classList.remove("go");
-    stage.style.visibility = ""; cam.style.transition = "none"; cam.style.transform = ""; cam.classList.add("drift");
+    stage.style.visibility = ""; cam.style.transition = "none"; cam.style.transform = "";
     cam.style.transformOrigin = `${set.base[0]}px ${set.base[1]}px`;
     dusk.style.transition = "none"; dusk.style.opacity = "0";
     slit.style.transition = "none"; slit.style.opacity = "0"; slit.style.transform = "";
     tv.pause(); tv.onended = null; keep.hidden = true; try { tv.currentTime = 0; } catch (e) { /* ignore */ }
-    if (set.loop) { plateVid.currentTime = 0; showWhenPlaying(plateVid); plateVid.play().catch(() => {}); }
+    if (set.loop) { plateVid.loop = true; plateVid.style.transition = ""; plateVid.currentTime = 0; showWhenPlaying(plateVid); plateVid.play().catch(() => {}); }
+    [plateStill, plateVid].forEach((e) => { e.style.transition = "none"; e.style.opacity = ""; });
+    her.style.transform = ""; startHer();
     veils(true); dust.reset();
     later(() => begin.classList.add("show"), 1600);
   }
