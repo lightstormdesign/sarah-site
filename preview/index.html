@@ -130,18 +130,14 @@
   .door small { margin-top: 14px; font-style: italic; font-weight: 500; font-size: 37px; line-height: 1.2; color: #fffaf0; }
   .door:focus-visible { outline: none; }
   /* the hand: the fingertip rests on the centre doorway, presses twice, then leaves */
-  .tapHint { position: absolute; left: 545px; top: 1345px; width: 120px; height: 120px; margin: -16px 0 0 -60px; z-index: 6; pointer-events: none; opacity: 0; }
-  .tapHint svg { position: relative; width: 100%; height: 100%; fill: #fff3d6; filter: drop-shadow(0 0 10px rgba(255, 214, 140, .8)) drop-shadow(0 4px 10px rgba(0, 0, 0, .5)); }
-  .tapHint .ripple { position: absolute; left: 47%; top: 14%; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%;
-    border: 3px solid rgba(255, 230, 175, .9); opacity: 0; transform: scale(.3); }
+  /* the hand: a fine outline only; its fingertip rests in the bottom fifth of the centre doorway (below the words), presses twice, leaves */
+  .tapHint { position: absolute; left: 488px; top: 1352px; width: 104px; height: 112px; z-index: 6; pointer-events: none; opacity: 0; }
+  .tapHint svg { width: 100%; height: 100%; overflow: visible; transform-origin: 46% 18%; }
+  .tapHint path { fill: none; stroke: #fff3d6; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 4px rgba(255, 214, 140, .7)); }
   .tapHint.play { animation: hint 3.4s ease-in-out forwards; }
   .tapHint.play svg { animation: press 3.4s ease-in-out; }
-  .tapHint.play .ripple { animation: hintRipple 3.4s ease-out; }
-  @keyframes hint { 0% { opacity: 0; } 15%, 78% { opacity: 1; } 100% { opacity: 0; } }
-  @keyframes press { 0%, 25%, 42%, 55%, 72%, 100% { transform: scale(1); } 32%, 62% { transform: scale(.86); } }
-  @keyframes hintRipple { 0%, 30% { opacity: 0; transform: scale(.3); } 34% { opacity: 1; } 50% { opacity: 0; transform: scale(1.8); }
-    50.1%, 60% { opacity: 0; transform: scale(.3); } 64% { opacity: 1; } 80%, 100% { opacity: 0; transform: scale(1.8); } }
-  .dshade, .dglow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  @keyframes hint { 0% { opacity: 0; } 15%, 78% { opacity: .78; } 100% { opacity: 0; } }
+  @keyframes press { 0%, 25%, 42%, 55%, 72%, 100% { transform: scale(1); } 32%, 62% { transform: scale(.9); } }
   .dshade { opacity: 0; transition: opacity 3s cubic-bezier(.4, 0, .2, 1); }
   .hall.doors-on .dshade { opacity: 1; }
   .dsh { fill: rgba(14, 9, 4, .62); }
@@ -381,7 +377,7 @@
     color: var(--gold-1); font: 300 34px/1 Georgia, serif; cursor: pointer; }
 
   @media (prefers-reduced-motion: reduce) {
-    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight, .sigilRing, .tapHint svg, .tapHint .ripple { animation: none !important; }
+    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight, .sigilRing, .tapHint svg { animation: none !important; }
   }
 </style>
 </head>
@@ -417,8 +413,8 @@
       <button class="door" type="button" data-room="Sessions" style="left:52px;top:1032px;width:270px;height:438px">
         <b>Sessions</b><small>QHHT &amp;<br>past lives</small>
       </button>
-      <div class="tapHint" id="tapHint" aria-hidden="true"><span class="ripple"></span>
-        <svg viewBox="0 0 24 24"><path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74l-3.43-.72c-.08-.01-.15-.03-.24-.03-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></svg></div>
+      <div class="tapHint" id="tapHint" aria-hidden="true">
+        <svg viewBox="0 0 52 56"><path d="M21 31 V10.5 a3.2 3.2 0 0 1 6.4 0 V25 M27.4 23.5 a3.2 3.2 0 0 1 6.4 0 V26 M33.8 25 a3.2 3.2 0 0 1 6.4 0 V27.5 M40.2 27 a3.2 3.2 0 0 1 6.4 0 V36 c0 8 -4.6 13.5 -12.4 13.5 h-4.6 c-4.2 0 -6.6 -1.8 -8.8 -4.3 l-8.2 -9.4 a3.2 3.2 0 0 1 4.7 -4.3 L21 35.6"/></svg></div>
       <button class="door" type="button" data-room="Courses &amp; Books" style="left:388px;top:968px;width:302px;height:502px">
         <b>Courses<br>&amp; Books</b><small>Atlantis, Avalon<br>&amp; the Sphinx</small>
       </button>
