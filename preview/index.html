@@ -159,8 +159,22 @@
   .hall.doors-on .dlight .dl1 { animation-delay: 5.4s; }
   .hall.doors-on .dlight .dl2 { animation-delay: 8.4s; }
   @keyframes doorlight { 0%, 18%, 66%, 100% { opacity: 0; } 42% { opacity: .6; } }
-  .hall.doors-on .dglow.lit { opacity: 1; animation: none; transition: opacity .3s ease; }
-  .hall.doors-on .dlight g.lit { opacity: .85; animation: none; transition: opacity .4s ease; }
+  /* chosen: the outline blazes and settles bright, light wells up inside, a veil of light rises from the threshold to the
+     crown of the arch, the words lift; the other doorways quietly step back */
+  .hall.doors-on .dglow.lit { opacity: 1; animation: chosenGlow 1.6s cubic-bezier(.22, 1, .36, 1); }
+  .dglow.lit .halo { animation: chosenHalo 1.6s cubic-bezier(.22, 1, .36, 1) forwards; }
+  @keyframes chosenGlow { 0% { opacity: .6; } 25% { opacity: 1; } 100% { opacity: 1; } }
+  @keyframes chosenHalo { 0% { stroke-width: 26; } 25% { stroke-width: 46; } 100% { stroke-width: 32; } }
+  .hall.doors-on .dlight g.lit { opacity: .8; animation: none; transition: opacity 1.2s cubic-bezier(.22, 1, .36, 1); }
+  .drise { opacity: 1 !important; }
+  .drise .rise { opacity: 0; }
+  .drise g.lit .rise { animation: rise 1.8s cubic-bezier(.33, 0, .2, 1) forwards; }
+  @keyframes rise { 0% { opacity: 0; transform: translateY(40px); } 25% { opacity: .5; } 100% { opacity: 0; transform: translateY(-460px); } }
+  .hall.chosen .dglow:not(.lit) { opacity: .22; animation: none; transition: opacity 1.2s ease; }
+  .hall.chosen .dlight g:not(.lit) { opacity: 0; animation: none; transition: opacity 1.2s ease; }
+  .door b, .door small { transition: opacity 1.8s cubic-bezier(.22, 1, .36, 1), filter 1.8s cubic-bezier(.22, 1, .36, 1), transform 1.2s cubic-bezier(.22, 1, .36, 1); }
+  .hall.chosen .door.lit b, .hall.chosen .door.lit small { transform: scale(1.05); }
+  .hall.chosen .door:not(.lit) b, .hall.chosen .door:not(.lit) small { opacity: .62; transition-delay: 0s; }
   .hall.doors-on .door { pointer-events: auto; }
   /* the shadows gather one doorway after another: the centre first, then its neighbours */
 
@@ -417,6 +431,7 @@
       <!-- the three doorways, traced from the Hall's own gold trim: a soft shadow kept inside each arch, and its outline that glows -->
       <svg class="dshade" viewBox="0 0 1080 1920" aria-hidden="true"><defs><clipPath id="dclip0"><path d="M58,1456 L58,1159.0 A131.0,131.0 0 0 1 320,1159.0 L320,1456 Z"/></clipPath><clipPath id="dclip1"><path d="M389,1458 L389,1116.5 A148.5,148.5 0 0 1 686,1116.5 L686,1458 Z"/></clipPath><clipPath id="dclip2"><path d="M757,1456 L757,1160.5 A132.5,132.5 0 0 1 1022,1160.5 L1022,1456 Z"/></clipPath><radialGradient id="dlg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="#fff1cf" stop-opacity=".9"/><stop offset="1" stop-color="#ffcf8a" stop-opacity="0"/></radialGradient><filter id="dsoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="26"/></filter></defs><g clip-path="url(#dclip0)"><path class="dsh" d="M80,1496 L80,1159.0 A109.0,109.0 0 0 1 298,1159.0 L298,1496 Z" filter="url(#dsoft)"/></g><g clip-path="url(#dclip1)"><path class="dsh" d="M411,1498 L411,1116.5 A126.5,126.5 0 0 1 664,1116.5 L664,1498 Z" filter="url(#dsoft)"/></g><g clip-path="url(#dclip2)"><path class="dsh" d="M779,1496 L779,1160.5 A110.5,110.5 0 0 1 1000,1160.5 L1000,1496 Z" filter="url(#dsoft)"/></g></svg>
       <svg class="dshade dlight" viewBox="0 0 1080 1920" aria-hidden="true"><g class="dl0" clip-path="url(#dclip0)"><path class="dl" d="M80,1496 L80,1159.0 A109.0,109.0 0 0 1 298,1159.0 L298,1496 Z" fill="url(#dlg)" filter="url(#dsoft)"/></g><g class="dl1" clip-path="url(#dclip1)"><path class="dl" d="M411,1498 L411,1116.5 A126.5,126.5 0 0 1 664,1116.5 L664,1498 Z" fill="url(#dlg)" filter="url(#dsoft)"/></g><g class="dl2" clip-path="url(#dclip2)"><path class="dl" d="M779,1496 L779,1160.5 A110.5,110.5 0 0 1 1000,1160.5 L1000,1496 Z" fill="url(#dlg)" filter="url(#dsoft)"/></g></svg>
+      <svg class="dshade drise" viewBox="0 0 1080 1920" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#fff6e0" stop-opacity="0"/><stop offset=".5" stop-color="#fff6e0" stop-opacity=".95"/><stop offset="1" stop-color="#fff6e0" stop-opacity="0"/></linearGradient></defs><g class="dr0" clip-path="url(#dclip0)"><rect class="rise" x="38" y="1276" width="302" height="360" fill="url(#rg)" filter="url(#dsoft)"/></g><g class="dr1" clip-path="url(#dclip1)"><rect class="rise" x="369" y="1278" width="337" height="360" fill="url(#rg)" filter="url(#dsoft)"/></g><g class="dr2" clip-path="url(#dclip2)"><rect class="rise" x="737" y="1276" width="305" height="360" fill="url(#rg)" filter="url(#dsoft)"/></g></svg>
       <svg class="dglow" id="dglow0" viewBox="0 0 1080 1920" aria-hidden="true"><defs><filter id="hb0" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter></defs><path class="halo" d="M58,1456 L58,1159.0 A131.0,131.0 0 0 1 320,1159.0 L320,1456" filter="url(#hb0)"/><path class="line" d="M58,1456 L58,1159.0 A131.0,131.0 0 0 1 320,1159.0 L320,1456"/></svg><svg class="dglow" id="dglow1" viewBox="0 0 1080 1920" aria-hidden="true"><defs><filter id="hb1" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter></defs><path class="halo" d="M389,1458 L389,1116.5 A148.5,148.5 0 0 1 686,1116.5 L686,1458" filter="url(#hb1)"/><path class="line" d="M389,1458 L389,1116.5 A148.5,148.5 0 0 1 686,1116.5 L686,1458"/></svg><svg class="dglow" id="dglow2" viewBox="0 0 1080 1920" aria-hidden="true"><defs><filter id="hb2" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter></defs><path class="halo" d="M757,1456 L757,1160.5 A132.5,132.5 0 0 1 1022,1160.5 L1022,1456" filter="url(#hb2)"/><path class="line" d="M757,1456 L757,1160.5 A132.5,132.5 0 0 1 1022,1160.5 L1022,1456"/></svg>
       <button class="door" type="button" data-room="Sessions" style="left:52px;top:1032px;width:270px;height:438px">
         <b>Sessions</b><small>QHHT &amp;<br>past lives</small>
@@ -895,7 +910,9 @@
   // the doorways: in the preview they glow and say where they lead
   document.querySelectorAll(".door").forEach((d) => d.addEventListener("click", () => {
     $("tapHint").classList.remove("play");
-    document.querySelectorAll(".door").forEach((x, i) => { x.classList.toggle("lit", x === d); $("dglow" + i).classList.toggle("lit", x === d); hall.querySelector(".dlight .dl" + i).classList.toggle("lit", x === d); });
+    document.querySelectorAll(".door").forEach((x, i) => { x.classList.toggle("lit", x === d); $("dglow" + i).classList.toggle("lit", x === d); hall.querySelector(".dlight .dl" + i).classList.toggle("lit", x === d);
+      const r = hall.querySelector(".drise .dr" + i); r.classList.remove("lit"); if (x === d) { void r.getBoundingClientRect(); r.classList.add("lit"); } });
+    hall.classList.add("chosen"); if (navigator.vibrate) navigator.vibrate(8);
     note.textContent = `${d.dataset.room}: this doorway opens in the full build`;
     note.classList.add("on"); clearTimeout(note._t); note._t = setTimeout(() => note.classList.remove("on"), 2600);
   }));
@@ -904,7 +921,7 @@
     stopAll();
     phase = "hero";
     view.classList.remove("leaving", "arrived"); landing.classList.remove("on"); credit?.classList.remove("on"); begin.classList.remove("show");
-    hall.classList.remove("on", "doors-on", "settled"); $("tapHint").classList.remove("play"); view.classList.remove("offerings"); layoutLanding(); hallVid.pause(); bloom.classList.remove("on"); bloom.style.transition = "";
+    hall.classList.remove("on", "doors-on", "settled", "chosen"); hall.querySelectorAll(".lit").forEach((e) => e.classList.remove("lit")); $("tapHint").classList.remove("play"); view.classList.remove("offerings"); layoutLanding(); hallVid.pause(); bloom.classList.remove("on"); bloom.style.transition = "";
     her.hidden = false; her.classList.remove("go");
     stage.style.visibility = ""; cam.style.transition = "none"; cam.style.transform = "";
     cam.style.transformOrigin = `${set.base[0]}px ${set.base[1]}px`;
