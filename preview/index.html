@@ -752,16 +752,16 @@
   // ---------- sound (Web Audio, so every layer can fade, iPhones included). It can only start inside the tap, so the
   // hero is silent; the files are fetched and decoded once the hero is up. The score, from the tap:
   //   0 s     the transition's own sound (faded in and out), with the desert wind, which falls away as the camera drops
-  //   ~2.2 s  underground: a very low drone rises slowly (it loops for as long as she stays)
   //   ~4.7 s  the Hall appears: the inspiring swell, louder, then it settles back into the drones
   const sound = (() => {
-    const FILES = { transition: "transition", wind: "wind", low: "drone-low", rise: "rise" };
+    const FILES = { transition: "transition", wind: "wind", rise: "rise" };
+    const VOL = 0.3;   // everything at 30%
     let ctx = null, master = null, bufs = {}, live = [], muted = false, loading = null;
     try { muted = localStorage.getItem("hor-muted") === "1"; } catch (e) { /* private mode */ }
     function ensure() {
       if (ctx) return ctx;
       const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
-      ctx = new AC(); master = ctx.createGain(); master.gain.value = muted ? 0 : 1; master.connect(ctx.destination);
+      ctx = new AC(); master = ctx.createGain(); master.gain.value = muted ? 0 : VOL; master.connect(ctx.destination);
       return ctx;
     }
     // the AAC files start with a few milliseconds of encoder silence: loop from the first real sample
@@ -790,14 +790,13 @@
           const t = ctx.currentTime + 0.02;
           play("transition", t, 1, 0.5, false);
           const w = play("wind", t, 0.55, 0.4, false); fadeOut(w, t + 1.2, 1.6);
-          play("low", t + 2.2, 0.6, 3, true);
           const r = play("rise", t + 4.6, 0.62, 2.5, false);
         };
         (Object.keys(bufs).length ? Promise.resolve() : load()).then(go);
       },
       stop(dur = 1.2) { if (!ctx) return; const t = ctx.currentTime; live.forEach((v) => { fadeOut(v, t, dur); try { v.src.stop(t + dur + .05); } catch (e) { /* stopped */ } }); live = []; },
       toggle() { muted = !muted; try { localStorage.setItem("hor-muted", muted ? "1" : "0"); } catch (e) { /* private mode */ }
-        if (ctx) { const t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(muted ? 0 : 1, t + .6); }
+        if (ctx) { const t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(muted ? 0 : VOL, t + .6); }
         return muted; },
       get muted() { return muted; },
       suspend() { if (ctx && ctx.state === "running") ctx.suspend(); }, resume() { if (ctx && ctx.state === "suspended" && live.length) ctx.resume(); },
