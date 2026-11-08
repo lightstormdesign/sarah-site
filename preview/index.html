@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=6" media="(max-aspect-ratio: 9/10)">
-<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=6" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=7" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=7" media="(max-aspect-ratio: 9/10)">
 <!--
   The Hall of Records: private preview for Sarah Breskman Cosme. Built by LightStorm; not public.
 
@@ -77,6 +77,10 @@
   .veil.top { background: linear-gradient(180deg, rgba(11, 9, 30, .72) 0%, rgba(11, 9, 30, .35) 20%, rgba(11, 9, 30, 0) 36%); }
   .veil.bottom { background: linear-gradient(0deg, rgba(10, 8, 20, .7) 0%, rgba(10, 8, 20, .25) 16%, rgba(10, 8, 20, 0) 30%); }
   .desk .veil.top { background: linear-gradient(170deg, rgba(11, 9, 30, .75) 0%, rgba(11, 9, 30, .35) 28%, rgba(11, 9, 30, 0) 50%); }
+  /* the vignette: edges and corners settle into shadow; full on the hero, lighter once the journey moves */
+  .veil.vig { background: radial-gradient(115% 80% at 50% 46%, rgba(6, 5, 16, 0) 50%, rgba(6, 5, 16, .38) 78%, rgba(6, 5, 16, .72) 100%); transition: opacity 1.6s ease; }
+  .desk .veil.vig { background: radial-gradient(80% 95% at 52% 50%, rgba(6, 5, 16, 0) 52%, rgba(6, 5, 16, .4) 80%, rgba(6, 5, 16, .75) 100%); }
+  .veil.vig.soft { opacity: .55; }
   .gone { opacity: 0 !important; }
 
   /* ---------- the Hall of Records ---------- */
@@ -210,6 +214,7 @@
     </div>
   </div>
 
+  <div class="veil vig" id="vVig"></div>
   <div class="veil top" id="vTop"></div>
   <div class="veil bottom" id="vBottom"></div>
   <canvas class="dust" id="dust" aria-hidden="true"></canvas>
@@ -249,7 +254,7 @@
 //  - every full-bleed layer shares one framing; the page never scrolls; media carry a cache-buster
 (() => {
   "use strict";
-  const MV = "?v=6";   // bump whenever a video or still is replaced, or phones keep the old file
+  const MV = "?v=7";   // bump whenever a video or still is replaced, or phones keep the old file
   const SETS = {
     mobile:  { w: 1080, h: 1920, still: "media/hall-hero-mobile.jpg", loop: "media/hall-hero-mobile.mp4",
                her: "media/sarah-cutout-mobile.webp", cut: { x: 482, y: 872, w: 578, h: 1048 },
@@ -508,7 +513,7 @@
     later(() => { landing.classList.add("on"); hall.classList.add("doors-on"); credit.classList.add("on"); }, fromVideo ? 1100 : 700);
   }
 
-  function veils(on) { ["vTop", "vBottom"].forEach((id) => $(id).classList.toggle("gone", !on)); }
+  function veils(on) { ["vTop", "vBottom"].forEach((id) => $(id).classList.toggle("gone", !on)); $("vVig").classList.toggle("soft", !on); }
 
   // the doorways: in the preview they glow and say where they lead
   document.querySelectorAll(".door").forEach((d) => d.addEventListener("click", () => {
