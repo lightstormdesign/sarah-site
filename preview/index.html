@@ -389,6 +389,10 @@
   .nav button { pointer-events: auto; width: 44px; height: 44px; display: grid; place-content: center; gap: 6px; background: none; border: 0; padding: 0; cursor: pointer;
     filter: drop-shadow(0 1px 6px rgba(0, 0, 0, .5)); }
   .leaving:not(.arrived) .nav button { pointer-events: none; }
+  .navR { display: flex; gap: 2px; }
+  .nav .sound { opacity: 0; pointer-events: none; transition: opacity 1.2s ease; }
+  .nav .sound.on { opacity: 1; pointer-events: auto; }
+  .sound .off { display: none; } .sound.muted .off { display: inline; } .sound.muted .waves { display: none; }
   .burger span { display: block; width: 24px; height: 1.5px; background: linear-gradient(90deg, #c09245, #f6e2aa 45%, #deb05a 70%, #c69a4a); }
   .nav button:focus-visible, .menu a:focus-visible { outline: 1px solid var(--gold-1); outline-offset: 4px; }
   .menu { position: fixed; inset: 0; z-index: 20; background: rgba(8, 7, 14, .94); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
@@ -469,7 +473,11 @@
       <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><defs><linearGradient id="navgold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e2aa"/><stop offset=".5" stop-color="#d9b25f"/><stop offset="1" stop-color="#f3dc9c"/></linearGradient></defs>
         <path d="M3.5 11.2 12 4l8.5 7.2M6 9.6V20h4.4v-5.6h3.2V20H18V9.6" fill="none" stroke="url(#navgold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
-    <button class="burger" id="menuBtn" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
+    <span class="navR"><button class="sound" id="soundBtn" type="button" aria-label="Sound off" aria-pressed="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9.5h3.2L11.5 6v12l-4.3-3.5H4z" fill="none" stroke="url(#navgold)" stroke-width="1.5" stroke-linejoin="round"/>
+        <g class="waves" fill="none" stroke="url(#navgold)" stroke-width="1.5" stroke-linecap="round"><path d="M14.6 9.4a3.6 3.6 0 0 1 0 5.2"/><path d="M16.9 7.2a6.8 6.8 0 0 1 0 9.6"/></g>
+        <path class="off" d="M15 9.5l5 5M20 9.5l-5 5" fill="none" stroke="url(#navgold)" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+    <button class="burger" id="menuBtn" type="button" aria-label="Open menu"><span></span><span></span><span></span></button></span>
   </header>
   <nav class="menu" id="menu" hidden>
     <button class="menuClose" id="menuClose" type="button" aria-label="Close menu">&times;</button>
@@ -666,7 +674,68 @@
   }
 
   // ---------- media warm-up, once the hero is up ----------
+  // ---------- sound (Web Audio, so every layer can fade, iPhones included). It can only start inside the tap, so the
+  // hero is silent; the files are fetched and decoded once the hero is up. The score, from the tap:
+  //   0 s     the transition's own sound (faded in and out), with the desert wind, which falls away as the camera drops
+  //   ~2.2 s  underground: a very low drone and a higher, mystical drone rise slowly (both loop for as long as she stays)
+  //   ~4.7 s  the Hall appears: the inspiring swell, louder, then it settles back into the drones
+  const sound = (() => {
+    const FILES = { transition: "transition", wind: "wind", low: "drone-low", mystic: "drone-mystic", rise: "rise" };
+    let ctx = null, master = null, bufs = {}, live = [], muted = false, loading = null;
+    try { muted = localStorage.getItem("hor-muted") === "1"; } catch (e) { /* private mode */ }
+    function ensure() {
+      if (ctx) return ctx;
+      const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+      ctx = new AC(); master = ctx.createGain(); master.gain.value = muted ? 0 : 1; master.connect(ctx.destination);
+      return ctx;
+    }
+    // the AAC files start with a few milliseconds of encoder silence: loop from the first real sample
+    function edges(b) { const d = b.getChannelData(0); let a = 0, z = d.length - 1; while (a < d.length && Math.abs(d[a]) < 1e-4) a++; while (z > a && Math.abs(d[z]) < 1e-4) z--; return [a / b.sampleRate, z / b.sampleRate]; }
+    function load() {
+      if (loading || !ensure()) return loading;
+      loading = Promise.all(Object.entries(FILES).map(([k, f]) => fetch("media/sound-" + f + ".m4a" + MV).then((r) => r.arrayBuffer())
+        .then((a) => new Promise((res, rej) => ctx.decodeAudioData(a, res, rej))).then((b) => { bufs[k] = b; }).catch(() => {})));
+      return loading;
+    }
+    function play(k, at, vol, fadeIn, loop) {
+      const b = bufs[k]; if (!b) return null;
+      const src = ctx.createBufferSource(), g = ctx.createGain(); src.buffer = b;
+      if (loop) { const [a, z] = edges(b); src.loop = true; src.loopStart = a; src.loopEnd = z; }
+      g.gain.setValueAtTime(0, at); g.gain.linearRampToValueAtTime(vol, at + fadeIn);
+      src.connect(g); g.connect(master); src.start(at, loop ? edges(b)[0] : 0);
+      const v = { src, g }; live.push(v); return v;
+    }
+    function fadeOut(v, at, dur) { if (!v) return; v.g.gain.setValueAtTime(v.g.gain.value, at); v.g.gain.cancelScheduledValues(at); v.g.gain.setValueAtTime(v.g.gain.value, at); v.g.gain.linearRampToValueAtTime(0, at + dur); }
+    return {
+      load,
+      // inside the tap: wake the context (allowed only here on iPhone) and score the journey
+      begin() {
+        if (!ensure()) return; ctx.resume && ctx.resume();
+        const go = () => {
+          const t = ctx.currentTime + 0.02;
+          play("transition", t, 1, 0.5, false);
+          const w = play("wind", t, 0.55, 0.4, false); fadeOut(w, t + 1.2, 1.6);
+          play("low", t + 2.2, 0.6, 3, true);
+          play("mystic", t + 2.4, 0.42, 3.5, true);
+          const r = play("rise", t + 4.6, 0.62, 2.5, false);
+          $("soundBtn").classList.add("on");
+        };
+        (Object.keys(bufs).length ? Promise.resolve() : load()).then(go);
+      },
+      stop(dur = 1.2) { if (!ctx) return; const t = ctx.currentTime; live.forEach((v) => { fadeOut(v, t, dur); try { v.src.stop(t + dur + .05); } catch (e) { /* stopped */ } }); live = []; },
+      toggle() { muted = !muted; try { localStorage.setItem("hor-muted", muted ? "1" : "0"); } catch (e) { /* private mode */ }
+        if (ctx) { const t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(muted ? 0 : 1, t + .6); }
+        return muted; },
+      get muted() { return muted; },
+      suspend() { if (ctx && ctx.state === "running") ctx.suspend(); }, resume() { if (ctx && ctx.state === "suspended" && live.length) ctx.resume(); },
+    };
+  })();
+  { const sb = $("soundBtn"); const paint = () => { sb.classList.toggle("muted", sound.muted); sb.setAttribute("aria-label", sound.muted ? "Sound on" : "Sound off"); sb.setAttribute("aria-pressed", String(!sound.muted)); };
+    paint(); sb.addEventListener("click", (e) => { e.stopPropagation(); sound.toggle(); paint(); }); }
+  document.addEventListener("visibilitychange", () => (document.hidden ? sound.suspend() : sound.resume()));
+
   function warmUp() {
+    sound.load();
     // the transition: whole into memory, then load() only
     if (set.video && !Q.has("sim")) {
       const want = set, url = set.video + MV;
@@ -810,7 +879,7 @@
     if (phase !== "hero") return;
     phase = "dissolve";
     view.classList.add("leaving");
-    stopHer(); dust.quiet();
+    stopHer(); dust.quiet(); sound.begin();
     const useVideo = !!set.video && !Q.has("sim");
     const fadeHer = () => { if (!REDUCED) dust.release(her, her.getBoundingClientRect()); her.classList.add("go"); };
     const toStaged = () => { fadeHer(); later(() => { her.hidden = true; plateVid.pause(); staged(); }, REDUCED ? 600 : 1000); };
@@ -918,7 +987,7 @@
   }));
 
   function replay() {
-    stopAll();
+    stopAll(); sound.stop(); $("soundBtn").classList.remove("on");
     phase = "hero";
     view.classList.remove("leaving", "arrived"); landing.classList.remove("on"); credit?.classList.remove("on"); begin.classList.remove("show");
     hall.classList.remove("on", "doors-on", "settled", "chosen"); hall.querySelectorAll(".lit").forEach((e) => e.classList.remove("lit")); $("tapHint").classList.remove("play"); view.classList.remove("offerings"); layoutLanding(); hallVid.pause(); bloom.classList.remove("on"); bloom.style.transition = "";
