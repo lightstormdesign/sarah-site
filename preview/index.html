@@ -235,7 +235,7 @@
   .landing.on .act > .proof { transition-delay: 1.7s; pointer-events: auto; }
   .offerings .act { opacity: 0; filter: blur(8px); pointer-events: none; }
   .offerings .act * { pointer-events: none !important; }
-  .proof { display: block; width: max-content; max-width: 100%; margin: 20px auto 0; padding-top: 16px; text-decoration: none; color: inherit; position: relative; }
+  .proof { display: block; width: max-content; max-width: 100%; margin: 28px auto 0; padding-top: 16px; text-decoration: none; color: inherit; position: relative; }
   .proof::before { content: ""; position: absolute; left: 50%; top: 0; width: 64px; height: 1px; margin-left: -32px;
     background: linear-gradient(90deg, rgba(217, 178, 95, 0), #e9cf8f 50%, rgba(217, 178, 95, 0)); }
   .stars { position: relative; display: inline-block; font-size: 15px; letter-spacing: .22em; padding-left: .22em; color: rgba(232, 207, 154, .28); line-height: 1; }
@@ -445,7 +445,6 @@
     </div>
     <div class="hallTitle" id="hallTitle"><h2><span>The Hall of</span><span class="big">Records</span></h2><p class="lede">Choose a doorway</p></div>
   </section>
-  <p class="credit" id="credit">Private preview · Site by LightStorm · <button type="button" id="replay">Replay</button></p>
   <!-- My Story: her story scrolls inside its own frame over the dimmed Hall (the page itself never scrolls) -->
   <section class="story" id="story" aria-label="My story" hidden>
     <div class="storyScroll" id="storyScroll">
@@ -845,7 +844,7 @@
       stage.style.visibility = "hidden"; dusk.style.opacity = "0"; slit.style.opacity = "0";
       if (fromVideo) { keep.hidden = true; tv.pause(); }
     }, CROSSFADE_S * 1000 + 200);
-    later(() => { landing.classList.add("on"); credit.classList.add("on"); }, fromVideo ? 1400 : 900);
+    later(() => { landing.classList.add("on"); credit?.classList.add("on"); }, fromVideo ? 1400 : 900);
   }
 
   function veils(on) { ["vTop", "vBottom"].forEach((id) => $(id).classList.toggle("gone", !on)); $("vVig").classList.toggle("soft", !on); }
@@ -860,7 +859,7 @@
   function replay() {
     stopAll();
     phase = "hero";
-    view.classList.remove("leaving", "arrived"); landing.classList.remove("on"); credit.classList.remove("on"); begin.classList.remove("show");
+    view.classList.remove("leaving", "arrived"); landing.classList.remove("on"); credit?.classList.remove("on"); begin.classList.remove("show");
     hall.classList.remove("on", "doors-on", "settled"); view.classList.remove("offerings"); layoutLanding(); hallVid.pause(); bloom.classList.remove("on"); bloom.style.transition = "";
     her.hidden = false; her.classList.remove("go");
     stage.style.visibility = ""; cam.style.transition = "none"; cam.style.transform = "";
@@ -908,7 +907,6 @@
   }));
   addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && phase === "hero" && view.classList.contains("armed")) { view.classList.remove("armed"); go(); } });
   view.addEventListener("click", (e) => { if (phase === "hero" && view.classList.contains("armed") && !e.target.closest(".credit, .nav, .menu")) { view.classList.remove("armed"); go(); } });
-  $("replay").addEventListener("click", replay);
   // one fixed layout for both moments: the logo up top (it never moves), the words beneath it. On arrival the
   // headline, bio and buttons; with the offerings, "The Hall of Records" and "Choose your doorway" in their place
   function layoutLanding() {
@@ -920,7 +918,7 @@
     const act = $("act"), ctasH = act.querySelector(".ctas").offsetHeight;
     // the title (with the offerings) ends just above the doorways; the logo and the words sit above it
     const titleH = $("hallTitle").offsetHeight;
-    let it = doorTop - 14 - titleH, t = it - gap - lh;
+    let it = doorTop - 4 - titleH, t = it - gap - lh;
     t = Math.max(phone ? 58 : H * 0.07, t); it = t + lh + gap;
     landing.style.setProperty("--lw", w.toFixed(1) + "px"); landing.style.setProperty("--lt", t.toFixed(1) + "px");
     landing.style.setProperty("--it", it.toFixed(1) + "px");
