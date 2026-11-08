@@ -115,13 +115,14 @@
   .eyebrow { font-family: "Cinzel", serif; font-weight: 500; font-size: 11px; letter-spacing: .38em; text-transform: uppercase; color: var(--gold-1); opacity: .92; }
   .desk .eyebrow { font-size: 13px; }
   h1 { margin: 14px 0 12px; font-family: "Cinzel", serif; font-weight: 500; text-transform: uppercase; line-height: 1.04; letter-spacing: .06em;
-    font-size: min(7.4vw, 38px); background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-size: min(15vw, 76px); background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent;
     filter: drop-shadow(0 2px 14px rgba(0, 0, 0, .45)); }
-  h1 span { display: block; padding-left: .06em; }
-  h1 .first { font-size: .9em; letter-spacing: .34em; padding-left: .34em; }
+  h1 span { display: block; }
+  h1 .first { font-size: .3em; letter-spacing: .32em; padding-left: .32em; margin-bottom: .12em; }
+  h1 .last { letter-spacing: .14em; padding-left: .14em; line-height: .95; }
   /* letter-spacing leaves a gap after the last letter: the same space on the left keeps each line truly centred */
   .title .eyebrow { padding-left: .38em; }
-  .desk h1 { font-size: min(3.9vw, 66px); }
+  .desk h1 { font-size: min(7vw, 120px); }
   .desk h1 span, .desk .title .eyebrow { padding-left: 0; }
   .tagline { font-style: italic; font-size: 21px; letter-spacing: .02em; color: var(--ivory); text-shadow: 0 1px 12px rgba(0, 0, 0, .6); }
   .desk .tagline { font-size: 26px; }
@@ -216,7 +217,7 @@
 
   <header class="title" id="title">
     <p class="eyebrow">The Holistic Hypnotist</p>
-    <h1><span class="first">Sarah</span><span>Breskman Cosme</span></h1>
+    <h1><span class="first">Sarah Breskman</span><span class="last">Cosme</span></h1>
     <p class="tagline">Remember who you are.</p>
     <span class="rule"></span>
   </header>
