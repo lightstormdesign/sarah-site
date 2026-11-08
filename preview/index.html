@@ -125,9 +125,10 @@
     padding: 40px 12px 0; text-align: center; }
   .door b, .door small { opacity: 0; filter: blur(8px); transition: opacity 1.8s cubic-bezier(.22, 1, .36, 1), filter 1.8s cubic-bezier(.22, 1, .36, 1), background .3s ease, transform .3s ease; }
   .hall.doors-on .door b, .hall.doors-on .door small { opacity: 1; filter: blur(0); transition-delay: 1s; }
-  .door b, .door small { position: relative; display: block; text-shadow: 0 2px 4px rgba(10, 6, 2, .7), 0 0 2px rgba(20, 12, 4, .55), 0 0 16px rgba(20, 12, 4, .75), 0 0 34px rgba(20, 12, 4, .45); }
+  .door b, .door small { position: relative; display: block; -webkit-text-stroke: 2px rgba(40, 24, 8, .45); paint-order: stroke fill;
+    text-shadow: 0 2px 5px rgba(10, 6, 2, .6), 0 0 18px rgba(20, 12, 4, .55); }
   .door b { font: 600 41px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; color: #fff4d8; }
-  .door small { margin-top: 14px; font-style: italic; font-weight: 500; font-size: 37px; line-height: 1.2; color: #fffaf0; }
+  .door small { -webkit-text-stroke-width: 1px; margin-top: 14px; font-style: italic; font-weight: 500; font-size: 37px; line-height: 1.2; color: #fffaf0; }
   .door:focus-visible { outline: none; }
   /* the hand: the fingertip rests on the centre doorway, presses twice, then leaves */
   /* the hand: a fine outline only; its fingertip rests in the bottom fifth of the centre doorway (below the words), presses twice, leaves */
@@ -139,7 +140,7 @@
   @keyframes hint { 0% { opacity: 0; } 15%, 78% { opacity: .78; } 100% { opacity: 0; } }
   @keyframes press { 0%, 25%, 42%, 55%, 72%, 100% { transform: scale(1); } 32%, 62% { transform: scale(.9); } }
   .dshade { opacity: 0; transition: opacity 3s cubic-bezier(.4, 0, .2, 1); }
-  .hall.doors-on .dshade { opacity: 1; }
+  .hall.doors-on .dshade:not(.dlight) { opacity: 0; }
   .dsh { fill: rgba(14, 9, 4, .62); }
   .dglow path { fill: none; stroke-linecap: round; }
   .dglow .line { stroke: #ffe6ad; stroke-width: 4; }
@@ -304,6 +305,9 @@
   .offerings .hallTitle h2 { opacity: 1; filter: blur(0); transition-delay: .6s; }
   .offerings .hallTitle .lede { opacity: .82; filter: blur(0); transition-delay: 1.4s; }
   .hallTitle h2 span { display: block; }
+  .hallTitle::before { content: ""; position: absolute; left: -12%; right: -12%; top: -55%; bottom: -30%; border-radius: 50%; z-index: -1;
+    background: radial-gradient(closest-side, rgba(10, 7, 4, .6), rgba(10, 7, 4, .3) 60%, rgba(10, 7, 4, 0)); opacity: 0; transition: opacity 1.6s ease .4s; }
+  .offerings .hallTitle::before { opacity: 1; }
   .hallTitle h2 .big { font-size: 1.18em; letter-spacing: .2324em; padding-left: .2324em; line-height: 1.1; }   /* exactly the width of "The Hall of" */
   .hallTitle h2 { margin: 0 0 10px; font: 500 min(6.8vw, 34px)/1.15 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase;
     background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .6)); }
