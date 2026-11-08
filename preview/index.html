@@ -760,8 +760,9 @@
   //   0 s     the transition's own sound (faded in and out), with the desert wind, which falls away as the camera drops
   //   ~4.7 s  the Hall appears: the inspiring swell, louder, then it settles back into the drones
   const sound = (() => {
-    const FILES = { transition: "transition", wind: "wind", rise: "rise" };
+    const FILES = { transition: "transition", wind: "wind", windLoop: "wind-loop", rise: "rise" };
     const VOL = 0.3;   // everything at 30%
+    let ambient = null;   // the desert wind on the portal, looping, from her unmute until "Tap to Enter"
     let ctx = null, master = null, bufs = {}, live = [], muted = false, loading = null;
     // muted until she chooses: the gold speaker is an unmute button (her choice is remembered)
     muted = true; try { muted = localStorage.getItem("hor-muted") !== "0"; } catch (e) { /* private mode */ }
@@ -796,12 +797,18 @@
         const go = () => {
           const t = ctx.currentTime + 0.02;
           play("transition", t, 1, 0.5, false);
-          const w = play("wind", t, 0.55, 0.4, false); fadeOut(w, t + 1.2, 1.6);
+          if (ambient) { fadeOut(ambient, t + 1.2, 1.6); try { ambient.src.stop(t + 3); } catch (e) { /* stopped */ } ambient = null; }   // the portal's wind falls away with the drop
+          else { const w = play("wind", t, 0.55, 0.4, false); fadeOut(w, t + 1.2, 1.6); }
           const r = play("rise", t + 4.6, 0.62, 2.5, false);
         };
         (Object.keys(bufs).length ? Promise.resolve() : load()).then(go);
       },
-      stop(dur = 1.2) { if (!ctx) return; const t = ctx.currentTime; live.forEach((v) => { fadeOut(v, t, dur); try { v.src.stop(t + dur + .05); } catch (e) { /* stopped */ } }); live = []; },
+      // the portal: only the desert wind, looping (inside her tap on unmute)
+      ambience() {
+        if (muted || ambient || !ensure()) return; ctx.resume && ctx.resume();
+        (bufs.windLoop ? Promise.resolve() : load()).then(() => { if (!muted && !ambient && phase === "hero") ambient = play("windLoop", ctx.currentTime + .02, 0.55, 2.5, true); });
+      },
+      stop(dur = 1.2) { ambient = null; if (!ctx) return; const t = ctx.currentTime; live.forEach((v) => { fadeOut(v, t, dur); try { v.src.stop(t + dur + .05); } catch (e) { /* stopped */ } }); live = []; },
       toggle() { muted = !muted; try { localStorage.setItem("hor-muted", muted ? "1" : "0"); } catch (e) { /* private mode */ }
         if (ctx) { const t = ctx.currentTime; master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t); master.gain.linearRampToValueAtTime(muted ? 0 : VOL, t + .6); }
         return muted; },
@@ -810,7 +817,7 @@
     };
   })();
   { const sb = $("soundBtn"); const paint = () => { sb.classList.toggle("muted", sound.muted); sb.setAttribute("aria-label", sound.muted ? "Sound on" : "Sound off"); sb.setAttribute("aria-pressed", String(!sound.muted)); };
-    paint(); sb.addEventListener("click", (e) => { e.stopPropagation(); sound.toggle(); paint(); askMotion(); }); }
+    paint(); sb.addEventListener("click", (e) => { e.stopPropagation(); sound.toggle(); paint(); askMotion(); if (phase === "hero") sound.ambience(); }); }
   document.addEventListener("visibilitychange", () => (document.hidden ? sound.suspend() : sound.resume()));
 
   function warmUp() {
