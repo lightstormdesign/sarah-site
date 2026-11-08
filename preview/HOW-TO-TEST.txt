@@ -1,0 +1,23 @@
+HALL OF RECORDS · PRIVATE PREVIEW · HOW TO TEST
+
+On your computer
+  Mac:      double-click start-mac.command  (first time: right-click > Open, then Open)
+  Windows:  double-click start-windows.bat
+  Your browser opens the preview. Tap "Begin the journey".
+
+On your iPhone (the real test)
+  1. Phone and computer on the same Wi-Fi.
+  2. Start the preview on the computer (above). The window shows "On your phone: http://...:8000".
+  3. Type that address into Safari on the phone.
+  4. For full screen with no bars: Share > Add to Home Screen, then open it from the home screen icon.
+  5. Add ?auto to the address (e.g. http://192.168.1.20:8000/?auto) to start by itself for a recording.
+  "Replay" is in the footer of the landing page.
+
+Things to know
+  - It needs Python 3 (built into most Macs; if the Mac asks to install developer tools, say yes).
+  - If the phone can't connect, the computer's firewall may be blocking it: allow Python, or use the
+    no-install option below.
+  - No-install option: drag this whole folder onto app.netlify.com/drop to get a temporary link.
+    That link is public to anyone who has it, so delete the site when you're done testing.
+  - Double-clicking index.html also works on a computer, but the phone needs one of the options above.
+  - Low Power Mode on: the loops show as still images (that's expected, the journey still runs).

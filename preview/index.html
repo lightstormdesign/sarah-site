@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=4" media="(max-aspect-ratio: 9/10)">
-<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=4" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=5" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=5" media="(max-aspect-ratio: 9/10)">
 <!--
   The Hall of Records: private preview for Sarah Breskman Cosme. Built by LightStorm; not public.
 
@@ -245,13 +245,13 @@
 //  - every full-bleed layer shares one framing; the page never scrolls; media carry a cache-buster
 (() => {
   "use strict";
-  const MV = "?v=4";   // bump whenever a video or still is replaced, or phones keep the old file
+  const MV = "?v=5";   // bump whenever a video or still is replaced, or phones keep the old file
   const SETS = {
     mobile:  { w: 1080, h: 1920, still: "media/hall-hero-mobile.jpg", loop: "media/hall-hero-mobile.mp4",
-               her: "media/sarah-cutout-mobile.webp", cut: { x: 554, y: 1114, w: 444, h: 806 },
+               her: "media/sarah-cutout-mobile.webp", cut: { x: 362, y: 509, w: 718, h: 1411 },
                base: [474, 1430], fx: 0.52, fy: 0.5, video: "media/hall-transition-mobile.mp4" },
     desktop: { w: 1920, h: 1080, still: "media/hall-hero-desktop.jpg", loop: "",
-               her: "media/sarah-cutout-desktop.webp", cut: { x: 1089, y: 556, w: 289, h: 524 },
+               her: "media/sarah-cutout-desktop.webp", cut: { x: 1015, y: 163, w: 505, h: 917 },
                base: [720, 850], fx: 0.5, fy: 0.55, video: "" },   // desktop: staged until there's a 16:9 transition
   };
   const HALL = { w: 1080, h: 1920, still: "media/hall-landing-mobile.jpg", loop: "media/hall-landing-mobile.mp4", fx: 0.5, fy: 0.62 };
