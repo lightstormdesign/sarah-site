@@ -303,13 +303,13 @@
   /* offerings: the headline, bio and buttons dissolve; the title takes the headline's place */
   .offerings .intro { opacity: 0; filter: blur(8px); pointer-events: none; }
   .offerings .intro .ctas { pointer-events: none !important; }
-  .hallTitle { top: var(--it, 30%); opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
+  .hallTitle { top: calc(var(--it, 30%) - 16px); opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
   .offerings .hallTitle { opacity: 1; transition: none; }
   .hallTitle h2, .hallTitle .lede { opacity: 0; filter: blur(8px); transition: opacity 1.6s cubic-bezier(.22, 1, .36, 1), filter 1.6s cubic-bezier(.22, 1, .36, 1); }
   .offerings .hallTitle h2 { opacity: 1; filter: blur(0); transition-delay: .6s; }
   .offerings .hallTitle .lede { opacity: .82; filter: blur(0); transition-delay: 1.4s; }
   .hallTitle h2 span { display: block; }
-  .hallTitle h2 .big { font-size: 1.32em; letter-spacing: .26em; padding-left: .26em; line-height: 1.1; }
+  .hallTitle h2 .big { font-size: 1.18em; letter-spacing: .2324em; padding-left: .2324em; line-height: 1.1; }   /* exactly the width of "The Hall of" */
   .hallTitle h2 { margin: 0 0 10px; font: 500 min(6.8vw, 34px)/1.15 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase;
     background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .6)); }
   .hallTitle .lede { margin-top: 4px; font: 500 11px/1 "Cinzel", serif; letter-spacing: .38em; padding-left: .38em; text-transform: uppercase; color: #efe6d2;
