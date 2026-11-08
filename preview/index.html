@@ -761,11 +761,11 @@
   //   ~4.7 s  the Hall appears: the inspiring swell, louder, then it settles back into the drones
   const sound = (() => {
     const FILES = { transition: "transition", wind: "wind", windLoop: "wind-loop", rise: "rise" };
-    const VOL = 0.3;   // everything at 30%
+    const VOL = 0.255;   // everything at 30%, less 15%
     let ambient = null;   // the desert wind on the portal, looping, from her unmute until "Tap to Enter"
     let ctx = null, master = null, bufs = {}, live = [], muted = false, loading = null;
-    // muted until she chooses: the gold speaker is an unmute button (her choice is remembered)
-    muted = true; try { muted = localStorage.getItem("hor-muted") !== "0"; } catch (e) { /* private mode */ }
+    // every visit starts muted (the speaker shows its slash); the gold speaker is an unmute button
+    muted = true;
     function ensure() {
       if (ctx) return ctx;
       const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
@@ -796,7 +796,7 @@
         if (!ensure()) return; ctx.resume && ctx.resume();
         const go = () => {
           const t = ctx.currentTime + 0.02;
-          play("transition", t, 1, 0.5, false);
+          play("transition", t, 0.6, 0.5, false);   // the clip's own sound, 40% down
           if (ambient) { fadeOut(ambient, t + 1.2, 1.6); try { ambient.src.stop(t + 3); } catch (e) { /* stopped */ } ambient = null; }   // the portal's wind falls away with the drop
           else { const w = play("wind", t, 0.55, 0.4, false); fadeOut(w, t + 1.2, 1.6); }
           const r = play("rise", t + 4.6, 0.62, 2.5, false);
