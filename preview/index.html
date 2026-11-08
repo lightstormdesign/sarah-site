@@ -422,6 +422,20 @@
   .menuClose { position: absolute; top: calc(env(safe-area-inset-top) + 8px); right: 10px; width: 44px; height: 44px; background: none; border: 0;
     color: var(--gold-1); font: 300 34px/1 Georgia, serif; cursor: pointer; }
 
+  /* her mandala, faint in the top-right corner of the portal, as the Flower of Life on TREV's and Burnell's sites:
+     it fades in, breathes, turns very slowly on a computer, and is gone the moment the journey starts */
+  .mandala { position: absolute; left: 92%; top: 8%; width: 44vmax; aspect-ratio: 1; transform: translate(-50%, -50%); opacity: .4; pointer-events: none;
+    -webkit-mask-image: radial-gradient(circle, #000 0%, #000 45%, transparent 78%); mask-image: radial-gradient(circle, #000 0%, #000 45%, transparent 78%);
+    transition: opacity .6s ease; }
+  .mandala .in { width: 100%; height: 100%; animation: mandalaIn 3s ease-out 1.2s both; }
+  .mandala .breathe { width: 100%; height: 100%; animation: mandalaBreathe 7s ease-in-out infinite; }
+  .mandala .turn { display: block; width: 100%; height: 100%; }
+  @keyframes mandalaIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes mandalaBreathe { 0%, 100% { opacity: .6; } 50% { opacity: 1; } }
+  @keyframes mandalaSpin { to { transform: rotate(360deg); } }
+  @media (hover: hover) and (pointer: fine) { .mandala { top: 18%; } .mandala .turn { animation: mandalaSpin 520s linear infinite; } }
+  .leaving .mandala { opacity: 0; }
+
   /* first load: the page rises out of black (her name is already there beneath it) */
   .black { position: absolute; inset: 0; z-index: 30; background: #050408; pointer-events: none; transition: opacity 1.2s cubic-bezier(.4, 0, .2, 1); }
   .black.gone { opacity: 0; }
@@ -432,7 +446,7 @@
   @keyframes loaderGlow { 0%, 100% { opacity: .55; transform: scale(.97); } 50% { opacity: 1; transform: scale(1); } }
 
   @media (prefers-reduced-motion: reduce) {
-    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .tapHint svg { animation: none !important; }
+    .cam.drift, .mandala .in, .mandala .breathe, .mandala .turn, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .tapHint svg { animation: none !important; }
   }
 </style>
 </head>
@@ -493,6 +507,7 @@
   <div class="bloom" id="bloom"></div>
   <div class="doorLight" id="doorLight" aria-hidden="true"></div>
 
+  <div class="mandala" aria-hidden="true"><div class="in"><div class="breathe"><img class="turn" src="media/mandala.webp?v=22" alt=""></div></div></div>
   <header class="title" id="title">
     <p class="eyebrow silver">The Holistic Hypnotist</p>
     <h1><span class="first">Sarah Breskman</span><span class="last">Cosme</span></h1>
@@ -731,10 +746,10 @@
   // ---------- sound (Web Audio, so every layer can fade, iPhones included). It can only start inside the tap, so the
   // hero is silent; the files are fetched and decoded once the hero is up. The score, from the tap:
   //   0 s     the transition's own sound (faded in and out), with the desert wind, which falls away as the camera drops
-  //   ~2.2 s  underground: a very low drone and a higher, mystical drone rise slowly (both loop for as long as she stays)
+  //   ~2.2 s  underground: a very low drone rises slowly (it loops for as long as she stays)
   //   ~4.7 s  the Hall appears: the inspiring swell, louder, then it settles back into the drones
   const sound = (() => {
-    const FILES = { transition: "transition", wind: "wind", low: "drone-low", mystic: "drone-mystic", rise: "rise" };
+    const FILES = { transition: "transition", wind: "wind", low: "drone-low", rise: "rise" };
     let ctx = null, master = null, bufs = {}, live = [], muted = false, loading = null;
     try { muted = localStorage.getItem("hor-muted") === "1"; } catch (e) { /* private mode */ }
     function ensure() {
@@ -770,7 +785,6 @@
           play("transition", t, 1, 0.5, false);
           const w = play("wind", t, 0.55, 0.4, false); fadeOut(w, t + 1.2, 1.6);
           play("low", t + 2.2, 0.6, 3, true);
-          play("mystic", t + 2.4, 0.42, 3.5, true);
           const r = play("rise", t + 4.6, 0.62, 2.5, false);
         };
         (Object.keys(bufs).length ? Promise.resolve() : load()).then(go);
