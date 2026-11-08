@@ -110,23 +110,23 @@
 
   /* the doorways: each button is the arch itself, its words in the light */
   .door { position: absolute; background: none; border: 0; color: #3b2410; cursor: pointer; font: inherit; pointer-events: none;
-    border-radius: 999px 999px 0 0 / 46% 46% 0 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
-    padding: 0 16px 40px; text-align: center; opacity: 0; transform: translateY(24px);
+    border-radius: 999px 999px 0 0 / 46% 46% 0 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 70px 12px 0; text-align: center; opacity: 0; transform: translateY(24px);
     transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); }
   .door::before { content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: 0; transition: opacity .5s ease;
     background: radial-gradient(70% 60% at 50% 70%, rgba(255, 250, 235, .55), rgba(255, 220, 160, .18) 60%, transparent 100%); }
   .door:hover::before, .door.lit::before { opacity: 1; }
-  .plaque { position: relative; width: 100%; min-height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 26px 10px 24px; border-radius: 26px; text-align: center;
-    background: linear-gradient(180deg, rgba(20, 13, 7, .72), rgba(12, 8, 4, .82)); border: 2px solid rgba(232, 207, 154, .55);
-    box-shadow: 0 10px 34px rgba(0, 0, 0, .45), inset 0 0 26px rgba(232, 207, 154, .08); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-  .door b, .door small { position: relative; display: block; }
-  .door b { font: 600 38px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase;
-    background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .door small { margin-top: 12px; font-style: italic; font-weight: 500; font-size: 34px; line-height: 1.2; color: #efe6d2; }
-  .door i { position: relative; display: inline-block; margin-top: 20px; padding: 13px 26px 12px calc(26px + .3em); border: 2px solid rgba(232, 207, 154, .7);
-    border-radius: 999px; font: 600 22px/1 "Cinzel", serif; font-style: normal; letter-spacing: .3em; text-transform: uppercase; color: #f2dfae;
-    background: linear-gradient(180deg, rgba(232, 207, 154, .18), rgba(232, 207, 154, .05)); transition: background .3s ease, transform .3s ease; }
-  .door:hover i, .door:active i, .door.lit i { background: linear-gradient(180deg, rgba(232, 207, 154, .4), rgba(232, 207, 154, .14)); transform: scale(1.04); }
+  .door .shade { position: absolute; inset: 4%; border-radius: inherit; background: rgba(12, 8, 4, .6); filter: blur(14px); }
+  .door b, .door small { position: relative; display: block; text-shadow: 0 2px 14px rgba(0, 0, 0, .7); }
+  .door b { font: 600 40px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; color: #f2dca4; }
+  .door small { margin-top: 14px; font-style: italic; font-weight: 500; font-size: 36px; line-height: 1.2; color: #f1e9d8; }
+  .door i { position: absolute; left: 50%; top: calc(100% + 34px); transform: translateX(-50%); white-space: nowrap;
+    padding: 15px 26px 14px calc(30px + .3em); border: 2px solid rgba(232, 207, 154, .75); border-radius: 999px;
+    font: 600 24px/1 "Cinzel", serif; font-style: normal; letter-spacing: .3em; text-transform: uppercase; color: #f2dfae;
+    background: linear-gradient(180deg, rgba(20, 13, 7, .55), rgba(12, 8, 4, .7)); box-shadow: 0 6px 22px rgba(0, 0, 0, .4);
+    transition: background .3s ease, transform .3s ease; }
+  .door i::after { content: "\203A"; margin-left: .35em; letter-spacing: 0; font-size: 1.25em; line-height: 0; position: relative; top: .06em; }
+  .door:hover i, .door:active i, .door.lit i { background: linear-gradient(180deg, rgba(232, 207, 154, .3), rgba(232, 207, 154, .1)); transform: translateX(-50%) scale(1.04); }
   /* each doorway breathes a little light, one after another, so they read as places to step into */
   .hall.doors-on .door::before { animation: doorbreath 4.5s ease-in-out infinite; }
   .hall.doors-on .door:nth-of-type(2)::before { animation-delay: 1.5s; }
@@ -199,21 +199,20 @@
   .landing { position: absolute; inset: 0; pointer-events: none; text-align: center; }
   .landing > * { position: absolute; left: 0; right: 0; }
   /* a soft dark glow behind the centred group, so it reads clearly over the warm Hall */
-  .landing::before { content: ""; position: absolute; left: -10%; right: -10%; top: 12%; bottom: 18%; border-radius: 50%;
+  .landing::before { content: ""; position: absolute; left: -10%; right: -10%; top: 2%; bottom: 30%; border-radius: 50%;
     background: radial-gradient(closest-side, rgba(10, 7, 4, .55), rgba(10, 7, 4, .25) 60%, rgba(10, 7, 4, 0)); opacity: 0; transition: opacity 1.6s ease; }
   .landing.on::before { opacity: 1; }
   /* while her logo and bio are up, the Hall rests in shadow; it brightens when the doorways open */
   .hallDim { position: absolute; inset: 0; pointer-events: none; background: rgba(8, 5, 3, .5); opacity: 0; transition: opacity 1.8s ease .3s; }
   .landing.on ~ * .hallDim, .arrived:not(.offerings) .hallDim { opacity: 1; }
   .offerings .hallDim { opacity: 0; transition: opacity 1.6s ease; }
-  .offerings .landing::before { opacity: 0; transition: opacity 1s ease; }
+  .offerings .landing::before { opacity: .55; }
 
-  .sigil { left: 50%; right: auto; width: var(--lw, 220px); transform: translateX(-50%); top: var(--lt, 30%);
-    transition: top 1.5s cubic-bezier(.65, 0, .35, 1), width 1.5s cubic-bezier(.65, 0, .35, 1); }
+  .sigil { left: 50%; right: auto; width: var(--lw, 160px); transform: translateX(-50%); top: var(--lt, 10%); }
   .sigil .float { position: relative; animation: float 7s ease-in-out infinite; }
   .sigil img { position: relative; display: block; width: 100%; height: auto; filter: drop-shadow(0 0 12px rgba(255, 205, 120, .35));
-    clip-path: inset(0 100% 0 0); opacity: 0; transition: clip-path 2s cubic-bezier(.22, 1, .36, 1) .1s, opacity 1s ease .1s; }
-  .landing.on .sigil img { clip-path: inset(0 0 0 0); opacity: 1; }
+    clip-path: inset(-40% 100% -40% -40%); opacity: 0; transition: clip-path 2s cubic-bezier(.22, 1, .36, 1) .1s, opacity 1s ease .1s; }
+  .landing.on .sigil img { clip-path: inset(-40% -40% -40% -40%); opacity: 1; }
   .sigilGlow { position: absolute; left: -45%; right: -45%; top: -40%; bottom: -40%; border-radius: 50%; opacity: 0; transition: opacity 2s ease .8s;
     background: radial-gradient(closest-side, rgba(255, 214, 140, .42), rgba(255, 190, 110, .14) 55%, transparent); }
   .landing.on .sigilGlow { opacity: 1; animation: glowbreath 5.5s ease-in-out 2.8s infinite; }
@@ -245,14 +244,15 @@
   @media (max-width: 360px) { .cta { font-size: 10px; letter-spacing: .22em; padding: 14px 15px 13px calc(15px + .22em); } .bio { font-size: 16px; } .ctas { gap: 10px; } }
 
   /* offerings: the bio dissolves; the Hall's title and "Choose your doorway" appear under the logo */
+  /* offerings: the headline, bio and buttons dissolve; the title takes the headline's place */
   .offerings .intro { opacity: 0; filter: blur(8px); pointer-events: none; }
   .offerings .intro .ctas { pointer-events: none !important; }
-  .hallTitle { top: var(--ht, 20%); opacity: 0; transition: opacity 1.4s ease; }
+  .hallTitle { top: var(--it, 30%); opacity: 0; transition: opacity 1.4s ease; pointer-events: none; }
   .offerings .hallTitle { opacity: 1; transition: none; }
   .hallTitle h2, .hallTitle .lede { opacity: 0; filter: blur(8px); transition: opacity 1.6s cubic-bezier(.22, 1, .36, 1), filter 1.6s cubic-bezier(.22, 1, .36, 1); }
-  .offerings .hallTitle h2 { opacity: 1; filter: blur(0); transition-delay: .8s; }
-  .offerings .hallTitle .lede { opacity: .82; filter: blur(0); transition-delay: 1.7s; }
-  .hallTitle h2 { margin: 0 0 6px; font: 500 min(6.3vw, 46px)/1.1 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase;
+  .offerings .hallTitle h2 { opacity: 1; filter: blur(0); transition-delay: .6s; }
+  .offerings .hallTitle .lede { opacity: .82; filter: blur(0); transition-delay: 1.4s; }
+  .hallTitle h2 { margin: 0 0 10px; font: 500 min(6.8vw, 34px)/1.15 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase;
     background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .6)); }
   .hallTitle .lede { margin-top: 4px; font: 500 11px/1 "Cinzel", serif; letter-spacing: .38em; padding-left: .38em; text-transform: uppercase; color: #efe6d2;
     text-shadow: 0 1px 12px rgba(0, 0, 0, .9); }
@@ -357,13 +357,13 @@
       <video id="hallVid" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"></video>
       <div class="hallVeil low"></div>
       <button class="door" type="button" data-room="Sessions" style="left:52px;top:1032px;width:270px;height:438px">
-        <span class="plaque"><b>Sessions</b><small>QHHT &amp;<br>past lives</small><i>Enter</i></span>
+        <span class="shade" aria-hidden="true"></span><b>Sessions</b><small>QHHT &amp;<br>past lives</small><i>Enter</i>
       </button>
       <button class="door" type="button" data-room="Courses &amp; Books" style="left:388px;top:968px;width:302px;height:502px">
-        <span class="plaque"><b>Courses<br>&amp; Books</b><small>Atlantis, Avalon<br>&amp; the Sphinx</small><i>Enter</i></span>
+        <span class="shade" aria-hidden="true"></span><b>Courses<br>&amp; Books</b><small>Atlantis, Avalon<br>&amp; the Sphinx</small><i>Enter</i>
       </button>
       <button class="door" type="button" data-room="Events &amp; Trips" style="left:758px;top:1032px;width:268px;height:438px">
-        <span class="plaque"><b>Events<br>&amp; Trips</b><small>Live, Egypt<br>&amp; community</small><i>Enter</i></span>
+        <span class="shade" aria-hidden="true"></span><b>Events<br>&amp; Trips</b><small>Live, Egypt<br>&amp; community</small><i>Enter</i>
       </button>
     </div>
     <!-- the vignette, as on TREV's and Soleil's sites: the sides closing in, and the top -->
@@ -403,7 +403,7 @@
   </nav>
 
   <section class="landing" id="landing" aria-label="Sarah Breskman Cosme">
-    <div class="sigil" id="sigil" aria-hidden="true"><div class="float"><span class="sigilGlow"></span><img src="media/sarah-logo.webp?v=18" alt=""></div></div>
+    <div class="sigil" id="sigil" aria-hidden="true"><div class="float"><span class="sigilGlow"></span><img src="media/sarah-logo.webp?v=19" alt=""></div></div>
     <div class="intro" id="intro">
       <p class="tag">Master Hypnotist &amp; Best-Selling Author</p>
       <p class="bio">Level 3 QHHT practitioner, past-life regressionist and recipient of the 2023 Dolores Cannon Award, Sarah guides you inward, to who you really are and your true purpose.</p>
@@ -491,7 +491,7 @@
 //  - every full-bleed layer shares one framing; the page never scrolls; media carry a cache-buster
 (() => {
   "use strict";
-  const MV = "?v=18";   // bump whenever a video or still is replaced, or phones keep the old file
+  const MV = "?v=19";   // bump whenever a video or still is replaced, or phones keep the old file
   const SETS = {
     mobile:  { w: 1080, h: 1920, still: "media/hall-hero-mobile.jpg", loop: "media/hall-hero-mobile.mp4",
                her: "media/sarah-cutout-mobile.webp", cut: { x: 374, y: 872, w: 578, h: 1048 },
@@ -873,18 +873,14 @@
   addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && phase === "hero" && view.classList.contains("armed")) { view.classList.remove("armed"); go(); } });
   view.addEventListener("click", (e) => { if (phase === "hero" && view.classList.contains("armed") && !e.target.closest(".credit, .nav, .menu")) { view.classList.remove("armed"); go(); } });
   $("replay").addEventListener("click", replay);
+  // one fixed layout for both moments: the logo up top (it never moves), the words beneath it. On arrival the
+  // headline, bio and buttons; with the offerings, "The Hall of Records" and "Choose your doorway" in their place
   function layoutLanding() {
-    const W = view.clientWidth, H = view.clientHeight, top0 = 62, intro = $("intro"), ht = $("hallTitle");
-    const big = Math.min(W * (W / H < 0.9 ? 0.56 : 0.2), 240), small = Math.min(W * 0.26, 104), ratio = 574 / 640;
-    if (view.classList.contains("offerings")) {
-      landing.style.setProperty("--lw", small + "px"); landing.style.setProperty("--lt", top0 + "px");
-      landing.style.setProperty("--ht", (top0 + small * ratio + 14) + "px");
-    } else {
-      const gap = 24, total = big * ratio + gap + intro.offsetHeight;
-      const t = Math.max(top0, (H - total) / 2 - H * 0.02);
-      landing.style.setProperty("--lw", big + "px"); landing.style.setProperty("--lt", t + "px");
-      landing.style.setProperty("--it", (t + big * ratio + gap) + "px");
-    }
+    const W = view.clientWidth, H = view.clientHeight, phone = W / H < 0.9, ratio = 574 / 640;
+    const w = phone ? Math.min(W * 0.4, H * 0.19, 170) : Math.min(H * 0.2, 190);
+    const t = phone ? Math.max(58, H * 0.085) : H * 0.09, gap = Math.max(26, H * 0.038);
+    landing.style.setProperty("--lw", w.toFixed(1) + "px"); landing.style.setProperty("--lt", t.toFixed(1) + "px");
+    landing.style.setProperty("--it", (t + w * ratio + gap).toFixed(1) + "px");
   }
   addEventListener("resize", () => requestAnimationFrame(layoutLanding));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutLanding);
