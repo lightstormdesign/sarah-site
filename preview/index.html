@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=10" media="(max-aspect-ratio: 9/10)">
-<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=10" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=11" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=11" media="(max-aspect-ratio: 9/10)">
 <!--
   The Hall of Records: private preview for Sarah Breskman Cosme. Built by LightStorm; not public.
 
@@ -124,8 +124,8 @@
   .dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 
   /* ---------- the hero copy ---------- */
-  .title { position: absolute; left: 0; right: 0; top: calc(env(safe-area-inset-top) + 7svh); text-align: center; padding: 0 20px; pointer-events: none; }
-  .desk .title { left: 6vw; right: auto; top: 10vh; text-align: left; max-width: 36vw; padding: 0; }
+  .title { position: absolute; left: 0; right: 0; top: calc(env(safe-area-inset-top) + 10.5svh); text-align: center; padding: 0 20px; pointer-events: none; }
+  .desk .title { left: 6vw; right: auto; top: 13vh; text-align: left; max-width: 36vw; padding: 0; }
   .eyebrow { font-family: "Cinzel", serif; font-weight: 500; font-size: 11px; letter-spacing: .38em; text-transform: uppercase; color: var(--gold-1); opacity: .92; }
   .desk .eyebrow { font-size: 13px; }
   h1 { margin: 14px 0 12px; font-family: "Cinzel", serif; font-weight: 500; text-transform: uppercase; line-height: 1.04; letter-spacing: .06em;
@@ -136,16 +136,32 @@
   h1 .last { letter-spacing: .14em; padding-left: .14em; line-height: .95; }
   /* letter-spacing leaves a gap after the last letter: the same space on the left keeps each line truly centred */
   .title .eyebrow { padding-left: .38em; }
+  .silver { background-image: linear-gradient(100deg, #8d939b 0%, #b7bcc4 14%, #f3f5f8 26%, #c3c8cf 38%, #9ea4ac 50%,
+      #dfe3e8 62%, #ffffff 70%, #c8ccd2 80%, #8d939b 100%);
+    background-size: 260% 100%; background-position: 100% 50%; -webkit-background-clip: text; background-clip: text;
+    color: transparent; -webkit-text-fill-color: transparent; animation: glint 9s ease-in-out infinite alternate; }
+  @keyframes glint { from { background-position: 100% 50%; } to { background-position: 0% 50%; } }
+  .title .eyebrow.silver { filter: drop-shadow(0 1px 8px rgba(0, 0, 0, .55)); }
   .desk h1 { font-size: min(7vw, 120px); }
   .desk h1 span, .desk .title .eyebrow { padding-left: 0; }
-  .tap { margin-top: 4px; padding-left: .34em; font: 500 13px/1 "Cinzel", serif; letter-spacing: .34em; text-transform: uppercase; color: var(--gold-1);
-    text-shadow: 0 1px 12px rgba(0, 0, 0, .6); cursor: pointer; }
-  .desk .tap { padding-left: 0; font-size: 15px; }
-  .ready .title > .tap:not(.show) { opacity: 0; }
-  .ready .title > .tap.show { animation: tapglow 3.2s ease-in-out .8s infinite; }
-  @keyframes tapglow { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+  .enter { position: absolute; left: 50%; top: 40%; z-index: 4; display: grid; place-items: center; isolation: isolate;
+    transform: translate(-50%, -50%); background: none; border: 0; padding: 14px 10px; cursor: pointer;
+    opacity: 0; pointer-events: none; filter: blur(6px); -webkit-tap-highlight-color: transparent;
+    transition: opacity 1.6s cubic-bezier(.2, .7, .2, 1), filter 1.6s cubic-bezier(.2, .7, .2, 1); }
+  .enter > span { grid-area: 1 / 1; font: 600 clamp(18px, 4.9vw, 21.5px)/1 "Cinzel", serif; text-transform: uppercase;
+    white-space: nowrap; letter-spacing: .5em; margin-right: -.5em;
+    transition: letter-spacing 1.8s cubic-bezier(.2, .7, .2, 1), margin-right 1.8s cubic-bezier(.2, .7, .2, 1); }
+  .enter .halo { width: 190%; height: 640%; border-radius: 50%; z-index: -2; letter-spacing: 0; margin: 0;
+    background: radial-gradient(closest-side, rgba(8, 7, 14, .34), rgba(8, 7, 14, .15) 50%, rgba(8, 7, 14, 0)); }
+  .enter .glow { color: #eef3f8; filter: blur(10px); opacity: .4; z-index: -1; animation: breathe 5s ease-in-out infinite alternate; }
+  @keyframes breathe { from { opacity: .3; } to { opacity: .55; } }
+  .enter.show { opacity: 1; pointer-events: auto; filter: blur(0); }
+  .enter.show > span:not(.halo) { letter-spacing: .32em; margin-right: -.32em; }
+  .enter:hover .glow { opacity: .62; }
+  .enter:focus-visible { outline: 1px solid #dfe3e8; outline-offset: 6px; }
+  .desk .enter { transform: translate(0, -50%); justify-items: start; }
+  .leaving .enter { opacity: 0 !important; transition: opacity .5s ease; pointer-events: none; }
   .view.armed { cursor: pointer; }
-  .leaving .title > .tap.show { animation: none; opacity: 0; transition: opacity .35s ease; }
   .rule { display: block; width: 72px; height: 1px; margin: 16px auto 0; background: linear-gradient(90deg, transparent, var(--gold-2), transparent); }
   .desk .rule { margin-left: 0; background: linear-gradient(90deg, var(--gold-2), transparent); }
 
@@ -158,7 +174,7 @@
 
 
   /* ---------- the landing copy ---------- */
-  .landing { position: absolute; left: 0; right: 0; top: calc(env(safe-area-inset-top) + 6svh); text-align: center; padding: 0 16px; pointer-events: none; }
+  .landing { position: absolute; left: 0; right: 0; top: calc(env(safe-area-inset-top) + 9.5svh); text-align: center; padding: 0 16px; pointer-events: none; }
   .landing > * { opacity: 0; transform: translateY(12px); transition: opacity 1.4s var(--ease), transform 1.4s var(--ease); }
   .landing.on > * { opacity: 1; transform: none; }
   .landing.on > :nth-child(2) { transition-delay: .3s; }
@@ -175,8 +191,26 @@
     color: #f3ecdc; text-shadow: 0 1px 10px rgba(0, 0, 0, .9); opacity: 0; transition: opacity .5s ease; white-space: nowrap; pointer-events: none; }
   .note.on { opacity: .95; }
 
+  /* the header (TREV's menu button, in gold) */
+  .nav { position: absolute; left: 0; right: 0; top: calc(env(safe-area-inset-top) + 8px); z-index: 6; display: flex; justify-content: space-between;
+    padding: 0 10px; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; }
+  .ready .nav { opacity: 1; }
+  .leaving .nav { opacity: 0; transition: opacity .4s ease; }
+  .arrived .nav { opacity: 1; transition: opacity 1.2s ease .6s; }
+  .nav button { pointer-events: auto; width: 44px; height: 44px; display: grid; place-content: center; gap: 6px; background: none; border: 0; padding: 0; cursor: pointer;
+    filter: drop-shadow(0 1px 6px rgba(0, 0, 0, .5)); }
+  .leaving:not(.arrived) .nav button { pointer-events: none; }
+  .burger span { display: block; width: 24px; height: 1.5px; background: linear-gradient(90deg, #c09245, #f6e2aa 45%, #deb05a 70%, #c69a4a); }
+  .nav button:focus-visible, .menu a:focus-visible { outline: 1px solid var(--gold-1); outline-offset: 4px; }
+  .menu { position: fixed; inset: 0; z-index: 20; background: rgba(8, 7, 14, .94); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+  .menu[hidden] { display: none; }
+  .menu a { font: 500 18px/1 "Cinzel", serif; letter-spacing: .32em; padding-left: .32em; text-transform: uppercase; color: var(--gold-1); text-decoration: none; }
+  .menu a:hover { color: #fff3cf; }
+  .menuClose { position: absolute; top: calc(env(safe-area-inset-top) + 8px); right: 10px; width: 44px; height: 44px; background: none; border: 0;
+    color: var(--gold-1); font: 300 34px/1 Georgia, serif; cursor: pointer; }
+
   @media (prefers-reduced-motion: reduce) {
-    .cam.drift, .tap.show { animation: none; }
+    .cam.drift, .silver, .enter .glow { animation: none; }
   }
 </style>
 </head>
@@ -223,11 +257,28 @@
   <div class="bloom" id="bloom"></div>
 
   <header class="title" id="title">
-    <p class="eyebrow">The Holistic Hypnotist</p>
+    <p class="eyebrow silver">The Holistic Hypnotist</p>
     <h1><span class="first">Sarah Breskman</span><span class="last">Cosme</span></h1>
-    <p class="tap" id="begin">Tap to Enter</p>
-    <span class="rule"></span>
   </header>
+
+  <button class="enter" id="begin" type="button" aria-label="Tap to enter"><span class="halo" aria-hidden="true"></span><span class="glow" aria-hidden="true">Tap to Enter</span><span class="word silver" aria-hidden="true">Tap to Enter</span></button>
+
+  <!-- the header: home on the left, the menu on the right (gold) -->
+  <header class="nav" id="nav">
+    <button class="home" id="homeBtn" type="button" aria-label="Home">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><defs><linearGradient id="navgold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e2aa"/><stop offset=".5" stop-color="#d9b25f"/><stop offset="1" stop-color="#f3dc9c"/></linearGradient></defs>
+        <path d="M3.5 11.2 12 4l8.5 7.2M6 9.6V20h4.4v-5.6h3.2V20H18V9.6" fill="none" stroke="url(#navgold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="burger" id="menuBtn" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </header>
+  <nav class="menu" id="menu" hidden>
+    <button class="menuClose" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+    <a href="#" data-go="home">Home</a>
+    <a href="#" data-room="Sessions">Sessions</a>
+    <a href="#" data-room="Courses &amp; Books">Courses &amp; Books</a>
+    <a href="#" data-room="Events &amp; Trips">Events &amp; Trips</a>
+    <a href="#" data-room="About Sarah">About Sarah</a>
+  </nav>
 
   <section class="landing" id="landing" aria-label="The Hall of Records">
     <p class="eyebrow">Sarah Breskman Cosme</p>
@@ -255,13 +306,13 @@
 //  - every full-bleed layer shares one framing; the page never scrolls; media carry a cache-buster
 (() => {
   "use strict";
-  const MV = "?v=10";   // bump whenever a video or still is replaced, or phones keep the old file
+  const MV = "?v=11";   // bump whenever a video or still is replaced, or phones keep the old file
   const SETS = {
     mobile:  { w: 1080, h: 1920, still: "media/hall-hero-mobile.jpg", loop: "media/hall-hero-mobile.mp4",
-               her: "media/sarah-cutout-mobile.webp", cut: { x: 482, y: 872, w: 578, h: 1048 },
-               base: [474, 1430], fx: 0.52, fy: 0.5, video: "media/hall-transition-mobile.mp4" },
+               her: "media/sarah-cutout-mobile.webp", cut: { x: 374, y: 872, w: 578, h: 1048 },
+               base: [474, 1430], apex: [467, 744], fx: 0.52, fy: 0.5, video: "media/hall-transition-mobile.mp4" },
     desktop: { w: 1920, h: 1080, still: "media/hall-hero-desktop.jpg", loop: "",
-               her: "media/sarah-cutout-desktop.webp", cut: { x: 1065, y: 399, w: 375, h: 681 },
+               her: "media/sarah-cutout-desktop.webp", cut: { x: 873, y: 399, w: 375, h: 681 },
                base: [720, 850], fx: 0.5, fy: 0.55, video: "" },   // desktop: staged until there's a 16:9 transition
   };
   const HALL = { w: 1080, h: 1920, still: "media/hall-landing-mobile.jpg", loop: "media/hall-landing-mobile.mp4", fx: 0.5, fy: 0.62 };
@@ -414,7 +465,7 @@
         view.classList.add("ready");
         startHer();
         dust.start(view.clientWidth < 700 ? 30 : 46);
-        later(() => { begin.classList.add("show"); view.classList.add("armed"); }, REDUCED ? 300 : 2000);
+        later(() => { placeEnter(); begin.classList.add("show"); view.classList.add("armed"); }, REDUCED ? 300 : 2000);
         later(warmUp, 1200);
         if (Q.has("auto")) later(go, 3500);
       });
@@ -540,7 +591,7 @@
     hall.style.transition = fromVideo ? "opacity .25s linear" : "";
     showWhenPlaying(hallVid);
     hallVid.play().catch(() => {});
-    hall.classList.add("on"); dust.hall();
+    hall.classList.add("on"); dust.hall(); view.classList.add("arrived");
     later(() => {
       stage.style.visibility = "hidden"; dusk.style.opacity = "0"; slit.style.opacity = "0";
       if (fromVideo) { keep.hidden = true; tv.pause(); }
@@ -560,7 +611,7 @@
   function replay() {
     stopAll();
     phase = "hero";
-    view.classList.remove("leaving"); landing.classList.remove("on"); credit.classList.remove("on"); begin.classList.remove("show");
+    view.classList.remove("leaving", "arrived"); landing.classList.remove("on"); credit.classList.remove("on"); begin.classList.remove("show");
     hall.classList.remove("on", "doors-on"); hallVid.pause(); bloom.classList.remove("on"); bloom.style.transition = "";
     her.hidden = false; her.classList.remove("go");
     stage.style.visibility = ""; cam.style.transition = "none"; cam.style.transform = "";
@@ -572,12 +623,37 @@
     [plateStill, plateVid].forEach((e) => { e.style.transition = "none"; e.style.opacity = ""; });
     her.style.transform = ""; startHer();
     veils(true); dust.reset();
-    later(() => { begin.classList.add("show"); view.classList.add("armed"); }, 1600);
+    later(() => { placeEnter(); begin.classList.add("show"); view.classList.add("armed"); }, 1600);
   }
 
-  if (matchMedia("(hover: hover) and (pointer: fine)").matches) begin.textContent = "Click to Enter";
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    begin.querySelectorAll(".glow, .word").forEach((e) => { e.textContent = "Click to Enter"; }); begin.setAttribute("aria-label", "Click to enter"); }
+  // "Tap to Enter" sits halfway between the bottom of COSME and the pyramid's tip (on a phone); on a wide
+  // screen it sits under the name, aligned with it
+  const title = $("title");
+  function placeEnter() {
+    // measured from the layout (offsets ignore the title's rise-in transform), so it's right at any moment
+    const h1 = title.querySelector("h1"), bottom = title.offsetTop + h1.offsetTop + h1.offsetHeight, left = title.offsetLeft + h1.offsetLeft;
+    if (set === SETS.mobile) {
+      const tipY = fit.oy + set.apex[1] * fit.s, y = (bottom + tipY) / 2;
+      Object.assign(begin.style, { left: "50%", top: y.toFixed(1) + "px" });
+    } else Object.assign(begin.style, { left: (left - 10).toFixed(1) + "px", top: (bottom + 44).toFixed(1) + "px" });
+  }
+  addEventListener("resize", () => requestAnimationFrame(placeEnter));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => placeEnter());
+  // the header: home goes back to the start; the menu lists the doorways (they open in the full build)
+  const menu = $("menu");
+  $("menuBtn").addEventListener("click", (e) => { e.stopPropagation(); menu.hidden = false; });
+  $("menuClose").addEventListener("click", (e) => { e.stopPropagation(); menu.hidden = true; });
+  $("homeBtn").addEventListener("click", (e) => { e.stopPropagation(); if (phase === "landing") replay(); });
+  menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", (e) => {
+    e.preventDefault(); e.stopPropagation(); menu.hidden = true;
+    if (a.dataset.go === "home") { if (phase === "landing") replay(); return; }
+    note.textContent = `${a.dataset.room}: opens in the full build`;
+    note.classList.add("on"); clearTimeout(note._t); note._t = setTimeout(() => note.classList.remove("on"), 2600);
+  }));
   addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && phase === "hero" && view.classList.contains("armed")) { view.classList.remove("armed"); go(); } });
-  view.addEventListener("click", (e) => { if (phase === "hero" && view.classList.contains("armed") && !e.target.closest(".credit")) { view.classList.remove("armed"); go(); } });
+  view.addEventListener("click", (e) => { if (phase === "hero" && view.classList.contains("armed") && !e.target.closest(".credit, .nav, .menu")) { view.classList.remove("armed"); go(); } });
   $("replay").addEventListener("click", replay);
   addEventListener("resize", () => choose());
   choose();
