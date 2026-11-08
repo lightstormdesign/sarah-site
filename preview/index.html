@@ -70,8 +70,9 @@
   .bloom.on { opacity: 1; }
 
   /* the transition: a fixed 1080x1920 box placed in code, so it can glide from the hero's crop to the Hall's (TREV's) */
-  .tv { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 0 0; pointer-events: none; background: #0b0a1a;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%); }
+  .tv { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 0 0; pointer-events: none; background: #0b0a1a; }
+  /* on a tall phone the Hall melts into its own light above and below; the video's last frame does exactly the same */
+  .tv.banded { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%); }
   /* behind it, the Hall's own soft light, for the screen above and below it on a tall phone */
   .tvBack { position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover;
     filter: blur(28px) brightness(.45); opacity: 0; pointer-events: none; }
@@ -102,41 +103,42 @@
   .hallVeil { position: absolute; left: 0; right: 0; top: 0; height: 30%; pointer-events: none;
     background: linear-gradient(180deg, rgba(4, 8, 24, .82) 0%, rgba(4, 8, 24, .5) 45%, rgba(4, 8, 24, 0) 100%); }
   .hallVig, .hallVig > div { position: absolute; left: 0; right: 0; top: 0; pointer-events: none; }
+  /* the Hall's own shading (vignette, floor veil) eases in after the cut, never with it */
+  .hallVig, .hallVeil.low { opacity: 0; transition: opacity 3.2s cubic-bezier(.4, 0, .2, 1) .4s; }
+  .hall.settled .hallVig, .hall.settled .hallVeil.low { opacity: 1; }
   .hallVig { bottom: 0; }
   .hallVig .top { height: 46svh; background: linear-gradient(to bottom, rgba(6,5,16,.49) 0%, rgba(6,5,16,.28) 42%, transparent 100%); }
   .hallVig .sides { height: 100svh; background: radial-gradient(ellipse 85% 75% at 50% 48%, transparent 52%, rgba(6,5,16,.45) 100%); }
-  .arrived .veil.vig { opacity: 0; }
-  .hallVeil.low { top: auto; bottom: 0; height: 14%; background: linear-gradient(0deg, rgba(4, 8, 24, .7), rgba(4, 8, 24, 0)); }
+  .arrived .veil.vig { opacity: 0; transition: opacity 3s ease; }
+  .hallVeil.low { top: auto; bottom: 0; height: 14%; background: linear-gradient(0deg, rgba(8, 5, 3, .7), rgba(8, 5, 3, 0)); }
 
   /* the doorways: each button is the arch itself, its words in the light */
   .door { position: absolute; background: none; border: 0; color: #3b2410; cursor: pointer; font: inherit; pointer-events: none;
     border-radius: 999px 999px 0 0 / 46% 46% 0 0; display: flex; flex-direction: column; justify-content: center; align-items: center;
-    padding: 70px 12px 0; text-align: center; opacity: 0; transform: translateY(24px);
-    transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); }
+    padding: 40px 12px 0; text-align: center; }
   .door::before { content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: 0; transition: opacity .5s ease;
     background: radial-gradient(70% 60% at 50% 70%, rgba(255, 250, 235, .55), rgba(255, 220, 160, .18) 60%, transparent 100%); }
   .door:hover::before, .door.lit::before { opacity: 1; }
-  .door .shade { position: absolute; inset: 4%; border-radius: inherit; background: rgba(12, 8, 4, .6); filter: blur(14px); }
+  .door .shade { position: absolute; left: -4%; right: -4%; top: 4%; bottom: -6%; pointer-events: none; opacity: 0; filter: blur(18px);
+    background: radial-gradient(ellipse 58% 56% at 50% 56%, rgba(12, 8, 4, .62), rgba(12, 8, 4, .44) 52%, rgba(12, 8, 4, .16) 78%, rgba(12, 8, 4, 0) 100%);
+    transition: opacity 2.8s cubic-bezier(.4, 0, .2, 1); }
+  .hall.doors-on .door .shade { opacity: 1; }
+  .door b, .door small, .door i { opacity: 0; filter: blur(8px); transition: opacity 1.8s cubic-bezier(.22, 1, .36, 1), filter 1.8s cubic-bezier(.22, 1, .36, 1), background .3s ease, transform .3s ease; }
+  .hall.doors-on .door b, .hall.doors-on .door small { opacity: 1; filter: blur(0); transition-delay: 1s; }
+  .hall.doors-on .door i { opacity: 1; filter: blur(0); transition-delay: 1.6s, 1.6s, 0s, 0s; }
   .door b, .door small { position: relative; display: block; text-shadow: 0 2px 14px rgba(0, 0, 0, .7); }
   .door b { font: 600 40px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; color: #f2dca4; }
   .door small { margin-top: 14px; font-style: italic; font-weight: 500; font-size: 36px; line-height: 1.2; color: #f1e9d8; }
-  .door i { position: absolute; left: 50%; top: calc(100% + 34px); transform: translateX(-50%); white-space: nowrap;
-    padding: 15px 26px 14px calc(30px + .3em); border: 2px solid rgba(232, 207, 154, .75); border-radius: 999px;
+  .door i { position: absolute; left: 50%; top: 100%; transform: translate(-50%, -50%); white-space: nowrap;
+    padding: 14px 24px 13px calc(28px + .3em); border: 2px solid rgba(232, 207, 154, .75); border-radius: 999px;
     font: 600 24px/1 "Cinzel", serif; font-style: normal; letter-spacing: .3em; text-transform: uppercase; color: #f2dfae;
-    background: linear-gradient(180deg, rgba(20, 13, 7, .55), rgba(12, 8, 4, .7)); box-shadow: 0 6px 22px rgba(0, 0, 0, .4);
-    transition: background .3s ease, transform .3s ease; }
+    background: linear-gradient(180deg, rgba(20, 13, 7, .55), rgba(12, 8, 4, .7)); box-shadow: 0 6px 22px rgba(0, 0, 0, .4); }
   .door i::after { content: "\203A"; margin-left: .35em; letter-spacing: 0; font-size: 1.25em; line-height: 0; position: relative; top: .06em; }
-  .door:hover i, .door:active i, .door.lit i { background: linear-gradient(180deg, rgba(232, 207, 154, .3), rgba(232, 207, 154, .1)); transform: translateX(-50%) scale(1.04); }
-  /* each doorway breathes a little light, one after another, so they read as places to step into */
-  .hall.doors-on .door::before { animation: doorbreath 4.5s ease-in-out infinite; }
-  .hall.doors-on .door:nth-of-type(2)::before { animation-delay: 1.5s; }
-  .hall.doors-on .door:nth-of-type(3)::before { animation-delay: 3s; }
-  @keyframes doorbreath { 0%, 100% { opacity: .1; } 50% { opacity: .55; } }
+  .door:hover i, .door:active i, .door.lit i { background: linear-gradient(180deg, rgba(232, 207, 154, .3), rgba(232, 207, 154, .1)); transform: translate(-50%, -50%) scale(1.04); }
   .door:focus-visible { outline: 3px solid var(--gold-1); outline-offset: 6px; }
-  .hall.doors-on .door { opacity: 1; transform: none; pointer-events: auto; }
-  .hall.doors-on .door:nth-of-type(1) { transition-delay: .5s; }
-  .hall.doors-on .door:nth-of-type(2) { transition-delay: .25s; }
-  .hall.doors-on .door:nth-of-type(3) { transition-delay: .75s; }
+  .hall.doors-on .door { pointer-events: auto; }
+  /* the shadows gather one doorway after another: the centre first, then its neighbours */
+  .hall.doors-on .door:nth-of-type(1) .shade, .hall.doors-on .door:nth-of-type(3) .shade { transition-delay: .35s; }
 
   .dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 
@@ -200,12 +202,12 @@
   .landing > * { position: absolute; left: 0; right: 0; }
   /* a soft dark glow behind the centred group, so it reads clearly over the warm Hall */
   .landing::before { content: ""; position: absolute; left: -10%; right: -10%; top: 2%; bottom: 30%; border-radius: 50%;
-    background: radial-gradient(closest-side, rgba(10, 7, 4, .55), rgba(10, 7, 4, .25) 60%, rgba(10, 7, 4, 0)); opacity: 0; transition: opacity 1.6s ease; }
+    background: radial-gradient(closest-side, rgba(10, 7, 4, .55), rgba(10, 7, 4, .25) 60%, rgba(10, 7, 4, 0)); opacity: 0; transition: opacity 3.4s cubic-bezier(.4, 0, .2, 1) .3s; }
   .landing.on::before { opacity: 1; }
   /* while her logo and bio are up, the Hall rests in shadow; it brightens when the doorways open */
-  .hallDim { position: absolute; inset: 0; pointer-events: none; background: rgba(8, 5, 3, .5); opacity: 0; transition: opacity 1.8s ease .3s; }
-  .landing.on ~ * .hallDim, .arrived:not(.offerings) .hallDim { opacity: 1; }
-  .offerings .hallDim { opacity: 0; transition: opacity 1.6s ease; }
+  .hallDim { position: absolute; inset: 0; pointer-events: none; background: rgba(8, 5, 3, .5); opacity: 0; transition: opacity 3.6s cubic-bezier(.4, 0, .2, 1) .6s; }
+  .hall.settled .hallDim { opacity: 1; }
+  .offerings .hall.settled .hallDim { opacity: 0; transition: opacity 2.4s cubic-bezier(.4, 0, .2, 1); }
   .offerings .landing::before { opacity: .55; }
 
   .sigil { left: 50%; right: auto; width: var(--lw, 160px); transform: translateX(-50%); top: var(--lt, 10%); }
@@ -501,7 +503,7 @@
                base: [720, 850], fx: 0.5, fy: 0.55, video: "" },   // desktop: staged until there's a 16:9 transition
   };
   const HALL = { w: 1080, h: 1920, still: "media/hall-landing-mobile.jpg", loop: "media/hall-landing-mobile.mp4", fx: 0.5, fy: 0.62 };
-  const CROSSFADE_S = 0.25;       // transition -> Hall loop: all but a cut (its last frame is the loop's first)
+  const CROSSFADE_S = 0.6;       // transition -> Hall loop: all but a cut (its last frame is the loop's first)
   const ENTER_WAIT_MS = 4000;     // a tap waits this long for the transition to draw, then stages it instead
   const START_FALLBACK_MS = 12000, PLAY_FALLBACK_MS = 4000;   // + the video's own length
 
@@ -569,7 +571,7 @@
       const c = cover(W, H, HALL.w, HALL.h, HALL.fx, HALL.fy), sFit = W / 990;
       if (sFit < c.s) { banded = true; hf = { s: sFit, ox: (W - HALL.w * sFit) / 2, oy: (H - HALL.h * sFit) / 2 }; } else hf = c;
     } else { const s = H / HALL.h; hf = { s, ox: (W - HALL.w * s) / 2, oy: 0 }; }
-    hall.classList.toggle("banded", banded);
+    hall.classList.toggle("banded", banded); tv.classList.toggle("banded", banded);
     hallStage.style.transform = `translate(${hf.ox.toFixed(1)}px, ${hf.oy.toFixed(1)}px) scale(${hf.s.toFixed(5)})`;
     if (!hallStill.getAttribute("src")) { hallStill.src = HALL.still + MV; hallSide.src = HALL.still + MV; $("tvBack").src = HALL.still + MV; }
     // the transition starts on the hero's crop and ends on the Hall's
@@ -593,7 +595,7 @@
   // ---------- gold dust: ambient motes, and Sarah dissolving into light ----------
   const dust = (() => {
     const cv = $("dust"), ctx = cv.getContext("2d");
-    let dpr = 1, W = 0, H = 0, motes = [], burst = [], raf = 0, last = 0, tint = "gold";
+    let dpr = 1, W = 0, H = 0, motes = [], burst = [], raf = 0, last = 0, tint = "gold", fadeFrom = 0;
     const sprite = (r, g, b) => {
       const c = document.createElement("canvas"); c.width = c.height = 32;
       const x = c.getContext("2d"), gr = x.createRadialGradient(16, 16, 0, 16, 16, 16);
@@ -635,7 +637,8 @@
       for (const m of motes) {
         m.p += dt; m.x += (m.vx + Math.sin(m.p * .7) * 4) * dt; m.y += m.vy * dt;
         if (m.y < -10) { m.y = H + 10; m.x = Math.random() * W; }
-        const s = m.r * 6; ctx.globalAlpha = m.a * (.6 + .4 * Math.sin(m.p * 1.3)); ctx.drawImage(spr, m.x - s / 2, m.y - s / 2, s, s);
+        const fi = fadeFrom ? Math.min(1, Math.max(0, (now - fadeFrom - 600) / 3000)) : 1;
+        const s = m.r * 6; ctx.globalAlpha = m.a * fi * (.6 + .4 * Math.sin(m.p * 1.3)); ctx.drawImage(spr, m.x - s / 2, m.y - s / 2, s, s);
       }
       // never over her portrait: erase the motes wherever she is (her own photo is the stencil)
       if (phase === "hero" && !her.hidden && her.complete && her.naturalWidth) {
@@ -658,7 +661,7 @@
     return {
       resize, release,
       start(n) { resize(); seedMotes(n); if (!raf) raf = requestAnimationFrame(frame); },
-      hall() { tint = "blue"; seedMotes(W < 700 ? 40 : 70); },
+      hall() { tint = "blue"; seedMotes(W < 700 ? 40 : 70); fadeFrom = performance.now(); },
       quiet() { motes = []; },
       reset() { tint = "gold"; burst = []; seedMotes(W < 700 ? 30 : 46); },
     };
@@ -746,7 +749,7 @@
     stage.style.visibility = "hidden"; veils(false); dust.quiet();
     // over its last 1.3 s it glides from the hero's crop to the Hall's (one smooth ease), so the hand-off is exact
     const glide = () => { if (phase !== "video" && phase !== "landing") return;
-      const d = tv.duration || 6, u = Math.min(1, Math.max(0, (tv.currentTime - (d - 1.3)) / 1.05));
+      const d = tv.duration || 6, u = Math.min(1, Math.max(0, (tv.currentTime - (d - 1.4)) / 1.35));
       placeTv(u * u * (3 - 2 * u)); if (u < 1) tvRaf = requestAnimationFrame(glide); };
     cancelAnimationFrame(tvRaf); tvRaf = requestAnimationFrame(glide);
     const dur = tv.duration || 9;
@@ -768,7 +771,6 @@
         if (frozen >= 1500) arrive(true);
       }
       lastT = t; lastFrames = frames;
-      if (dur && t >= dur - CROSSFADE_S) arrive(true);
     }, 250);
     tv.onended = () => arrive(true);
     later(() => arrive(true), dur * 1000 + PLAY_FALLBACK_MS);
@@ -801,15 +803,16 @@
     if (phase === "landing") return;
     phase = "landing";
     try { hallVid.currentTime = 0; } catch (e) { /* not loaded yet: the still shows */ }
-    hall.style.transition = fromVideo ? "opacity .25s linear" : "";
+    hall.style.transition = fromVideo ? "opacity .6s ease" : "";   // over the held last frame (the same picture)
     showWhenPlaying(hallVid);
     hallVid.play().catch(() => {});
     hall.classList.add("on"); dust.hall(); view.classList.add("arrived");
+    later(() => hall.classList.add("settled"), 700);
     later(() => {
       stage.style.visibility = "hidden"; dusk.style.opacity = "0"; slit.style.opacity = "0";
       if (fromVideo) { keep.hidden = true; tv.pause(); }
     }, CROSSFADE_S * 1000 + 200);
-    later(() => { landing.classList.add("on"); credit.classList.add("on"); }, fromVideo ? 500 : 700);
+    later(() => { landing.classList.add("on"); credit.classList.add("on"); }, fromVideo ? 1400 : 900);
   }
 
   function veils(on) { ["vTop", "vBottom"].forEach((id) => $(id).classList.toggle("gone", !on)); $("vVig").classList.toggle("soft", !on); }
@@ -825,7 +828,7 @@
     stopAll();
     phase = "hero";
     view.classList.remove("leaving", "arrived"); landing.classList.remove("on"); credit.classList.remove("on"); begin.classList.remove("show");
-    hall.classList.remove("on", "doors-on"); view.classList.remove("offerings"); layoutLanding(); hallVid.pause(); bloom.classList.remove("on"); bloom.style.transition = "";
+    hall.classList.remove("on", "doors-on", "settled"); view.classList.remove("offerings"); layoutLanding(); hallVid.pause(); bloom.classList.remove("on"); bloom.style.transition = "";
     her.hidden = false; her.classList.remove("go");
     stage.style.visibility = ""; cam.style.transition = "none"; cam.style.transform = "";
     cam.style.transformOrigin = `${set.base[0]}px ${set.base[1]}px`;
