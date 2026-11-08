@@ -125,7 +125,7 @@
     padding: 40px 12px 0; text-align: center; }
   .door b, .door small { opacity: 0; filter: blur(8px); transition: opacity 1.8s cubic-bezier(.22, 1, .36, 1), filter 1.8s cubic-bezier(.22, 1, .36, 1), background .3s ease, transform .3s ease; }
   .hall.doors-on .door b, .hall.doors-on .door small { opacity: 1; filter: blur(0); transition-delay: 1s; }
-  .door b, .door small { position: relative; display: block; text-shadow: 0 0 2px rgba(20, 12, 4, .55), 0 0 16px rgba(20, 12, 4, .75), 0 0 34px rgba(20, 12, 4, .45); }
+  .door b, .door small { position: relative; display: block; text-shadow: 0 2px 4px rgba(10, 6, 2, .7), 0 0 2px rgba(20, 12, 4, .55), 0 0 16px rgba(20, 12, 4, .75), 0 0 34px rgba(20, 12, 4, .45); }
   .door b { font: 600 41px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; color: #fff4d8; }
   .door small { margin-top: 14px; font-style: italic; font-weight: 500; font-size: 37px; line-height: 1.2; color: #fffaf0; }
   .door:focus-visible { outline: none; }
@@ -238,20 +238,15 @@
   .sigil .float { position: relative; animation: float 7s ease-in-out infinite; }
   .sigil img { position: relative; display: block; width: 100%; height: auto; opacity: 0; transform: scale(.9);
     filter: blur(14px) brightness(2.4) drop-shadow(0 0 12px rgba(255, 205, 120, .35)); }
-  .landing.on .sigil img { animation: materialise 3.2s cubic-bezier(.22, 1, .36, 1) forwards; }
+  .landing.on .sigil img { animation: materialise 5.5s cubic-bezier(.25, .8, .3, 1) forwards; }
   @keyframes materialise {
     0% { opacity: 0; transform: scale(.9); filter: blur(14px) brightness(2.4) drop-shadow(0 0 12px rgba(255, 205, 120, .35)); }
     35% { opacity: 1; filter: blur(4px) brightness(1.7) drop-shadow(0 0 22px rgba(255, 220, 150, .8)); }
     100% { opacity: 1; transform: scale(1); filter: blur(0) brightness(1) drop-shadow(0 0 12px rgba(255, 205, 120, .35)); } }
   .sigilGlow { position: absolute; left: -45%; right: -45%; top: -40%; bottom: -40%; border-radius: 50%; opacity: 0; transform: scale(.4);
     background: radial-gradient(closest-side, rgba(255, 214, 140, .42), rgba(255, 190, 110, .14) 55%, transparent); }
-  .landing.on .sigilGlow { animation: halo-in 3.4s cubic-bezier(.22, 1, .36, 1) forwards, glowbreath 5.5s ease-in-out 3.4s infinite; }
+  .landing.on .sigilGlow { animation: halo-in 5.5s cubic-bezier(.25, .8, .3, 1) forwards, glowbreath 5.5s ease-in-out 5.5s infinite; }
   @keyframes halo-in { 0% { opacity: 0; transform: scale(.4); } 30% { opacity: 1; transform: scale(1.2); } 100% { opacity: .8; transform: scale(1); } }
-  .sigilRing { position: absolute; left: 50%; top: 52%; width: 70%; aspect-ratio: 1; margin-left: -35%; border-radius: 50%; opacity: 0; pointer-events: none;
-    border: 1px solid rgba(255, 226, 170, .8); box-shadow: 0 0 18px rgba(255, 214, 140, .6), inset 0 0 18px rgba(255, 214, 140, .4); transform: translateY(-50%) scale(.3); }
-  .landing.on .sigilRing { animation: ring 2.8s cubic-bezier(.22, 1, .36, 1) .35s; }
-  .landing.on .sigilRing.r2 { animation-duration: 3.6s; }
-  @keyframes ring { 0% { opacity: 0; transform: translateY(-50%) scale(.3); } 20% { opacity: .9; } 100% { opacity: 0; transform: translateY(-50%) scale(2.1); } }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
   @keyframes glowbreath { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
 
@@ -385,7 +380,7 @@
     color: var(--gold-1); font: 300 34px/1 Georgia, serif; cursor: pointer; }
 
   @media (prefers-reduced-motion: reduce) {
-    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .sigilRing, .tapHint svg { animation: none !important; }
+    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .tapHint svg { animation: none !important; }
   }
 </style>
 </head>
@@ -468,7 +463,7 @@
   <section class="landing" id="landing" aria-label="Sarah Breskman Cosme">
     <div class="ldim" aria-hidden="true"></div>
     <div class="hallVig" aria-hidden="true"><div class="sides"></div><div class="top"></div></div>
-    <div class="sigil" id="sigil" aria-hidden="true"><div class="float"><span class="sigilGlow"></span><span class="sigilRing"></span><span class="sigilRing r2"></span><img src="media/sarah-logo.webp?v=19" alt=""></div></div>
+    <div class="sigil" id="sigil" aria-hidden="true"><div class="float"><span class="sigilGlow"></span><img src="media/sarah-logo.webp?v=19" alt=""></div></div>
     <div class="intro" id="intro">
       <p class="tag">Master Hypnotist &amp;<br>Best-Selling Author</p>
       <p class="bio">Level 3 QHHT practitioner, past-life regressionist and recipient of the 2023 Dolores Cannon Award, Sarah guides you inward, to who you really are and your true purpose.</p>
