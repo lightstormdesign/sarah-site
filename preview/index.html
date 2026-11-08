@@ -118,21 +118,6 @@
     background: linear-gradient(180deg, rgba(4, 8, 24, .82) 0%, rgba(4, 8, 24, .5) 45%, rgba(4, 8, 24, 0) 100%); }
   .hallVig, .hallVig > div { position: absolute; left: 0; right: 0; top: 0; pointer-events: none; }
   /* the Hall's own shading (vignette, floor veil) eases in after the cut, never with it */
-  /* the card's corners: drawn in from each corner like gold ink with the logo, then they breathe */
-  .landing > .cc { position: absolute; right: auto; width: var(--cw, 170px); height: auto; opacity: 0; pointer-events: none;
-    -webkit-mask-image: radial-gradient(circle at 0 0, #000 0, #000 45%, transparent 70%); mask-image: radial-gradient(circle at 0 0, #000 0, #000 45%, transparent 70%);
-    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: 0 0; mask-position: 0 0; -webkit-mask-size: 0% 0%; mask-size: 0% 0%;
-    filter: drop-shadow(0 0 6px rgba(255, 205, 120, .35));
-    transition: opacity 1.4s ease, -webkit-mask-size 4.5s cubic-bezier(.33, 0, .2, 1), mask-size 4.5s cubic-bezier(.33, 0, .2, 1); }
-  .landing > .cc.tl { left: 14px; top: var(--ct1, 80px); }
-  .landing > .cc.tr { left: auto; right: 14px; top: var(--ct1, 80px); transform: scaleX(-1); }
-  .landing > .cc.bl { left: 14px; top: var(--cb1, 600px); transform: scaleY(-1); }
-  .landing > .cc.br { left: auto; right: 14px; top: var(--cb1, 600px); transform: scale(-1, -1); }
-  .landing.on > .cc { opacity: .9; -webkit-mask-size: 300% 300%; mask-size: 300% 300%; animation: cardBreath 7s ease-in-out 5s infinite; }
-  @keyframes cardBreath { 0%, 100% { opacity: .9; } 50% { opacity: .6; } }
-  /* with the doorways open, the card's lower corners give way to them; its upper corners keep framing the logo and title */
-  .offerings .landing > .cc.bl, .offerings .landing > .cc.br { opacity: 0; animation: none; transition: opacity 1s ease; }
-  .storyOpen .landing > .cc { opacity: .3; animation: none; }
   .landing .hallVig { position: absolute; inset: 0 !important; opacity: 0; transition: opacity 2.6s cubic-bezier(.4, 0, .2, 1); }
   .landing.on .hallVig { opacity: 1; }
   /* with the doorways open the side shading lifts, so no doorway sits in shadow */
@@ -311,7 +296,6 @@
     text-shadow: 0 1px 10px rgba(0, 0, 0, .8); }
   .pr2 { display: block; margin-top: 5px; font-size: 15px; color: rgba(239, 217, 166, .85); text-shadow: 0 1px 10px rgba(0, 0, 0, .8); }
   .proof:hover .pr1 { color: #fff3cf; }
-  @media (max-width: 400px) { .pr1 { letter-spacing: .16em; padding-left: .16em; font-size: 10px; } }
   /* short screens (an iPhone SE): the proof line keeps its stars and rating, and the preview credit waits for the doorways */
   @media (max-height: 640px) and (max-aspect-ratio: 9/10) { .pr2 { display: none; } .proof { margin-top: 16px; padding-top: 12px; }
   }
@@ -448,7 +432,7 @@
   @keyframes loaderGlow { 0%, 100% { opacity: .55; transform: scale(.97); } 50% { opacity: 1; transform: scale(1); } }
 
   @media (prefers-reduced-motion: reduce) {
-    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .landing > .cc, .tapHint svg { animation: none !important; }
+    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .tapHint svg { animation: none !important; }
   }
 </style>
 </head>
@@ -537,9 +521,6 @@
   <section class="landing" id="landing" aria-label="Sarah Breskman Cosme">
     <div class="ldim" aria-hidden="true"></div>
     <div class="hallVig" aria-hidden="true"><div class="sides"></div><div class="top"></div></div>
-    <!-- the card: her ornament frames the logo above, and closes below the stars -->
-    <img class="cc tl" src="media/corner.webp?v=21" alt="" aria-hidden="true"><img class="cc tr" src="media/corner.webp?v=21" alt="" aria-hidden="true">
-    <img class="cc bl" src="media/corner-base.webp?v=21" alt="" aria-hidden="true"><img class="cc br" src="media/corner-base.webp?v=21" alt="" aria-hidden="true">
     <div class="sigil" id="sigil" aria-hidden="true"><div class="float"><span class="sigilGlow"></span><img src="media/sarah-logo.webp?v=19" alt=""></div></div>
     <div class="intro" id="intro">
       <p class="tag">Master Hypnotist &amp;<br>Best-Selling Author</p>
@@ -1154,14 +1135,7 @@
     landing.style.setProperty("--it", it.toFixed(1) + "px");
     // the buttons straddle the threshold, but never ride up into the words above them
     const introBottom = it + $("intro").offsetHeight + 18;
-    const ctTop = it + $("intro").offsetHeight + 22;
-    landing.style.setProperty("--ct", ctTop.toFixed(1) + "px");
-    // the card: its top rail just above the logo, its bottom rail just below the stars
-    const cw = Math.min(W * (phone ? .44 : .2), 300), chh = cw * 737 / 720, rail = 51 / 737;
-    const topRail = Math.max(78, t - 18), bottomRail = ctTop + act.offsetHeight + 16;
-    landing.style.setProperty("--cw", cw.toFixed(1) + "px");
-    landing.style.setProperty("--ct1", (topRail - chh * rail).toFixed(1) + "px");
-    landing.style.setProperty("--cb1", (bottomRail - chh * (1 - rail)).toFixed(1) + "px");
+    landing.style.setProperty("--ct", (it + $("intro").offsetHeight + 22).toFixed(1) + "px");
   }
 
   addEventListener("resize", () => requestAnimationFrame(layoutLanding));
