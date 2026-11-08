@@ -108,9 +108,11 @@
     background: linear-gradient(180deg, rgba(4, 8, 24, .82) 0%, rgba(4, 8, 24, .5) 45%, rgba(4, 8, 24, 0) 100%); }
   .hallVig, .hallVig > div { position: absolute; left: 0; right: 0; top: 0; pointer-events: none; }
   /* the Hall's own shading (vignette, floor veil) eases in after the cut, never with it */
-  .hallVig, .hallVeil.low { opacity: 0; transition: opacity 3.2s cubic-bezier(.4, 0, .2, 1) .4s; }
-  .hall.settled .hallVig, .hall.settled .hallVeil.low { opacity: 1; }
-  .hall.doors-on .hallVig .sides { opacity: .45; transition: opacity 2.4s ease; }
+  .landing .hallVig { position: absolute; inset: 0 !important; opacity: 0; transition: opacity 2.6s cubic-bezier(.4, 0, .2, 1); }
+  .landing.on .hallVig { opacity: 1; }
+  /* with the doorways open the side shading lifts, so no doorway sits in shadow */
+  .hallVig .sides { transition: opacity 2.6s cubic-bezier(.4, 0, .2, 1); }
+  .offerings .hallVig .sides { opacity: 0; }
   .hallVig { bottom: 0; }
   .hallVig .top { height: 46svh; background: linear-gradient(to bottom, rgba(6,5,16,.49) 0%, rgba(6,5,16,.28) 42%, transparent 100%); }
   .hallVig .sides { height: 100svh; background: radial-gradient(ellipse 85% 75% at 50% 48%, transparent 52%, rgba(6,5,16,.45) 100%); }
@@ -124,7 +126,7 @@
   .door b, .door small { opacity: 0; filter: blur(8px); transition: opacity 1.8s cubic-bezier(.22, 1, .36, 1), filter 1.8s cubic-bezier(.22, 1, .36, 1), background .3s ease, transform .3s ease; }
   .hall.doors-on .door b, .hall.doors-on .door small { opacity: 1; filter: blur(0); transition-delay: 1s; }
   .door b, .door small { position: relative; display: block; text-shadow: 0 0 2px rgba(20, 12, 4, .55), 0 0 16px rgba(20, 12, 4, .75), 0 0 34px rgba(20, 12, 4, .45); }
-  .door b { font: 600 41px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; color: #fff0c8; }
+  .door b { font: 600 41px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; color: #fff4d8; }
   .door small { margin-top: 14px; font-style: italic; font-weight: 500; font-size: 37px; line-height: 1.2; color: #fffaf0; }
   .door:focus-visible { outline: none; }
   /* the hand: the fingertip rests on the centre doorway, presses twice, then leaves */
@@ -147,10 +149,11 @@
   .dglow .line { stroke: #ffe6ad; stroke-width: 4; }
   .dglow .halo { stroke: rgba(255, 205, 120, .85); stroke-width: 22; filter: blur(9px); }
   .dglow { opacity: 0; transition: opacity 2.4s cubic-bezier(.4, 0, .2, 1) 1.2s; }
-  .hall.doors-on .dglow { opacity: .4; animation: doorglow 4.8s ease-in-out 3.6s infinite; }
-  .hall.doors-on #dglow0 { animation-delay: 5.2s; }
-  .hall.doors-on #dglow2 { animation-delay: 6.8s; }
-  @keyframes doorglow { 0%, 100% { opacity: .4; } 50% { opacity: .9; } }
+  .hall.doors-on .dglow { opacity: .45; animation: doorglow 4.6s ease-in-out 2.4s infinite; }
+  @keyframes doorglow { 0%, 100% { opacity: .45; } 50% { opacity: .95; } }
+  .dlight { opacity: 0; transition: opacity 2.4s ease; }
+  .hall.doors-on .dlight { animation: doorlight 4.6s ease-in-out 2.4s infinite; }
+  @keyframes doorlight { 0%, 100% { opacity: 0; } 50% { opacity: .5; } }
   .hall.doors-on .dglow.lit { opacity: 1; animation: none; transition: opacity .3s ease; }
   .hall.doors-on .door { pointer-events: auto; }
   /* the shadows gather one doorway after another: the centre first, then its neighbours */
@@ -219,6 +222,7 @@
   .landing::before { content: ""; position: absolute; left: -10%; right: -10%; top: 4%; bottom: 14%; border-radius: 50%;
     background: radial-gradient(closest-side, rgba(10, 7, 4, .55), rgba(10, 7, 4, .25) 60%, rgba(10, 7, 4, 0)); opacity: 0; transition: opacity 2.6s cubic-bezier(.4, 0, .2, 1); }
   .landing.on::before { opacity: 1; }
+  .offerings .landing::before { bottom: calc(100% - var(--dtop, 50%) + 6px); transition: bottom 1.6s cubic-bezier(.4, 0, .2, 1); }
   /* while her logo and bio are up, the Hall rests in shadow; it brightens when the doorways open */
   .hallDim { display: none; }
   .ldim { position: absolute; inset: 0 !important; background: rgba(8, 5, 3, .5); opacity: 0; transition: opacity 2.6s cubic-bezier(.4, 0, .2, 1); }
@@ -230,7 +234,7 @@
   .sigil .float { position: relative; animation: float 7s ease-in-out infinite; }
   .sigil img { position: relative; display: block; width: 100%; height: auto; opacity: 0; transform: scale(.9);
     filter: blur(14px) brightness(2.4) drop-shadow(0 0 12px rgba(255, 205, 120, .35)); }
-  .landing.on .sigil img { animation: materialise 3.2s cubic-bezier(.22, 1, .36, 1) .15s forwards; }
+  .landing.on .sigil img { animation: materialise 3.2s cubic-bezier(.22, 1, .36, 1) forwards; }
   @keyframes materialise {
     0% { opacity: 0; transform: scale(.9); filter: blur(14px) brightness(2.4) drop-shadow(0 0 12px rgba(255, 205, 120, .35)); }
     35% { opacity: 1; filter: blur(4px) brightness(1.7) drop-shadow(0 0 22px rgba(255, 220, 150, .8)); }
@@ -242,22 +246,20 @@
   .sigilRing { position: absolute; left: 50%; top: 52%; width: 70%; aspect-ratio: 1; margin-left: -35%; border-radius: 50%; opacity: 0; pointer-events: none;
     border: 1px solid rgba(255, 226, 170, .8); box-shadow: 0 0 18px rgba(255, 214, 140, .6), inset 0 0 18px rgba(255, 214, 140, .4); transform: translateY(-50%) scale(.3); }
   .landing.on .sigilRing { animation: ring 2.8s cubic-bezier(.22, 1, .36, 1) .35s; }
-  .landing.on .sigilRing.r2 { animation-delay: .85s; }
+  .landing.on .sigilRing.r2 { animation-duration: 3.6s; }
   @keyframes ring { 0% { opacity: 0; transform: translateY(-50%) scale(.3); } 20% { opacity: .9; } 100% { opacity: 0; transform: translateY(-50%) scale(2.1); } }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
   @keyframes glowbreath { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
 
   .intro { top: var(--it, 60%); padding: 0 18px; transition: opacity 1s ease, filter 1s ease; }
-  .intro > * { opacity: 0; filter: blur(10px); transition: opacity 2s cubic-bezier(.22, 1, .36, 1), filter 2s cubic-bezier(.22, 1, .36, 1); }
+  .intro > * { opacity: 0; filter: blur(10px); transition: opacity 2.6s cubic-bezier(.22, 1, .36, 1), filter 2.6s cubic-bezier(.22, 1, .36, 1); }
   .landing.on .intro > * { opacity: 1; filter: blur(0); }
-  .landing.on .intro > .tag { transition-delay: .55s; }
-  .landing.on .intro > .bio { transition-delay: .8s; }
+
   /* the two buttons stand on the doorways' threshold, the proof line beneath them */
   .act { top: var(--ct, 75%); padding: 0 16px; transition: opacity 1s ease, filter 1s ease; }
-  .act > * { opacity: 0; filter: blur(10px); transition: opacity 2s cubic-bezier(.22, 1, .36, 1), filter 2s cubic-bezier(.22, 1, .36, 1); }
+  .act > * { opacity: 0; filter: blur(10px); transition: opacity 2.6s cubic-bezier(.22, 1, .36, 1), filter 2.6s cubic-bezier(.22, 1, .36, 1); }
   .landing.on .act > * { opacity: 1; filter: blur(0); }
-  .landing.on .act > .ctas { transition-delay: 1.2s; pointer-events: auto; }
-  .landing.on .act > .proof { transition-delay: 1.7s; pointer-events: auto; }
+  .landing.on .act > .ctas, .landing.on .act > .proof { pointer-events: auto; }
   .offerings .act { opacity: 0; filter: blur(8px); pointer-events: none; }
   .offerings .act * { pointer-events: none !important; }
   .proof { display: block; width: max-content; max-width: 100%; margin: 28px auto 0; padding-top: 16px; text-decoration: none; color: inherit; position: relative; }
@@ -365,7 +367,7 @@
     padding: 0 10px; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; }
   .ready .nav { opacity: 1; }
   .leaving .nav { opacity: 0; transition: opacity .4s ease; }
-  .arrived .nav { opacity: 1; transition: opacity 1.2s ease .6s; }
+  .arrived .nav { opacity: 1; transition: opacity 2.6s cubic-bezier(.4, 0, .2, 1); }
   .nav button { pointer-events: auto; width: 44px; height: 44px; display: grid; place-content: center; gap: 6px; background: none; border: 0; padding: 0; cursor: pointer;
     filter: drop-shadow(0 1px 6px rgba(0, 0, 0, .5)); }
   .leaving:not(.arrived) .nav button { pointer-events: none; }
@@ -379,7 +381,7 @@
     color: var(--gold-1); font: 300 34px/1 Georgia, serif; cursor: pointer; }
 
   @media (prefers-reduced-motion: reduce) {
-    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .sigilRing, .tapHint svg, .tapHint .ripple { animation: none !important; }
+    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight, .sigilRing, .tapHint svg, .tapHint .ripple { animation: none !important; }
   }
 </style>
 </head>
@@ -409,7 +411,8 @@
       <video id="hallVid" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"></video>
       <div class="hallVeil low"></div>
       <!-- the three doorways, traced from the Hall's own gold trim: a soft shadow kept inside each arch, and its outline that glows -->
-      <svg class="dshade" viewBox="0 0 1080 1920" aria-hidden="true"><defs><clipPath id="dclip0"><path d="M58,1456 L58,1159.0 A131.0,131.0 0 0 1 320,1159.0 L320,1456 Z"/></clipPath><clipPath id="dclip1"><path d="M389,1458 L389,1116.5 A148.5,148.5 0 0 1 686,1116.5 L686,1458 Z"/></clipPath><clipPath id="dclip2"><path d="M757,1456 L757,1160.5 A132.5,132.5 0 0 1 1022,1160.5 L1022,1456 Z"/></clipPath><filter id="dsoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="26"/></filter></defs><g clip-path="url(#dclip0)"><path class="dsh" d="M80,1496 L80,1159.0 A109.0,109.0 0 0 1 298,1159.0 L298,1496 Z" filter="url(#dsoft)"/></g><g clip-path="url(#dclip1)"><path class="dsh" d="M411,1498 L411,1116.5 A126.5,126.5 0 0 1 664,1116.5 L664,1498 Z" filter="url(#dsoft)"/></g><g clip-path="url(#dclip2)"><path class="dsh" d="M779,1496 L779,1160.5 A110.5,110.5 0 0 1 1000,1160.5 L1000,1496 Z" filter="url(#dsoft)"/></g></svg>
+      <svg class="dshade" viewBox="0 0 1080 1920" aria-hidden="true"><defs><clipPath id="dclip0"><path d="M58,1456 L58,1159.0 A131.0,131.0 0 0 1 320,1159.0 L320,1456 Z"/></clipPath><clipPath id="dclip1"><path d="M389,1458 L389,1116.5 A148.5,148.5 0 0 1 686,1116.5 L686,1458 Z"/></clipPath><clipPath id="dclip2"><path d="M757,1456 L757,1160.5 A132.5,132.5 0 0 1 1022,1160.5 L1022,1456 Z"/></clipPath><radialGradient id="dlg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="#fff1cf" stop-opacity=".9"/><stop offset="1" stop-color="#ffcf8a" stop-opacity="0"/></radialGradient><filter id="dsoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="26"/></filter></defs><g clip-path="url(#dclip0)"><path class="dsh" d="M80,1496 L80,1159.0 A109.0,109.0 0 0 1 298,1159.0 L298,1496 Z" filter="url(#dsoft)"/></g><g clip-path="url(#dclip1)"><path class="dsh" d="M411,1498 L411,1116.5 A126.5,126.5 0 0 1 664,1116.5 L664,1498 Z" filter="url(#dsoft)"/></g><g clip-path="url(#dclip2)"><path class="dsh" d="M779,1496 L779,1160.5 A110.5,110.5 0 0 1 1000,1160.5 L1000,1496 Z" filter="url(#dsoft)"/></g></svg>
+      <svg class="dshade dlight" viewBox="0 0 1080 1920" aria-hidden="true"><g clip-path="url(#dclip0)"><path class="dl" d="M80,1496 L80,1159.0 A109.0,109.0 0 0 1 298,1159.0 L298,1496 Z" fill="url(#dlg)" filter="url(#dsoft)"/></g><g clip-path="url(#dclip1)"><path class="dl" d="M411,1498 L411,1116.5 A126.5,126.5 0 0 1 664,1116.5 L664,1498 Z" fill="url(#dlg)" filter="url(#dsoft)"/></g><g clip-path="url(#dclip2)"><path class="dl" d="M779,1496 L779,1160.5 A110.5,110.5 0 0 1 1000,1160.5 L1000,1496 Z" fill="url(#dlg)" filter="url(#dsoft)"/></g></svg>
       <svg class="dglow" id="dglow0" viewBox="0 0 1080 1920" aria-hidden="true"><path class="halo" d="M58,1456 L58,1159.0 A131.0,131.0 0 0 1 320,1159.0 L320,1456"/><path class="line" d="M58,1456 L58,1159.0 A131.0,131.0 0 0 1 320,1159.0 L320,1456"/></svg><svg class="dglow" id="dglow1" viewBox="0 0 1080 1920" aria-hidden="true"><path class="halo" d="M389,1458 L389,1116.5 A148.5,148.5 0 0 1 686,1116.5 L686,1458"/><path class="line" d="M389,1458 L389,1116.5 A148.5,148.5 0 0 1 686,1116.5 L686,1458"/></svg><svg class="dglow" id="dglow2" viewBox="0 0 1080 1920" aria-hidden="true"><path class="halo" d="M757,1456 L757,1160.5 A132.5,132.5 0 0 1 1022,1160.5 L1022,1456"/><path class="line" d="M757,1456 L757,1160.5 A132.5,132.5 0 0 1 1022,1160.5 L1022,1456"/></svg>
       <button class="door" type="button" data-room="Sessions" style="left:52px;top:1032px;width:270px;height:438px">
         <b>Sessions</b><small>QHHT &amp;<br>past lives</small>
@@ -424,7 +427,6 @@
       </button>
     </div>
     <!-- the vignette, as on TREV's and Soleil's sites: the sides closing in, and the top -->
-    <div class="hallVig" aria-hidden="true"><div class="sides"></div><div class="top"></div></div>
     <div class="hallDim" aria-hidden="true"></div>
   </div>
 
@@ -461,6 +463,7 @@
 
   <section class="landing" id="landing" aria-label="Sarah Breskman Cosme">
     <div class="ldim" aria-hidden="true"></div>
+    <div class="hallVig" aria-hidden="true"><div class="sides"></div><div class="top"></div></div>
     <div class="sigil" id="sigil" aria-hidden="true"><div class="float"><span class="sigilGlow"></span><span class="sigilRing"></span><span class="sigilRing r2"></span><img src="media/sarah-logo.webp?v=19" alt=""></div></div>
     <div class="intro" id="intro">
       <p class="tag">Master Hypnotist &amp;<br>Best-Selling Author</p>
@@ -701,7 +704,7 @@
         m.p += dt; m.x += (m.vx + Math.sin(m.p * .7) * 4) * dt; m.y += m.vy * dt;
         if (m.y < -10) { m.y = H + 10; m.x = Math.random() * W; }
         const q = quietFrom ? Math.min(1, (now - quietFrom) / 3000) : 0, fo = 1 - q * q * (3 - 2 * q);   // the hero's motes ease out over 3 s after the tap
-        const fi = (fadeFrom ? Math.min(1, Math.max(0, (now - fadeFrom - 600) / 3000)) : 1) * fo;
+        const fi = (fadeFrom ? Math.min(1, Math.max(0, (now - fadeFrom) / 2600)) : 1) * fo;
         const s = m.r * 6; ctx.globalAlpha = m.a * fi * (.6 + .4 * Math.sin(m.p * 1.3)); ctx.drawImage(spr, m.x - s / 2, m.y - s / 2, s, s);
       }
       // never over her portrait: erase the motes wherever she is (her own photo is the stencil)
@@ -725,7 +728,7 @@
     return {
       resize, release,
       start(n) { resize(); seedMotes(n); if (!raf) raf = requestAnimationFrame(frame); },
-      hall() { tint = "blue"; seedMotes(W < 700 ? 40 : 70); fadeFrom = performance.now(); quietFrom = 0; },
+      hall() { if (tint === "blue") return; tint = "blue"; seedMotes(W < 700 ? 40 : 70); fadeFrom = performance.now(); quietFrom = 0; },
       quiet() { if (!quietFrom) quietFrom = performance.now(); },
       reset() { tint = "gold"; burst = []; seedMotes(W < 700 ? 30 : 46); fadeFrom = 0; quietFrom = 0; },
     };
@@ -817,7 +820,7 @@
     const glide = () => { if (phase !== "video" && phase !== "landing") return;
       const d = tv.duration || 6, u = Math.min(1, Math.max(0, (tv.currentTime - (d - 1.4)) / 1.35));
       placeTv(u * u * (3 - 2 * u));
-      if (tv.currentTime >= d - 1.3 && !landing.classList.contains("on")) landing.classList.add("on");   // the logo, words and their darkness arrive together over the video's last 1.3 s
+      if (tv.currentTime >= d - 1.3 && !landing.classList.contains("on")) { landing.classList.add("on"); view.classList.add("arrived"); dust.hall(); }   // everything arrives at once, over the video's last 1.3 s
       if (u < 1 || !landing.classList.contains("on")) tvRaf = requestAnimationFrame(glide); };
     cancelAnimationFrame(tvRaf); tvRaf = requestAnimationFrame(glide);
     const dur = tv.duration || 9;
@@ -957,6 +960,7 @@
     const titleH = $("hallTitle").offsetHeight;
     let it = doorTop - 4 - titleH, t = it - gap - lh;
     t = Math.max(phone ? 58 : H * 0.07, t); it = t + lh + gap;
+    landing.style.setProperty("--dtop", doorTop.toFixed(1) + "px");
     landing.style.setProperty("--lw", w.toFixed(1) + "px"); landing.style.setProperty("--lt", t.toFixed(1) + "px");
     landing.style.setProperty("--it", it.toFixed(1) + "px");
     // the buttons straddle the threshold, but never ride up into the words above them
