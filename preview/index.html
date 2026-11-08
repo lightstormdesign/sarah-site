@@ -176,10 +176,20 @@
   @keyframes chosenGlow { 0% { opacity: .6; } 25% { opacity: 1; } 100% { opacity: 1; } }
   @keyframes chosenHalo { 0% { stroke-width: 26; } 25% { stroke-width: 46; } 100% { stroke-width: 32; } }
   .hall.doors-on .dlight g.lit { opacity: .8; animation: none; transition: opacity 1.2s cubic-bezier(.22, 1, .36, 1); }
-  .drise { opacity: 1 !important; }
-  .drise .rise { opacity: 0; }
-  .drise g.lit .rise { animation: rise 1.8s cubic-bezier(.33, 0, .2, 1) forwards; }
-  @keyframes rise { 0% { opacity: 0; transform: translateY(40px); } 25% { opacity: .5; } 100% { opacity: 0; transform: translateY(-460px); } }
+  /* chosen: a veil of light rises through the arch (a plain gradient moved by transform: smooth on a phone) */
+  .dveils { position: absolute; inset: 0; pointer-events: none; }
+  .dveil { position: absolute; overflow: hidden; border-radius: 999px 999px 0 0 / 46% 46% 0 0; }
+  .dveil span { position: absolute; left: 0; right: 0; top: 100%; height: 70%; opacity: 0; will-change: transform, opacity;
+    background: linear-gradient(0deg, rgba(255, 246, 224, 0), rgba(255, 246, 224, .55) 50%, rgba(255, 246, 224, 0)); }
+  .dveil.lit span { animation: rise 1s cubic-bezier(.33, 0, .2, 1) forwards; }
+  /* each doorway's ambient glow: warm light pooling at its threshold, breathing slowly */
+  .dambient { position: absolute; opacity: 0; transition: opacity 2.4s ease;
+    background: radial-gradient(ellipse 55% 30% at 50% 92%, rgba(255, 214, 150, .5), rgba(255, 200, 120, .16) 55%, transparent 80%); }
+  .hall.doors-on .dambient { opacity: 1; animation: ambientBreath 6s ease-in-out 2.4s infinite; }
+  .hall.doors-on .dambient:nth-child(2) { animation-delay: 4.4s; }
+  .hall.doors-on .dambient:nth-child(3) { animation-delay: 3.4s; }
+  @keyframes ambientBreath { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
+  @keyframes rise { 0% { opacity: 0; transform: translateY(0); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-170%); } }
   .hall.chosen .dglow:not(.lit) { opacity: .22; animation: none; transition: opacity 1.2s ease; }
   .hall.chosen .dlight g:not(.lit) { opacity: 0; animation: none; transition: opacity 1.2s ease; }
   .door b, .door small { transition: opacity 1.8s cubic-bezier(.22, 1, .36, 1), filter 1.8s cubic-bezier(.22, 1, .36, 1), transform 1.2s cubic-bezier(.22, 1, .36, 1); }
@@ -403,11 +413,11 @@
   .backHall { margin-top: 18px; }
   .proofLine { margin-top: 12px !important; font: 500 12px/1.4 "Cinzel", serif !important; letter-spacing: .2em; color: #e9c877 !important; }
   /* stepping through a doorway: the Hall pushes in toward it and the light takes the screen, then the room appears */
-  .hall { transition: opacity 1.5s ease, transform 1.4s cubic-bezier(.55, 0, .45, 1); }
-  .hall.entering { transform: scale(2.4); }
+  .hall.entering { transform: scale(2.2); will-change: transform; }
+  .hall.entering .side, .hall.entering .dglow, .hall.entering .dshade, .hall.entering .hallVeil { opacity: 0 !important; transition: opacity .25s ease !important; animation: none !important; }
   .doorLight { position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0; transition: opacity .9s ease;
     background: radial-gradient(circle at var(--dx, 50%) var(--dy, 60%), #fffaf0 0%, #ffe9bf 35%, #e8c27a 70%, #b98a45 100%); }
-  .doorLight.on { opacity: 1; transition: opacity .9s ease .55s; }
+  .doorLight.on { opacity: 1; transition: opacity .5s ease .35s; }
   @media (prefers-reduced-motion: reduce) { .chapter { opacity: 1; transform: none; transition: none; } }
 
   /* the header (TREV's menu button, in gold) */
@@ -454,7 +464,7 @@
   @keyframes loaderGlow { 0%, 100% { opacity: .55; transform: scale(.97); } 50% { opacity: 1; transform: scale(1); } }
 
   @media (prefers-reduced-motion: reduce) {
-    .cam.drift, .mandala .in, .mandala .breathe, .mandala .turn, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .tapHint svg { animation: none !important; }
+    .cam.drift, .mandala .in, .mandala .breathe, .mandala .turn, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .dambient, .tapHint svg { animation: none !important; }
   }
 </style>
 </head>
@@ -489,7 +499,7 @@
       <!-- the three doorways, traced from the Hall's own gold trim: a soft shadow kept inside each arch, and its outline that glows -->
       <svg class="dshade" viewBox="0 0 1080 1920" aria-hidden="true"><defs><clipPath id="dclip0"><path d="M58,1456 L58,1159.0 A131.0,131.0 0 0 1 320,1159.0 L320,1456 Z"/></clipPath><clipPath id="dclip1"><path d="M389,1458 L389,1116.5 A148.5,148.5 0 0 1 686,1116.5 L686,1458 Z"/></clipPath><clipPath id="dclip2"><path d="M757,1456 L757,1160.5 A132.5,132.5 0 0 1 1022,1160.5 L1022,1456 Z"/></clipPath><radialGradient id="dlg" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="#fff1cf" stop-opacity=".9"/><stop offset="1" stop-color="#ffcf8a" stop-opacity="0"/></radialGradient><filter id="dsoft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="26"/></filter></defs><g clip-path="url(#dclip0)"><path class="dsh" d="M80,1496 L80,1159.0 A109.0,109.0 0 0 1 298,1159.0 L298,1496 Z" filter="url(#dsoft)"/></g><g clip-path="url(#dclip1)"><path class="dsh" d="M411,1498 L411,1116.5 A126.5,126.5 0 0 1 664,1116.5 L664,1498 Z" filter="url(#dsoft)"/></g><g clip-path="url(#dclip2)"><path class="dsh" d="M779,1496 L779,1160.5 A110.5,110.5 0 0 1 1000,1160.5 L1000,1496 Z" filter="url(#dsoft)"/></g></svg>
       <svg class="dshade dlight" viewBox="0 0 1080 1920" aria-hidden="true"><g class="dl0" clip-path="url(#dclip0)"><path class="dl" d="M80,1496 L80,1159.0 A109.0,109.0 0 0 1 298,1159.0 L298,1496 Z" fill="url(#dlg)" filter="url(#dsoft)"/></g><g class="dl1" clip-path="url(#dclip1)"><path class="dl" d="M411,1498 L411,1116.5 A126.5,126.5 0 0 1 664,1116.5 L664,1498 Z" fill="url(#dlg)" filter="url(#dsoft)"/></g><g class="dl2" clip-path="url(#dclip2)"><path class="dl" d="M779,1496 L779,1160.5 A110.5,110.5 0 0 1 1000,1160.5 L1000,1496 Z" fill="url(#dlg)" filter="url(#dsoft)"/></g></svg>
-      <svg class="dshade drise" viewBox="0 0 1080 1920" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#fff6e0" stop-opacity="0"/><stop offset=".5" stop-color="#fff6e0" stop-opacity=".95"/><stop offset="1" stop-color="#fff6e0" stop-opacity="0"/></linearGradient></defs><g class="dr0" clip-path="url(#dclip0)"><rect class="rise" x="38" y="1276" width="302" height="360" fill="url(#rg)" filter="url(#dsoft)"/></g><g class="dr1" clip-path="url(#dclip1)"><rect class="rise" x="369" y="1278" width="337" height="360" fill="url(#rg)" filter="url(#dsoft)"/></g><g class="dr2" clip-path="url(#dclip2)"><rect class="rise" x="737" y="1276" width="305" height="360" fill="url(#rg)" filter="url(#dsoft)"/></g></svg>
+<div class="dveils" aria-hidden="true"><div class="dambient" style="left:28px;top:1008px;width:322px;height:508px"></div><div class="dambient" style="left:359px;top:948px;width:357px;height:570px"></div><div class="dambient" style="left:727px;top:1008px;width:325px;height:508px"></div><div class="dveil dr0" style="left:58px;top:1028px;width:262px;height:428px"><span></span></div><div class="dveil dr1" style="left:389px;top:968px;width:297px;height:490px"><span></span></div><div class="dveil dr2" style="left:757px;top:1028px;width:265px;height:428px"><span></span></div></div>
       <svg class="dglow" id="dglow0" viewBox="0 0 1080 1920" aria-hidden="true"><defs><filter id="hb0" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter></defs><path class="halo" d="M58,1456 L58,1159.0 A131.0,131.0 0 0 1 320,1159.0 L320,1456" filter="url(#hb0)"/><path class="line" d="M58,1456 L58,1159.0 A131.0,131.0 0 0 1 320,1159.0 L320,1456"/></svg><svg class="dglow" id="dglow1" viewBox="0 0 1080 1920" aria-hidden="true"><defs><filter id="hb1" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter></defs><path class="halo" d="M389,1458 L389,1116.5 A148.5,148.5 0 0 1 686,1116.5 L686,1458" filter="url(#hb1)"/><path class="line" d="M389,1458 L389,1116.5 A148.5,148.5 0 0 1 686,1116.5 L686,1458"/></svg><svg class="dglow" id="dglow2" viewBox="0 0 1080 1920" aria-hidden="true"><defs><filter id="hb2" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="9"/></filter></defs><path class="halo" d="M757,1456 L757,1160.5 A132.5,132.5 0 0 1 1022,1160.5 L1022,1456" filter="url(#hb2)"/><path class="line" d="M757,1456 L757,1160.5 A132.5,132.5 0 0 1 1022,1160.5 L1022,1456"/></svg>
       <button class="door" type="button" data-room="Sessions" style="left:52px;top:1032px;width:270px;height:438px">
         <b>Sessions</b><small>QHHT &amp;<br>past lives</small>
@@ -835,7 +845,7 @@
   // ---------- gold dust: ambient motes, and Sarah dissolving into light ----------
   const dust = (() => {
     const cv = $("dust"), ctx = cv.getContext("2d");
-    let dpr = 1, W = 0, H = 0, motes = [], burst = [], raf = 0, last = 0, tint = "gold", fadeFrom = 0, quietFrom = 0;
+    let dpr = 1, W = 0, H = 0, motes = [], burst = [], raf = 0, last = 0, tint = "gold", fadeFrom = 0, quietFrom = 0, doorFn = null, rising = [], spawnAcc = 0;
     const sprite = (r, g, b) => {
       const c = document.createElement("canvas"); c.width = c.height = 32;
       const x = c.getContext("2d"), gr = x.createRadialGradient(16, 16, 0, 16, 16, 16);
@@ -881,6 +891,18 @@
         const fi = (fadeFrom ? Math.min(1, Math.max(0, (now - fadeFrom) / 2600)) : 1) * fo;
         const s = m.r * 6; ctx.globalAlpha = m.a * fi * (.6 + .4 * Math.sin(m.p * 1.3)); ctx.drawImage(spr, m.x - s / 2, m.y - s / 2, s, s);
       }
+      if (doorFn) {
+        const R = doorFn();
+        if (R) { spawnAcc += dt * (W < 700 ? 14 : 20);
+          while (spawnAcc > 1) { spawnAcc--; const r = R[(Math.random() * R.length) | 0];
+            rising.push({ x: r.left + r.width * (.15 + Math.random() * .7), y: r.bottom - r.height * Math.random() * .25, vy: -(10 + Math.random() * 18),
+              r: .8 + Math.random() * 1.1, t: 0, life: 3 + Math.random() * 3, p: Math.random() * 6.28, a: .7 + Math.random() * .3 }); } }
+        for (let i = rising.length - 1; i >= 0; i--) {
+          const m = rising[i]; m.t += dt; if (m.t > m.life) { rising.splice(i, 1); continue; }
+          const u = m.t / m.life; m.p += dt; m.x += Math.sin(m.p * 1.3) * 6 * dt; m.y += m.vy * dt;
+          const s = m.r * 7; ctx.globalAlpha = m.a * Math.min(1, u * 4) * (1 - u) * (1 - u); ctx.drawImage(GOLD, m.x - s / 2, m.y - s / 2, s, s);
+        }
+      }
       // never over her portrait: erase the motes wherever she is (her own photo is the stencil)
       if (phase === "hero" && !her.hidden && her.complete && her.naturalWidth) {
         const r = her.getBoundingClientRect();
@@ -904,7 +926,9 @@
       start(n) { resize(); seedMotes(n); if (!raf) raf = requestAnimationFrame(frame); },
       hall() { if (tint === "blue") return; tint = "blue"; seedMotes(W < 700 ? 40 : 70); fadeFrom = performance.now(); quietFrom = 0; },
       quiet() { if (!quietFrom) quietFrom = performance.now(); },
-      reset() { tint = "gold"; burst = []; seedMotes(W < 700 ? 30 : 46); fadeFrom = 0; quietFrom = 0; },
+      // golden motes drifting up out of each doorway (rects: a function giving the doorways' screen boxes)
+      doors(fn) { doorFn = fn; },
+      reset() { doorFn = null; rising = []; tint = "gold"; burst = []; seedMotes(W < 700 ? 30 : 46); fadeFrom = 0; quietFrom = 0; },
     };
   })();
 
@@ -1102,10 +1126,10 @@
   document.querySelectorAll(".door").forEach((d) => d.addEventListener("click", () => {
     $("tapHint").classList.remove("play");
     document.querySelectorAll(".door").forEach((x, i) => { x.classList.toggle("lit", x === d); $("dglow" + i).classList.toggle("lit", x === d); hall.querySelector(".dlight .dl" + i).classList.toggle("lit", x === d);
-      const r = hall.querySelector(".drise .dr" + i); r.classList.remove("lit"); if (x === d) { void r.getBoundingClientRect(); r.classList.add("lit"); } });
+      const r = hall.querySelector(".dveil.dr" + i); r.classList.remove("lit"); if (x === d) { void r.offsetWidth; r.classList.add("lit"); } });
     hall.classList.add("chosen"); if (navigator.vibrate) navigator.vibrate(8);
     const i = [...document.querySelectorAll(".door")].indexOf(d);
-    clearTimeout(enterT); enterT = setTimeout(() => enterRoom(i, d), 1100);
+    clearTimeout(enterT); enterT = setTimeout(() => enterRoom(i, d), 500);
   }));
 
   function replay() {
@@ -1187,7 +1211,9 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutLanding);
   layoutLanding();
   // "See offerings": the bio and buttons dissolve, the logo rises to the top, the Hall's title and the offerings appear
+  const doorEls = [...document.querySelectorAll(".door")];
   const showOfferings = () => { view.classList.add("offerings"); hall.classList.add("doors-on"); layoutLanding();
+    setTimeout(() => dust.doors(() => (hall.classList.contains("entering") || view.classList.contains("storyOpen")) ? null : doorEls.map((d) => d.getBoundingClientRect())), 1200);
     // a second after the offerings have appeared, a hand shows how to choose (unless a doorway was already chosen)
     later(() => { if (!hall.querySelector(".door.lit")) $("tapHint").classList.add("play"); }, 3800); };
   $("seeOfferings").addEventListener("click", (e) => { e.stopPropagation(); showOfferings(); });
@@ -1215,14 +1241,15 @@
     const cx = r.left + r.width / 2, cy = r.top + r.height * .55;
     hall.style.transformOrigin = `${cx}px ${cy}px`;
     const dl = $("doorLight"); dl.style.setProperty("--dx", (cx / W * 100).toFixed(1) + "%"); dl.style.setProperty("--dy", (cy / H * 100).toFixed(1) + "%");
-    hall.style.transition = "opacity .6s ease, transform 1.4s cubic-bezier(.55, 0, .45, 1)";
+    hall.style.transition = "opacity .6s ease, transform .95s cubic-bezier(.55, 0, .45, 1)";
+    cancelAnimationFrame(hallRaf);
     hall.classList.add("entering"); dl.classList.add("on"); view.classList.add("storyOpen");
     const room = $("room" + i); openRoomEl = room;
     setTimeout(() => {
       room.hidden = false; room.querySelector(".roomScroll").scrollTop = 0;
       room.querySelectorAll(".chapter").forEach((c) => c.classList.add("seen"));
       requestAnimationFrame(() => requestAnimationFrame(() => { room.classList.add("on"); dl.classList.remove("on"); }));
-    }, 1500);
+    }, 900);
   }
   function closeRoom(now) {
     clearTimeout(enterT);
@@ -1230,7 +1257,7 @@
     if (room) { room.classList.remove("on"); setTimeout(() => { if (!room.classList.contains("on")) room.hidden = true; }, now ? 0 : 900); }
     $("doorLight").classList.remove("on"); view.classList.remove("storyOpen");
     hall.style.transition = "opacity .6s ease, transform 1.2s cubic-bezier(.22, 1, .36, 1)";
-    hall.classList.remove("entering", "chosen");
+    hall.classList.remove("entering", "chosen"); if (phase === "landing") startHallTilt();
     hall.querySelectorAll(".lit").forEach((e) => e.classList.remove("lit"));
   }
   document.querySelectorAll(".room").forEach((room) => {
