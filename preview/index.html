@@ -405,7 +405,7 @@
   <section class="landing" id="landing" aria-label="Sarah Breskman Cosme">
     <div class="sigil" id="sigil" aria-hidden="true"><div class="float"><span class="sigilGlow"></span><img src="media/sarah-logo.webp?v=19" alt=""></div></div>
     <div class="intro" id="intro">
-      <p class="tag">Master Hypnotist &amp; Best-Selling Author</p>
+      <p class="tag">Master Hypnotist &amp;<br>Best-Selling Author</p>
       <p class="bio">Level 3 QHHT practitioner, past-life regressionist and recipient of the 2023 Dolores Cannon Award, Sarah guides you inward, to who you really are and your true purpose.</p>
       <div class="ctas"><button class="cta" id="seeOfferings" type="button">See Offerings</button><button class="cta ghost" id="myStory" type="button">My Story</button></div>
     </div>
@@ -877,7 +877,7 @@
   // headline, bio and buttons; with the offerings, "The Hall of Records" and "Choose your doorway" in their place
   function layoutLanding() {
     const W = view.clientWidth, H = view.clientHeight, phone = W / H < 0.9, ratio = 574 / 640;
-    const w = phone ? Math.min(W * 0.4, H * 0.19, 170) : Math.min(H * 0.2, 190);
+    const w = phone ? Math.min(W * 0.5, H * 0.24, 210) : Math.min(H * 0.24, 230);
     const t = phone ? Math.max(58, H * 0.085) : H * 0.09, gap = Math.max(26, H * 0.038);
     landing.style.setProperty("--lw", w.toFixed(1) + "px"); landing.style.setProperty("--lt", t.toFixed(1) + "px");
     landing.style.setProperty("--it", (t + w * ratio + gap).toFixed(1) + "px");
