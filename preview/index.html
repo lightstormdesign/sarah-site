@@ -980,7 +980,7 @@
       k = Math.min(1, (now - t0) / 3000);                     // eases in over 3 s after the arrival
       const ax = REDUCED ? 0 : inX, ay = REDUCED ? 0 : inY;
       x += (ax - x) * Math.min(1, dt * 3); y += (ay - y) * Math.min(1, dt * 3);
-      const e = k * k * (3 - 2 * k), s = 1 + .035 * e;
+      const e = k * k * (3 - 2 * k), s = 1 + .06 * e;
       ht.style.transform = `translate(${(-x * 18 * e).toFixed(2)}px, ${(-y * 13.5 * e).toFixed(2)}px) scale(${s.toFixed(4)})`;
       landing.style.transform = `translate(${(x * 7.5 * e).toFixed(2)}px, ${(y * 6 * e).toFixed(2)}px)`;
     };
