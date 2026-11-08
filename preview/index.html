@@ -954,7 +954,7 @@
   // ---------- Sarah in depth (TREV's portal): one rigid real photo, never warped. She drifts toward you on a
   // diagonal, growing a little and rising off the bottom edge, back to centre, then the same to the other
   // side; a mouse or (on Android) the phone's tilt leads it, the drift carrying on beneath, smaller ----------
-  const ME_PX = 12, ME_SCALE = 0.03, ME_SIDE = 0.6, ME_MOVE_S = 20, ME_PAUSE_S = 5;
+  const ME_PX = 18, ME_SCALE = 0.03, ME_SIDE = 0.6, ME_MOVE_S = 20, ME_PAUSE_S = 5;
   let inX = 0, inY = 0, tiltLive = false, herRaf = 0;
   // a real mouse only (phones have none), and never the browser's synthetic 0,0 move at load
   if (matchMedia("(hover: hover) and (pointer: fine)").matches)
@@ -981,8 +981,8 @@
       const ax = REDUCED ? 0 : inX, ay = REDUCED ? 0 : inY;
       x += (ax - x) * Math.min(1, dt * 3); y += (ay - y) * Math.min(1, dt * 3);
       const e = k * k * (3 - 2 * k), s = 1 + .035 * e;
-      ht.style.transform = `translate(${(-x * 12 * e).toFixed(2)}px, ${(-y * 9 * e).toFixed(2)}px) scale(${s.toFixed(4)})`;
-      landing.style.transform = `translate(${(x * 5 * e).toFixed(2)}px, ${(y * 4 * e).toFixed(2)}px)`;
+      ht.style.transform = `translate(${(-x * 18 * e).toFixed(2)}px, ${(-y * 13.5 * e).toFixed(2)}px) scale(${s.toFixed(4)})`;
+      landing.style.transform = `translate(${(x * 7.5 * e).toFixed(2)}px, ${(y * 6 * e).toFixed(2)}px)`;
     };
     hallRaf = requestAnimationFrame(frame);
   }
@@ -1010,9 +1010,9 @@
       her.style.transform = `translate(${(px * ME_PX * ME_SIDE * m / k).toFixed(2)}px, ${((1 - near) * ME_PX * 0.585 * m / k).toFixed(2)}px) scale(${(1 + ME_SCALE * near * m).toFixed(4)})`;
       const ix = led ? inX : 0, iy = led ? inY : 0;
       lx += (ix - lx) * Math.min(1, dt * 4); ly += (iy - ly) * Math.min(1, dt * 4);
-      const tt = `${(lx * 6 * m).toFixed(2)}px ${(ly * 4 * m).toFixed(2)}px`;
+      const tt = `${(lx * 9 * m).toFixed(2)}px ${(ly * 6 * m).toFixed(2)}px`;
       titleEl.style.translate = tt; begin.style.translate = tt;
-      if (mandalaEl) mandalaEl.style.translate = `${(-lx * 10 * m).toFixed(2)}px ${(-ly * 8 * m).toFixed(2)}px`;
+      if (mandalaEl) mandalaEl.style.translate = `${(-lx * 15 * m).toFixed(2)}px ${(-ly * 12 * m).toFixed(2)}px`;
     };
     cancelAnimationFrame(herRaf); herRaf = requestAnimationFrame(frame);
   }
