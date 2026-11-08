@@ -111,18 +111,22 @@
   /* the doorways: each button is the arch itself, its words in the light */
   .door { position: absolute; background: none; border: 0; color: #3b2410; cursor: pointer; font: inherit; pointer-events: none;
     border-radius: 999px 999px 0 0 / 46% 46% 0 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
-    padding: 0 14px 46px; text-align: center; opacity: 0; transform: translateY(24px);
+    padding: 0 16px 40px; text-align: center; opacity: 0; transform: translateY(24px);
     transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); }
   .door::before { content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: 0; transition: opacity .5s ease;
     background: radial-gradient(70% 60% at 50% 70%, rgba(255, 250, 235, .55), rgba(255, 220, 160, .18) 60%, transparent 100%); }
   .door:hover::before, .door.lit::before { opacity: 1; }
-  .door b, .door small { position: relative; display: block; text-shadow: 0 0 18px rgba(255, 255, 255, .9), 0 0 4px rgba(255, 255, 255, .7); }
-  .door b { font: 600 40px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; }
-  .door small { margin-top: 12px; font-style: italic; font-weight: 500; font-size: 37px; line-height: 1.18; color: #4e3218; }
-  .door i { position: relative; display: inline-block; margin-top: 22px; padding: 14px 30px 13px 36px; border: 2px solid rgba(59, 36, 16, .55);
-    border-radius: 999px; font: 600 24px/1 "Cinzel", serif; font-style: normal; letter-spacing: .3em; text-transform: uppercase;
-    background: rgba(255, 255, 255, .28); box-shadow: 0 0 22px rgba(255, 255, 255, .55); transition: background .3s ease, transform .3s ease; }
-  .door:hover i, .door:active i, .door.lit i { background: rgba(255, 255, 255, .6); transform: scale(1.04); }
+  .plaque { position: relative; width: 100%; min-height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 26px 10px 24px; border-radius: 26px; text-align: center;
+    background: linear-gradient(180deg, rgba(20, 13, 7, .72), rgba(12, 8, 4, .82)); border: 2px solid rgba(232, 207, 154, .55);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, .45), inset 0 0 26px rgba(232, 207, 154, .08); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .door b, .door small { position: relative; display: block; }
+  .door b { font: 600 38px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase;
+    background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .door small { margin-top: 12px; font-style: italic; font-weight: 500; font-size: 34px; line-height: 1.2; color: #efe6d2; }
+  .door i { position: relative; display: inline-block; margin-top: 20px; padding: 13px 26px 12px calc(26px + .3em); border: 2px solid rgba(232, 207, 154, .7);
+    border-radius: 999px; font: 600 22px/1 "Cinzel", serif; font-style: normal; letter-spacing: .3em; text-transform: uppercase; color: #f2dfae;
+    background: linear-gradient(180deg, rgba(232, 207, 154, .18), rgba(232, 207, 154, .05)); transition: background .3s ease, transform .3s ease; }
+  .door:hover i, .door:active i, .door.lit i { background: linear-gradient(180deg, rgba(232, 207, 154, .4), rgba(232, 207, 154, .14)); transform: scale(1.04); }
   /* each doorway breathes a little light, one after another, so they read as places to step into */
   .hall.doors-on .door::before { animation: doorbreath 4.5s ease-in-out infinite; }
   .hall.doors-on .door:nth-of-type(2)::before { animation-delay: 1.5s; }
@@ -244,10 +248,14 @@
   .offerings .intro { opacity: 0; filter: blur(8px); pointer-events: none; }
   .offerings .intro .ctas { pointer-events: none !important; }
   .hallTitle { top: var(--ht, 20%); opacity: 0; transition: opacity 1.4s ease; }
-  .offerings .hallTitle { opacity: 1; transition: opacity 1.4s ease .7s; }
+  .offerings .hallTitle { opacity: 1; transition: none; }
+  .hallTitle h2, .hallTitle .lede { opacity: 0; filter: blur(8px); transition: opacity 1.6s cubic-bezier(.22, 1, .36, 1), filter 1.6s cubic-bezier(.22, 1, .36, 1); }
+  .offerings .hallTitle h2 { opacity: 1; filter: blur(0); transition-delay: .8s; }
+  .offerings .hallTitle .lede { opacity: .82; filter: blur(0); transition-delay: 1.7s; }
   .hallTitle h2 { margin: 0 0 6px; font: 500 min(6.3vw, 46px)/1.1 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase;
     background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .6)); }
-  .hallTitle .lede { font-style: italic; font-size: 25px; color: #f3ecdc; text-shadow: 0 1px 12px rgba(0, 0, 0, .9); }
+  .hallTitle .lede { margin-top: 4px; font: 500 11px/1 "Cinzel", serif; letter-spacing: .38em; padding-left: .38em; text-transform: uppercase; color: #efe6d2;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, .9); }
   .credit { position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 2.6svh); text-align: center;
     font: 400 9.5px/1 "Cinzel", serif; letter-spacing: .32em; text-transform: uppercase; color: rgba(240, 220, 170, .72);
     text-shadow: 0 1px 8px rgba(0, 0, 0, .8); opacity: 0; transition: opacity 1.4s ease 2s; pointer-events: none; }
@@ -309,8 +317,6 @@
   .nav button { pointer-events: auto; width: 44px; height: 44px; display: grid; place-content: center; gap: 6px; background: none; border: 0; padding: 0; cursor: pointer;
     filter: drop-shadow(0 1px 6px rgba(0, 0, 0, .5)); }
   .leaving:not(.arrived) .nav button { pointer-events: none; }
-  .nav .home { width: 52px; }
-  .nav .home img { display: block; width: 40px; height: auto; filter: drop-shadow(0 0 6px rgba(255, 205, 120, .4)) drop-shadow(0 1px 4px rgba(0, 0, 0, .6)); }
   .burger span { display: block; width: 24px; height: 1.5px; background: linear-gradient(90deg, #c09245, #f6e2aa 45%, #deb05a 70%, #c69a4a); }
   .nav button:focus-visible, .menu a:focus-visible { outline: 1px solid var(--gold-1); outline-offset: 4px; }
   .menu { position: fixed; inset: 0; z-index: 20; background: rgba(8, 7, 14, .94); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
@@ -351,13 +357,13 @@
       <video id="hallVid" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"></video>
       <div class="hallVeil low"></div>
       <button class="door" type="button" data-room="Sessions" style="left:52px;top:1032px;width:270px;height:438px">
-        <b>Sessions</b><small>QHHT &amp;<br>past lives</small><i>Enter</i>
+        <span class="plaque"><b>Sessions</b><small>QHHT &amp;<br>past lives</small><i>Enter</i></span>
       </button>
       <button class="door" type="button" data-room="Courses &amp; Books" style="left:388px;top:968px;width:302px;height:502px">
-        <b>Courses<br>&amp; Books</b><small>Atlantis, Avalon<br>&amp; the Sphinx</small><i>Enter</i>
+        <span class="plaque"><b>Courses<br>&amp; Books</b><small>Atlantis, Avalon<br>&amp; the Sphinx</small><i>Enter</i></span>
       </button>
       <button class="door" type="button" data-room="Events &amp; Trips" style="left:758px;top:1032px;width:268px;height:438px">
-        <b>Events<br>&amp; Trips</b><small>Live, Egypt<br>&amp; community</small><i>Enter</i>
+        <span class="plaque"><b>Events<br>&amp; Trips</b><small>Live, Egypt<br>&amp; community</small><i>Enter</i></span>
       </button>
     </div>
     <!-- the vignette, as on TREV's and Soleil's sites: the sides closing in, and the top -->
@@ -381,7 +387,10 @@
 
   <!-- the header: home on the left, the menu on the right (gold) -->
   <header class="nav" id="nav">
-    <button class="home" id="homeBtn" type="button" aria-label="Home"><img src="media/sarah-logo.webp?v=19" alt="" width="40" height="36"></button>
+    <button class="home" id="homeBtn" type="button" aria-label="Home">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><defs><linearGradient id="navgold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e2aa"/><stop offset=".5" stop-color="#d9b25f"/><stop offset="1" stop-color="#f3dc9c"/></linearGradient></defs>
+        <path d="M3.5 11.2 12 4l8.5 7.2M6 9.6V20h4.4v-5.6h3.2V20H18V9.6" fill="none" stroke="url(#navgold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <button class="burger" id="menuBtn" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
   </header>
   <nav class="menu" id="menu" hidden>
