@@ -18,8 +18,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=19" media="(max-aspect-ratio: 9/10)">
-<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=19" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=20" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=20" media="(max-aspect-ratio: 9/10)">
 <!--
   The Hall of Records: private preview for Sarah Breskman Cosme. Built by LightStorm; not public.
 
@@ -118,6 +118,16 @@
     background: linear-gradient(180deg, rgba(4, 8, 24, .82) 0%, rgba(4, 8, 24, .5) 45%, rgba(4, 8, 24, 0) 100%); }
   .hallVig, .hallVig > div { position: absolute; left: 0; right: 0; top: 0; pointer-events: none; }
   /* the Hall's own shading (vignette, floor veil) eases in after the cut, never with it */
+  /* her corner ornaments: drawn in from the corner like gold ink as she arrives, then they breathe */
+  .landing > .corner { position: absolute; top: calc(env(safe-area-inset-top) + 50px); left: 6px; right: auto; width: min(47vw, 360px); height: auto; opacity: 0;
+    -webkit-mask-image: radial-gradient(circle at 0 0, #000 0, #000 45%, transparent 70%); mask-image: radial-gradient(circle at 0 0, #000 0, #000 45%, transparent 70%);
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: 0 0; mask-position: 0 0; -webkit-mask-size: 0% 0%; mask-size: 0% 0%;
+    filter: drop-shadow(0 0 6px rgba(255, 205, 120, .35));
+    transition: opacity 1.4s ease, -webkit-mask-size 4.5s cubic-bezier(.33, 0, .2, 1), mask-size 4.5s cubic-bezier(.33, 0, .2, 1); }
+  .landing > .corner.cr { left: auto; right: 6px; transform: scaleX(-1); }
+  .landing.on > .corner { opacity: .9; -webkit-mask-size: 300% 300%; mask-size: 300% 300%; animation: cornerBreath 7s ease-in-out 5s infinite; }
+  @keyframes cornerBreath { 0%, 100% { opacity: .9; } 50% { opacity: .55; } }
+  .storyOpen .landing > .corner { opacity: .35; }
   .landing .hallVig { position: absolute; inset: 0 !important; opacity: 0; transition: opacity 2.6s cubic-bezier(.4, 0, .2, 1); }
   .landing.on .hallVig { opacity: 1; }
   /* with the doorways open the side shading lifts, so no doorway sits in shadow */
@@ -436,7 +446,7 @@
   @keyframes loaderGlow { 0%, 100% { opacity: .55; transform: scale(.97); } 50% { opacity: 1; transform: scale(1); } }
 
   @media (prefers-reduced-motion: reduce) {
-    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .tapHint svg { animation: none !important; }
+    .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .landing > .corner, .tapHint svg { animation: none !important; }
   }
 </style>
 </head>
@@ -529,6 +539,7 @@
   <section class="landing" id="landing" aria-label="Sarah Breskman Cosme">
     <div class="ldim" aria-hidden="true"></div>
     <div class="hallVig" aria-hidden="true"><div class="sides"></div><div class="top"></div></div>
+    <img class="corner cl" src="media/corner.webp?v=20" alt="" aria-hidden="true"><img class="corner cr" src="media/corner.webp?v=20" alt="" aria-hidden="true">
     <div class="sigil" id="sigil" aria-hidden="true"><div class="float"><span class="sigilGlow"></span><img src="media/sarah-logo.webp?v=19" alt=""></div></div>
     <div class="intro" id="intro">
       <p class="tag">Master Hypnotist &amp;<br>Best-Selling Author</p>
@@ -647,7 +658,7 @@
 //  - every full-bleed layer shares one framing; the page never scrolls; media carry a cache-buster
 (() => {
   "use strict";
-  const MV = "?v=19";   // bump whenever a video or still is replaced, or phones keep the old file
+  const MV = "?v=20";   // bump whenever a video or still is replaced, or phones keep the old file
   const SETS = {
     mobile:  { w: 1080, h: 1920, still: "media/hall-hero-mobile.jpg", loop: "media/hall-hero-mobile.mp4",
                her: "media/sarah-cutout-mobile.webp", cut: { x: 374, y: 872, w: 578, h: 1048 },
