@@ -2,8 +2,9 @@
 
 A pitch preview for Sarah Breskman Cosme ("The Holistic Hypnotist"). **Private: nothing here goes public
 without her permission.** It follows the LightStorm build rules from TREV's site
-(lightstormdesign/trevwebsite, CLAUDE.md): Sarah is never AI-generated. Her real photo dissolves out in
-code before any AI clip plays, the transition is at most two clips, and every prompt is environment only.
+(lightstormdesign/trevwebsite, CLAUDE.md): Sarah is never AI-generated. The transition (at most two clips,
+every prompt environment only) never contains her: it plays the moment the visitor taps, and her real
+photo fades out over its first second in code, as on TREV's site.
 
 | Path | What |
 |---|---|

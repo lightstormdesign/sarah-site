@@ -1,12 +1,11 @@
 """Builds preview/media/hall-transition-mobile.mp4 from the two Kling clips.
 
-  hold   1.8 s of clip 1's first frame (= the hero loop's first frame). The page starts this video
-         inside the tap (so Low Power Mode can't block it) while Sarah's real photo dissolves on top:
-         nothing in the AI clip moves until she is gone.
-  clip 1 the pyramid opens and the camera dives in: 10 s retimed to ~4 s with a smooth speed ramp
-         (eases out of the still, rushes the dash and the passage, eases onto the stairway)
-  clip 2 down the stairs into the Hall: 5 s retimed to ~3.8 s, easing to 1x as it settles on the
-         Hall's first frame (= the landing loop's first frame)
+  clip 1 the pyramid opens and the camera dives in: 10 s retimed to ~3.3 s. It plays the instant
+         the visitor taps (Sarah's real photo fades out over its first moments; the clip itself is
+         environment only), eases out of the still, then rushes the dash, the passage and the stairs
+  clip 2 down the stairs into the Hall: 5 s retimed to ~2.9 s, carrying clip 1's speed through the
+         join (no slow-down between the clips) and easing to 1x as it lands on the Hall's first
+         frame (= the landing loop's first frame), where the page cuts straight to the loop
 Every output frame is a real Kling frame (nearest in time), so nothing is invented. Silent, 30 fps,
 1080x1920 H.264, fast start, a keyframe every second.
 usage: python3 tools/build_transition.py clip1.mp4 clip2.mp4 out.mp4
@@ -14,7 +13,7 @@ usage: python3 tools/build_transition.py clip1.mp4 clip2.mp4 out.mp4
 import subprocess, sys, cv2, numpy as np
 
 FPS, W, H = 30, 1080, 1920
-HOLD_S = 1.8
+HOLD_S = 0.0
 
 def frames(path):
     cap = cv2.VideoCapture(path); fps = cap.get(cv2.CAP_PROP_FPS); out = []
@@ -43,13 +42,13 @@ def ramp(a, b, x0, x1):
 
 def main(c1, c2, out):
     f1, fps1 = frames(c1); f2, fps2 = frames(c2)
-    # clip 1: 1.2x out of the still -> 3.4x through the dash and passage -> 1.6x onto the stairs
-    up, down = ramp(1.2, 3.4, 0.0, 1.6), ramp(3.4, 1.6, 7.6, 9.6)
-    a, d1 = retime(f1, fps1, lambda s: up(s) if s < 1.6 else (3.4 if s < 7.6 else down(s)))
-    # clip 2: 1.6x down the stairs and through the door -> eases to 1x as it settles in the Hall
-    b, d2 = retime(f2, fps2, ramp(1.6, 1.0, 2.4, 5.0))
-    # a 3-frame blend across the join (clip 2 starts on clip 1's last frame, give or take a few px)
-    k = 3
+    # clip 1: 1.2x out of the still -> 3.4x through the dash, the passage and down the stairs
+    up = ramp(1.2, 3.4, 0.0, 1.4)
+    a, d1 = retime(f1, fps1, lambda s: up(s) if s < 1.4 else 3.4)
+    # clip 2: picks up at 3.0x (no pause at the join) -> eases to 1x as it lands in the Hall
+    b, d2 = retime(f2, fps2, ramp(3.0, 1.0, 0.6, 5.0))
+    # a 5-frame blend across the join (clip 2 starts on clip 1's last frame, give or take a few px)
+    k = 5
     join = [cv2.addWeighted(a[-k + i], 1 - (i + 1) / (k + 1), b[i], (i + 1) / (k + 1), 0) for i in range(k)]
     seq = [f1[0]] * int(HOLD_S * FPS) + a[:-k] + join + b[k:]
     print(f"hold {HOLD_S}s + clip1 {d1:.2f}s + clip2 {d2:.2f}s = {len(seq) / FPS:.2f}s")

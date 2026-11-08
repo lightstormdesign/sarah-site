@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=9" media="(max-aspect-ratio: 9/10)">
-<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=9" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=10" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=10" media="(max-aspect-ratio: 9/10)">
 <!--
   The Hall of Records: private preview for Sarah Breskman Cosme. Built by LightStorm; not public.
 
@@ -53,8 +53,8 @@
   .plate { left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
   video.plate { transition: opacity .6s ease; }
   .is-hidden { opacity: 0; }
-  .her { transition: opacity 1.7s var(--ease), filter 1.7s var(--ease); transform-origin: 50% 100%; will-change: transform; }
-  .her.go { opacity: 0; filter: brightness(1.7) saturate(.6); }
+  .her { transition: opacity 1s cubic-bezier(.4, 0, .6, 1), filter 1s ease; transform-origin: 50% 100%; will-change: transform; }
+  .her.go { opacity: 0; filter: brightness(1.18); }
 
   /* the staged journey: dusk deepening and a seam of light opening in the pyramid (opacity/transform only) */
   .dusk { position: absolute; inset: 0; opacity: 0; pointer-events: none;
@@ -97,14 +97,23 @@
   /* the doorways: each button is the arch itself, its words in the light */
   .door { position: absolute; background: none; border: 0; color: var(--navy); cursor: pointer; font: inherit;
     border-radius: 999px 999px 0 0 / 46% 46% 0 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
-    padding: 0 18px 64px; text-align: center; opacity: 0; transform: translateY(24px);
+    padding: 0 14px 46px; text-align: center; opacity: 0; transform: translateY(24px);
     transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); }
   .door::before { content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: 0; transition: opacity .5s ease;
     background: radial-gradient(70% 60% at 50% 70%, rgba(255, 255, 255, .55), rgba(190, 240, 255, .18) 60%, transparent 100%); }
   .door:hover::before, .door.lit::before { opacity: 1; }
   .door b, .door small { position: relative; display: block; text-shadow: 0 0 18px rgba(255, 255, 255, .9), 0 0 4px rgba(255, 255, 255, .7); }
-  .door b { font: 600 31px/1.15 "Cinzel", serif; letter-spacing: .1em; text-transform: uppercase; }
-  .door small { margin-top: 12px; font-style: italic; font-weight: 500; font-size: 33px; line-height: 1.2; color: #173052; }
+  .door b { font: 600 40px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; }
+  .door small { margin-top: 12px; font-style: italic; font-weight: 500; font-size: 37px; line-height: 1.18; color: #173052; }
+  .door i { position: relative; display: inline-block; margin-top: 22px; padding: 14px 30px 13px 36px; border: 2px solid rgba(13, 29, 56, .55);
+    border-radius: 999px; font: 600 24px/1 "Cinzel", serif; font-style: normal; letter-spacing: .3em; text-transform: uppercase;
+    background: rgba(255, 255, 255, .28); box-shadow: 0 0 22px rgba(255, 255, 255, .55); transition: background .3s ease, transform .3s ease; }
+  .door:hover i, .door:active i, .door.lit i { background: rgba(255, 255, 255, .6); transform: scale(1.04); }
+  /* each doorway breathes a little light, one after another, so they read as places to step into */
+  .hall.doors-on .door::before { animation: doorbreath 4.5s ease-in-out infinite; }
+  .hall.doors-on .door:nth-of-type(2)::before { animation-delay: 1.5s; }
+  .hall.doors-on .door:nth-of-type(3)::before { animation-delay: 3s; }
+  @keyframes doorbreath { 0%, 100% { opacity: .1; } 50% { opacity: .55; } }
   .door:focus-visible { outline: 3px solid var(--gold-1); outline-offset: 6px; }
   .hall.doors-on .door { opacity: 1; transform: none; }
   .hall.doors-on .door:nth-of-type(1) { transition-delay: .5s; }
@@ -119,7 +128,7 @@
   .eyebrow { font-family: "Cinzel", serif; font-weight: 500; font-size: 11px; letter-spacing: .38em; text-transform: uppercase; color: var(--gold-1); opacity: .92; }
   .desk .eyebrow { font-size: 13px; }
   h1 { margin: 14px 0 12px; font-family: "Cinzel", serif; font-weight: 500; text-transform: uppercase; line-height: 1.04; letter-spacing: .06em;
-    font-size: min(15vw, 76px); background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-size: min(18vw, 91px); background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent;
     filter: drop-shadow(0 2px 14px rgba(0, 0, 0, .45)); }
   h1 span { display: block; }
   h1 .first { font-size: .3em; letter-spacing: .32em; padding-left: .32em; margin-bottom: .12em; }
@@ -128,8 +137,14 @@
   .title .eyebrow { padding-left: .38em; }
   .desk h1 { font-size: min(7vw, 120px); }
   .desk h1 span, .desk .title .eyebrow { padding-left: 0; }
-  .tagline { font-style: italic; font-size: 21px; letter-spacing: .02em; color: var(--ivory); text-shadow: 0 1px 12px rgba(0, 0, 0, .6); }
-  .desk .tagline { font-size: 26px; }
+  .tap { margin-top: 4px; padding-left: .34em; font: 500 13px/1 "Cinzel", serif; letter-spacing: .34em; text-transform: uppercase; color: var(--gold-1);
+    text-shadow: 0 1px 12px rgba(0, 0, 0, .6); cursor: pointer; }
+  .desk .tap { padding-left: 0; font-size: 15px; }
+  .ready .title > .tap:not(.show) { opacity: 0; }
+  .ready .title > .tap.show { animation: tapglow 3.2s ease-in-out .8s infinite; }
+  @keyframes tapglow { 0%, 100% { opacity: 1; } 50% { opacity: .55; } }
+  .view.armed { cursor: pointer; }
+  .leaving .title > .tap.show { animation: none; opacity: 0; transition: opacity .35s ease; }
   .rule { display: block; width: 72px; height: 1px; margin: 16px auto 0; background: linear-gradient(90deg, transparent, var(--gold-2), transparent); }
   .desk .rule { margin-left: 0; background: linear-gradient(90deg, var(--gold-2), transparent); }
 
@@ -140,20 +155,6 @@
   .ready .title > :nth-child(4) { transition-delay: .9s; }
   .leaving .title > * { opacity: 0; transform: translateY(-8px); transition: opacity .7s ease, transform .9s ease; transition-delay: 0s; }
 
-  .begin { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 8.5svh); transform: translate(-50%, 12px);
-    font: 500 12.5px/1 "Cinzel", serif; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-1);
-    padding: 17px 26px 16px 30px; border: 1px solid rgba(240, 211, 138, .65); border-radius: 999px; cursor: pointer;
-    background: rgba(12, 10, 28, .4); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-    box-shadow: inset 0 0 18px rgba(240, 211, 138, .12);
-    opacity: 0; pointer-events: none; transition: opacity 1.2s var(--ease), transform 1.2s var(--ease), background .3s ease; white-space: nowrap; }
-  .desk .begin { left: 6vw; bottom: auto; top: calc(10vh + 300px); transform: translate(0, 12px); }
-  .begin.show { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); animation: halo 3.2s ease-in-out 1.2s infinite; }
-  .desk .begin.show { transform: translate(0, 0); }
-  .begin:active { background: rgba(240, 211, 138, .16); }
-  .begin:focus-visible { outline: 1px solid var(--gold-1); outline-offset: 4px; }
-  @keyframes halo { 0%, 100% { box-shadow: inset 0 0 18px rgba(240, 211, 138, .12); }
-                    50% { box-shadow: 0 0 28px 2px rgba(240, 211, 138, .32), inset 0 0 22px rgba(240, 211, 138, .2); } }
-  .leaving .begin { opacity: 0; pointer-events: none; animation: none; transition: opacity .5s ease; }
 
   /* ---------- the landing copy ---------- */
   .landing { position: absolute; left: 0; right: 0; top: calc(env(safe-area-inset-top) + 6svh); text-align: center; padding: 0 16px; pointer-events: none; }
@@ -163,7 +164,7 @@
   .landing.on > :nth-child(3) { transition-delay: .6s; }
   .landing h2 { margin: 12px 0 8px; font: 500 min(6.3vw, 46px)/1.1 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase;
     background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .6)); }
-  .landing .lede { font-style: italic; font-size: 19px; color: #ece6d8; text-shadow: 0 1px 10px rgba(3, 8, 26, .95); }
+  .landing .lede { font-style: italic; font-size: 27px; color: #ece6d8; text-shadow: 0 1px 10px rgba(3, 8, 26, .95); }
   .credit { position: absolute; left: 0; right: 0; bottom: calc(env(safe-area-inset-bottom) + 2.6svh); text-align: center;
     font: 400 9.5px/1 "Cinzel", serif; letter-spacing: .32em; text-transform: uppercase; color: rgba(240, 220, 170, .72);
     text-shadow: 0 1px 8px rgba(0, 0, 0, .8); opacity: 0; transition: opacity 1.4s ease 2s; pointer-events: none; }
@@ -174,7 +175,7 @@
   .note.on { opacity: .95; }
 
   @media (prefers-reduced-motion: reduce) {
-    .cam.drift, .begin.show { animation: none; }
+    .cam.drift, .tap.show { animation: none; }
   }
 </style>
 </head>
@@ -203,13 +204,13 @@
       <video id="hallVid" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"></video>
       <div class="hallVeil"></div><div class="hallVeil low"></div>
       <button class="door" type="button" data-room="Sessions" style="left:55px;top:1067px;width:268px;height:396px">
-        <b>Sessions</b><small>QHHT &amp;<br>past lives</small>
+        <b>Sessions</b><small>QHHT &amp;<br>past lives</small><i>Enter</i>
       </button>
       <button class="door" type="button" data-room="Courses &amp; Books" style="left:386px;top:983px;width:307px;height:480px">
-        <b>Courses<br>&amp; Books</b><small>Atlantis, Avalon<br>&amp; the Sphinx</small>
+        <b>Courses<br>&amp; Books</b><small>Atlantis, Avalon<br>&amp; the Sphinx</small><i>Enter</i>
       </button>
       <button class="door" type="button" data-room="Events &amp; Trips" style="left:756px;top:1067px;width:272px;height:396px">
-        <b>Events<br>&amp; Trips</b><small>Live, Egypt<br>&amp; community</small>
+        <b>Events<br>&amp; Trips</b><small>Live, Egypt<br>&amp; community</small><i>Enter</i>
       </button>
     </div>
   </div>
@@ -223,15 +224,14 @@
   <header class="title" id="title">
     <p class="eyebrow">The Holistic Hypnotist</p>
     <h1><span class="first">Sarah Breskman</span><span class="last">Cosme</span></h1>
-    <p class="tagline">Remember who you are.</p>
+    <p class="tap" id="begin">Tap to Enter</p>
     <span class="rule"></span>
   </header>
-  <button class="begin" id="begin" type="button">Begin the journey</button>
 
   <section class="landing" id="landing" aria-label="The Hall of Records">
-    <p class="eyebrow">Beneath the plateau</p>
+    <p class="eyebrow">Sarah Breskman Cosme</p>
     <h2>The Hall of Records</h2>
-    <p class="lede">Every soul keeps a record. Choose your doorway.</p>
+    <p class="lede">Choose your doorway</p>
   </section>
   <p class="credit" id="credit">Private preview · Site by LightStorm · <button type="button" id="replay">Replay</button></p>
   <p class="note" id="note"></p>
@@ -254,7 +254,7 @@
 //  - every full-bleed layer shares one framing; the page never scrolls; media carry a cache-buster
 (() => {
   "use strict";
-  const MV = "?v=9";   // bump whenever a video or still is replaced, or phones keep the old file
+  const MV = "?v=10";   // bump whenever a video or still is replaced, or phones keep the old file
   const SETS = {
     mobile:  { w: 1080, h: 1920, still: "media/hall-hero-mobile.jpg", loop: "media/hall-hero-mobile.mp4",
                her: "media/sarah-cutout-mobile.webp", cut: { x: 482, y: 872, w: 578, h: 1048 },
@@ -264,8 +264,7 @@
                base: [720, 850], fx: 0.5, fy: 0.55, video: "" },   // desktop: staged until there's a 16:9 transition
   };
   const HALL = { w: 1080, h: 1920, still: "media/hall-landing-mobile.jpg", loop: "media/hall-landing-mobile.mp4", fx: 0.5, fy: 0.62 };
-  const DISSOLVE_MS = 1750;       // Sarah's dissolve (the transition's baked hold is 1.8 s, so it's always longer)
-  const CROSSFADE_S = 1.5;        // transition -> Hall loop
+  const CROSSFADE_S = 0.25;       // transition -> Hall loop: all but a cut (its last frame is the loop's first)
   const ENTER_WAIT_MS = 4000;     // a tap waits this long for the transition to draw, then stages it instead
   const START_FALLBACK_MS = 12000, PLAY_FALLBACK_MS = 4000;   // + the video's own length
 
@@ -349,6 +348,11 @@
       x.fillStyle = gr; x.fillRect(0, 0, 32, 32); return c;
     };
     const GOLD = sprite(244, 205, 120), BLUE = sprite(150, 220, 255);
+    // her dust: a crisp pinpoint with a faint halo (not a soft blob)
+    const FINE = (() => { const c = document.createElement("canvas"); c.width = c.height = 24;
+      const x = c.getContext("2d"), g = x.createRadialGradient(12, 12, 0, 12, 12, 12);
+      g.addColorStop(0, "rgba(255,252,240,1)"); g.addColorStop(.12, "rgba(255,236,190,.95)"); g.addColorStop(.3, "rgba(240,200,120,.28)"); g.addColorStop(1, "rgba(240,200,120,0)");
+      x.fillStyle = g; x.fillRect(0, 0, 24, 24); return c; })();
     function resize() { dpr = Math.min(devicePixelRatio || 1, 2); W = view.clientWidth; H = view.clientHeight; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
     function seedMotes(n) {
       motes = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, r: .6 + Math.random() * 1.5,
@@ -361,12 +365,12 @@
       let data; try { data = x.getImageData(0, 0, w, h).data; } catch (e) { return; }
       const pts = [];
       for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) if (data[(j * w + i) * 4 + 3] > 170) pts.push([i / w, j / h]);
-      const max = W < 700 ? 650 : 900;
+      const max = W < 700 ? 140 : 190;
       for (let n = 0; n < max && pts.length; n++) {
         const [u, v] = pts[(Math.random() * pts.length) | 0];
         burst.push({ x: rect.left + (u + (Math.random() - .5) / w) * rect.width, y: rect.top + (v + (Math.random() - .5) / h) * rect.height,
-          vx: (Math.random() - .5) * 30, vy: -(18 + Math.random() * 60), r: .7 + Math.random() * 1.9,
-          t: -(0.15 + (1 - v) * .35 + Math.random() * .9), life: 1.3 + Math.random() * 1.6, p: Math.random() * 6.28 });
+          vx: (Math.random() - .5) * 8, vy: -(8 + Math.random() * 22), r: .35 + Math.random() * .6,
+          t: -(Math.random() * .7), life: 1.6 + Math.random() * 1.4, p: Math.random() * 6.28 });
       }
     }
     function frame(now) {
@@ -384,9 +388,10 @@
         const b = burst[i]; b.t += dt; if (b.t < 0) continue;
         if (b.t > b.life) { burst.splice(i, 1); continue; }
         const u = b.t / b.life; b.p += dt * 3;
-        b.x += (b.vx + Math.sin(b.p) * 14) * dt; b.y += b.vy * dt; b.vy *= (1 - .25 * dt);
-        const s = b.r * 6 * (1 - u * .4); ctx.globalAlpha = Math.min(1, b.t * 5) * (1 - u) * .95;
-        ctx.drawImage(GOLD, b.x - s / 2, b.y - s / 2, s, s);
+        b.x += (b.vx + Math.sin(b.p) * 3) * dt; b.y += b.vy * dt;
+        const s = b.r * 9, tw = .75 + .25 * Math.sin(b.p * 2.3);   // a gentle twinkle
+        ctx.globalAlpha = Math.min(1, b.t * 4) * (1 - u) * (1 - u) * tw;
+        ctx.drawImage(FINE, b.x - s / 2, b.y - s / 2, s, s);
       }
       ctx.globalAlpha = 1;
     }
@@ -408,7 +413,7 @@
         view.classList.add("ready");
         startHer();
         dust.start(view.clientWidth < 700 ? 30 : 46);
-        later(() => begin.classList.add("show"), REDUCED ? 300 : 2000);
+        later(() => { begin.classList.add("show"); view.classList.add("armed"); }, REDUCED ? 300 : 2000);
         later(warmUp, 1200);
         if (Q.has("auto")) later(go, 3500);
       });
@@ -449,49 +454,30 @@
   }
   function stopHer() { cancelAnimationFrame(herRaf); herRaf = 0; }
 
-  // the hero loop settles onto its first frame (= the transition's first frame) without a visible jump:
-  // near its end it simply plays out (its last frame is its first); otherwise it crossfades to the still
-  function settleLoop() {
-    if (plateVid.hidden || plateVid.classList.contains("is-hidden") || !plateVid.duration) return;
-    const left = plateVid.duration - plateVid.currentTime;
-    if (left <= 1.6) { plateVid.loop = false; return; }
-    plateVid.style.transition = "opacity 1.4s ease"; plateVid.classList.add("is-hidden");
-  }
-
   // ---------- the journey ----------
   function go() {
     if (phase !== "hero") return;
     phase = "dissolve";
     view.classList.add("leaving");
-    // the transition starts now, inside the tap: its first 1.8 s are a still of the hero's first frame
-    let drawing = false;
-    const useVideo = !!set.video && !Q.has("sim");
-    if (useVideo) {
-      if (!tvSrc) { tv.src = tvSrc = set.video + MV; tv.load(); }   // not in memory yet: from the network
-      keep.hidden = false;
-      onFirstFrame(tv, () => { drawing = true; });
-      tv.play().catch(() => {});
-    }
-    // Sarah's real photo dissolves into gold light, in code; the loop settles onto its first frame
-    if (!REDUCED) dust.release(her, her.getBoundingClientRect());
-    her.classList.add("go");
-    settleLoop();
     stopHer();
-    const D = REDUCED ? 900 : DISSOLVE_MS, t0 = performance.now();
-    later(() => { her.hidden = true; }, D);
-    if (!useVideo) { later(() => { plateVid.pause(); staged(); }, D); return; }
-    // once the transition is drawing (still on its held first frame), the background crossfades into it
-    // under her falling dust, so Kling's re-rendered frame never cuts in; then the hero lifts away
-    let faded = false;
-    const lift = () => {
-      const el = performance.now() - t0;
-      if (drawing && !faded && el >= 850) { faded = true;
-        [plateStill, plateVid].forEach((e) => { e.style.transition = "opacity .8s ease"; e.style.opacity = "0"; }); }
-      if (drawing && faded && el >= D) { plateVid.pause(); return playing(); }
-      if (el > D + ENTER_WAIT_MS) { tv.pause(); keep.hidden = true; plateVid.pause(); return staged(); }
-      later(lift, 50);
-    };
-    lift();
+    const useVideo = !!set.video && !Q.has("sim");
+    const fadeHer = () => { if (!REDUCED) dust.release(her, her.getBoundingClientRect()); her.classList.add("go"); };
+    const toStaged = () => { fadeHer(); later(() => { her.hidden = true; plateVid.pause(); staged(); }, REDUCED ? 600 : 1000); };
+    if (!useVideo) return toStaged();
+    // the transition plays the moment she taps (inside the tap, so Low Power Mode can't block it). The clip is
+    // environment only; as soon as it is drawing, the background crossfades into it in a breath and her real
+    // photo fades out over its first moments, then the hero lifts away
+    if (!tvSrc) { tv.src = tvSrc = set.video + MV; tv.load(); }   // not in memory yet: from the network
+    keep.hidden = false;
+    let started = false;
+    onFirstFrame(tv, () => {
+      if (started) return; started = true;
+      [plateStill, plateVid].forEach((e) => { e.style.transition = "opacity .25s linear"; e.style.opacity = "0"; });
+      fadeHer();
+      later(() => { her.hidden = true; plateVid.pause(); playing(); }, REDUCED ? 500 : 1050);
+    });
+    tv.play().catch(() => {});
+    later(() => { if (!started) { started = true; tv.pause(); keep.hidden = true; toStaged(); } }, ENTER_WAIT_MS);
   }
 
   // the transition is drawing: lift the hero off it (identical frame underneath), watch it, hand over to the Hall
@@ -550,6 +536,7 @@
     if (phase === "landing") return;
     phase = "landing";
     try { hallVid.currentTime = 0; } catch (e) { /* not loaded yet: the still shows */ }
+    hall.style.transition = fromVideo ? "opacity .25s linear" : "";
     showWhenPlaying(hallVid);
     hallVid.play().catch(() => {});
     hall.classList.add("on"); dust.hall();
@@ -557,7 +544,7 @@
       stage.style.visibility = "hidden"; dusk.style.opacity = "0"; slit.style.opacity = "0";
       if (fromVideo) { keep.hidden = true; tv.pause(); }
     }, CROSSFADE_S * 1000 + 200);
-    later(() => { landing.classList.add("on"); hall.classList.add("doors-on"); credit.classList.add("on"); }, fromVideo ? 1100 : 700);
+    later(() => { landing.classList.add("on"); hall.classList.add("doors-on"); credit.classList.add("on"); }, fromVideo ? 500 : 700);
   }
 
   function veils(on) { ["vTop", "vBottom"].forEach((id) => $(id).classList.toggle("gone", !on)); $("vVig").classList.toggle("soft", !on); }
@@ -584,10 +571,12 @@
     [plateStill, plateVid].forEach((e) => { e.style.transition = "none"; e.style.opacity = ""; });
     her.style.transform = ""; startHer();
     veils(true); dust.reset();
-    later(() => begin.classList.add("show"), 1600);
+    later(() => { begin.classList.add("show"); view.classList.add("armed"); }, 1600);
   }
 
-  begin.addEventListener("click", go);
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches) begin.textContent = "Click to Enter";
+  addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && phase === "hero" && view.classList.contains("armed")) { view.classList.remove("armed"); go(); } });
+  view.addEventListener("click", (e) => { if (phase === "hero" && view.classList.contains("armed") && !e.target.closest(".credit")) { view.classList.remove("armed"); go(); } });
   $("replay").addEventListener("click", replay);
   addEventListener("resize", () => choose());
   choose();
