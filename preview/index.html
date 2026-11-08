@@ -130,11 +130,12 @@
   .door b { font: 600 40px/1.12 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase; color: #f2dca4; }
   .door small { margin-top: 14px; font-style: italic; font-weight: 500; font-size: 36px; line-height: 1.2; color: #f1e9d8; }
   .door i { position: absolute; left: 50%; top: 100%; transform: translate(-50%, -50%); white-space: nowrap;
-    padding: 14px 24px 13px calc(28px + .3em); border: 2px solid rgba(232, 207, 154, .75); border-radius: 999px;
-    font: 600 24px/1 "Cinzel", serif; font-style: normal; letter-spacing: .3em; text-transform: uppercase; color: #f2dfae;
-    background: linear-gradient(180deg, rgba(20, 13, 7, .55), rgba(12, 8, 4, .7)); box-shadow: 0 6px 22px rgba(0, 0, 0, .4); }
-  .door i::after { content: "\203A"; margin-left: .35em; letter-spacing: 0; font-size: 1.25em; line-height: 0; position: relative; top: .06em; }
-  .door:hover i, .door:active i, .door.lit i { background: linear-gradient(180deg, rgba(232, 207, 154, .3), rgba(232, 207, 154, .1)); transform: translate(-50%, -50%) scale(1.04); }
+    padding: 13px 26px 12px calc(26px + .3em); border: 2px solid rgba(232, 207, 154, .75); border-radius: 999px;
+    font: 600 22px/1 "Cinzel", serif; font-style: normal; letter-spacing: .3em; text-transform: uppercase; color: #f2dfae;
+    background: linear-gradient(180deg, rgba(232, 207, 154, .22), rgba(232, 207, 154, .07)), rgba(16, 10, 5, .55);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); text-shadow: 0 1px 8px rgba(0, 0, 0, .55); box-shadow: 0 0 22px rgba(214, 179, 101, .2); }
+  .door:hover i, .door:active i, .door.lit i { background: linear-gradient(180deg, rgba(232, 207, 154, .4), rgba(232, 207, 154, .14)); transform: translate(-50%, -50%) scale(1.04); }
+  .door:hover i, .door:active i, .door.lit i { background: linear-gradient(180deg, rgba(232, 207, 154, .4), rgba(232, 207, 154, .14)), rgba(16, 10, 5, .55); }
   .door:focus-visible { outline: 3px solid var(--gold-1); outline-offset: 6px; }
   .hall.doors-on .door { pointer-events: auto; }
   /* the shadows gather one doorway after another: the centre first, then its neighbours */
@@ -201,7 +202,7 @@
   .landing { position: absolute; inset: 0; pointer-events: none; text-align: center; }
   .landing > * { position: absolute; left: 0; right: 0; }
   /* a soft dark glow behind the centred group, so it reads clearly over the warm Hall */
-  .landing::before { content: ""; position: absolute; left: -10%; right: -10%; top: 2%; bottom: 30%; border-radius: 50%;
+  .landing::before { content: ""; position: absolute; left: -10%; right: -10%; top: 4%; bottom: 14%; border-radius: 50%;
     background: radial-gradient(closest-side, rgba(10, 7, 4, .55), rgba(10, 7, 4, .25) 60%, rgba(10, 7, 4, 0)); opacity: 0; transition: opacity 3.4s cubic-bezier(.4, 0, .2, 1) .3s; }
   .landing.on::before { opacity: 1; }
   /* while her logo and bio are up, the Hall rests in shadow; it brightens when the doorways open */
@@ -226,9 +227,15 @@
   .landing.on .intro > * { opacity: 1; filter: blur(0); }
   .landing.on .intro > .tag { transition-delay: .55s; }
   .landing.on .intro > .bio { transition-delay: .8s; }
-  .landing.on .intro > .ctas { transition-delay: 1.2s; pointer-events: auto; }
-  .landing.on .intro > .proof { transition-delay: 1.7s; pointer-events: auto; }
-  .proof { display: block; width: max-content; max-width: 100%; margin: 22px auto 0; padding-top: 16px; text-decoration: none; color: inherit; position: relative; }
+  /* the two buttons stand on the doorways' threshold, the proof line beneath them */
+  .act { top: var(--ct, 75%); padding: 0 16px; transition: opacity 1s ease, filter 1s ease; }
+  .act > * { opacity: 0; filter: blur(10px); transition: opacity 2s cubic-bezier(.22, 1, .36, 1), filter 2s cubic-bezier(.22, 1, .36, 1); }
+  .landing.on .act > * { opacity: 1; filter: blur(0); }
+  .landing.on .act > .ctas { transition-delay: 1.2s; pointer-events: auto; }
+  .landing.on .act > .proof { transition-delay: 1.7s; pointer-events: auto; }
+  .offerings .act { opacity: 0; filter: blur(8px); pointer-events: none; }
+  .offerings .act * { pointer-events: none !important; }
+  .proof { display: block; width: max-content; max-width: 100%; margin: 20px auto 0; padding-top: 16px; text-decoration: none; color: inherit; position: relative; }
   .proof::before { content: ""; position: absolute; left: 50%; top: 0; width: 64px; height: 1px; margin-left: -32px;
     background: linear-gradient(90deg, rgba(217, 178, 95, 0), #e9cf8f 50%, rgba(217, 178, 95, 0)); }
   .stars { position: relative; display: inline-block; font-size: 15px; letter-spacing: .22em; padding-left: .22em; color: rgba(232, 207, 154, .28); line-height: 1; }
@@ -239,13 +246,16 @@
   .proof:hover .pr1 { color: #fff3cf; }
   /* short screens (an iPhone SE): the proof line keeps its stars and rating, and the preview credit waits for the doorways */
   @media (max-height: 640px) and (max-aspect-ratio: 9/10) { .pr2 { display: none; } .proof { margin-top: 16px; padding-top: 12px; }
-    .arrived:not(.offerings) .credit { opacity: 0 !important; pointer-events: none; } }
+  }
+  /* the preview credit waits until the doorways are open, so it never meets the proof line */
+  .arrived:not(.offerings) .credit { opacity: 0 !important; pointer-events: none; }
   .tag { font: 500 min(6.4vw, 27px)/1.2 "Cinzel", serif; letter-spacing: .04em; text-transform: none;
     background: linear-gradient(180deg, #ffffff 0%, #d8d8d8 45%, #9a9a9a 75%, #c9c9c9 100%); -webkit-background-clip: text; background-clip: text;
     color: transparent; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 14px rgba(0, 0, 0, .7)); }
   .bio { max-width: 21.5rem; margin: 14px auto 0; font-size: 18px; font-weight: 500; line-height: 1.5; color: #efd9a6; text-wrap: balance;
     text-shadow: 0 2px 28px rgba(0, 0, 0, .75), 0 1px 6px rgba(0, 0, 0, .65); }
   .ctas { display: flex; justify-content: center; gap: 12px; margin-top: 26px; }
+  .act .ctas { margin-top: 0; }
   /* premium, quiet buttons: a fine gold rule, a whisper of gold inside, a slow breathing glow (Sierra's) */
   .cta { position: relative; font: 520 11px/1 "Cinzel", serif; letter-spacing: .28em; padding: 15px 20px 14px calc(20px + .28em); text-transform: uppercase;
     white-space: nowrap; border-radius: 999px; cursor: pointer; color: #f2dfae; border: 1px solid rgba(232, 207, 154, .7);
@@ -424,7 +434,9 @@
     <div class="intro" id="intro">
       <p class="tag">Master Hypnotist &amp;<br>Best-Selling Author</p>
       <p class="bio">Level 3 QHHT practitioner, past-life regressionist and recipient of the 2023 Dolores Cannon Award, Sarah guides you inward, to who you really are and your true purpose.</p>
-      <div class="ctas"><button class="cta" id="seeOfferings" type="button">See Offerings</button><button class="cta ghost" id="myStory" type="button">About Sarah</button></div>
+    </div>
+    <div class="act" id="act">
+        <div class="ctas"><button class="cta" id="seeOfferings" type="button">See Offerings</button><button class="cta ghost" id="myStory" type="button">About Sarah</button></div>
       <a class="proof" href="https://www.goodreads.com/search?q=A+Hypnotist%27s+Journey+to+Atlantis+Breskman" target="_blank" rel="noopener">
         <span class="stars" aria-hidden="true"><span class="fill" style="width:93%">&#9733;&#9733;&#9733;&#9733;&#9733;</span>&#9733;&#9733;&#9733;&#9733;&#9733;</span>
         <span class="pr1">4.65 on Goodreads &middot; 500+ readers</span>
@@ -594,6 +606,7 @@
     hall.classList.toggle("banded", banded); tv.classList.toggle("banded", banded);
     hallStage.style.transform = `translate(${hf.ox.toFixed(1)}px, ${hf.oy.toFixed(1)}px) scale(${hf.s.toFixed(5)})`;
     if (!hallStill.getAttribute("src")) { hallStill.src = HALL.still + MV; hallSide.src = HALL.still + MV; $("tvBack").src = HALL.still + MV; }
+    if (typeof layoutLanding === "function") layoutLanding();
     // the transition starts on the hero's crop and ends on the Hall's
     tvFrom = cover(W, H, 1080, 1920, set.fx, set.fy); tvTo = hf;
     placeTv(tvPos);
@@ -900,11 +913,22 @@
   // headline, bio and buttons; with the offerings, "The Hall of Records" and "Choose your doorway" in their place
   function layoutLanding() {
     const W = view.clientWidth, H = view.clientHeight, phone = W / H < 0.9, ratio = 574 / 640;
-    const w = phone ? Math.min(W * 0.5, H * (H < 760 ? 0.2 : 0.24), 210) : Math.min(H * 0.24, 230);   // a little smaller on short screens, so the title clears the doorways
-    const t = phone ? Math.max(58, H * 0.085) : H * 0.09, gap = Math.max(26, H * 0.038);
+    const w = phone ? Math.min(W * 0.5, H * (H < 760 ? 0.2 : 0.24), 210) : Math.min(H * 0.24, 230);
+    const gap = Math.max(26, H * 0.038), lh = w * ratio;
+    const doors = [...hall.querySelectorAll(".door")].map((d) => d.getBoundingClientRect());
+    const doorTop = Math.min(...doors.map((r) => r.top)), sill = Math.max(...doors.map((r) => r.bottom));
+    const act = $("act"), ctasH = act.querySelector(".ctas").offsetHeight;
+    // the title (with the offerings) ends just above the doorways; the logo and the words sit above it
+    const titleH = $("hallTitle").offsetHeight;
+    let it = doorTop - 14 - titleH, t = it - gap - lh;
+    t = Math.max(phone ? 58 : H * 0.07, t); it = t + lh + gap;
     landing.style.setProperty("--lw", w.toFixed(1) + "px"); landing.style.setProperty("--lt", t.toFixed(1) + "px");
-    landing.style.setProperty("--it", (t + w * ratio + gap).toFixed(1) + "px");
+    landing.style.setProperty("--it", it.toFixed(1) + "px");
+    // the buttons straddle the threshold, but never ride up into the words above them
+    const introBottom = it + $("intro").offsetHeight + 18;
+    landing.style.setProperty("--ct", Math.max(sill - ctasH / 2, introBottom).toFixed(1) + "px");
   }
+
   addEventListener("resize", () => requestAnimationFrame(layoutLanding));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutLanding);
   layoutLanding();
