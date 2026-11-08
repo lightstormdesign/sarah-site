@@ -947,6 +947,10 @@
     hallRaf = requestAnimationFrame(frame);
   }
   function stopHallTilt() { cancelAnimationFrame(hallRaf); $("hallTilt").style.transform = ""; landing.style.transform = ""; }
+  // the portal in layers: the background loop stays still; with the phone's tilt (or the mouse) her name and
+  // "Tap to Enter" float a little toward you, her mandala drifts the other way, behind them
+  const titleEl = $("title"), mandalaEl = document.querySelector(".mandala");
+  let lx = 0, ly = 0;
   function startHer() {
     let px = 0, py = 0, vx = 0, vy = 0, t0 = null, last = 0;
     const frame = (now) => {
@@ -964,6 +968,11 @@
       const m = REDUCED ? 0 : 1, k = fit.s || 1, near = Math.max(0, Math.min(1, py));
       // forward she rises and grows (about her bottom edge); back, she sinks a touch below it
       her.style.transform = `translate(${(px * ME_PX * ME_SIDE * m / k).toFixed(2)}px, ${((1 - near) * ME_PX * 0.585 * m / k).toFixed(2)}px) scale(${(1 + ME_SCALE * near * m).toFixed(4)})`;
+      const ix = led ? inX : 0, iy = led ? inY : 0;
+      lx += (ix - lx) * Math.min(1, dt * 4); ly += (iy - ly) * Math.min(1, dt * 4);
+      const tt = `${(lx * 6 * m).toFixed(2)}px ${(ly * 4 * m).toFixed(2)}px`;
+      titleEl.style.translate = tt; begin.style.translate = tt;
+      if (mandalaEl) mandalaEl.style.translate = `${(-lx * 10 * m).toFixed(2)}px ${(-ly * 8 * m).toFixed(2)}px`;
     };
     cancelAnimationFrame(herRaf); herRaf = requestAnimationFrame(frame);
   }
