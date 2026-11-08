@@ -8,7 +8,7 @@
 <title>Hall of Records · Private Preview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=11" media="(max-aspect-ratio: 9/10)">
 <link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=11" media="(max-aspect-ratio: 9/10)">
 <!--
@@ -148,7 +148,7 @@
     transform: translate(-50%, -50%); background: none; border: 0; padding: 14px 10px; cursor: pointer;
     opacity: 0; pointer-events: none; filter: blur(6px); -webkit-tap-highlight-color: transparent;
     transition: opacity 1.6s cubic-bezier(.2, .7, .2, 1), filter 1.6s cubic-bezier(.2, .7, .2, 1); }
-  .enter > span { grid-area: 1 / 1; font: 600 clamp(18px, 4.9vw, 21.5px)/1 "Cinzel", serif; text-transform: uppercase;
+  .enter > span { grid-area: 1 / 1; font: 540 clamp(17.1px, 4.66vw, 20.4px)/1 "Cinzel", serif; text-transform: uppercase;
     white-space: nowrap; letter-spacing: .5em; margin-right: -.5em;
     transition: letter-spacing 1.8s cubic-bezier(.2, .7, .2, 1), margin-right 1.8s cubic-bezier(.2, .7, .2, 1); }
   .enter .halo { width: 190%; height: 640%; border-radius: 50%; z-index: -2; letter-spacing: 0; margin: 0;
@@ -642,9 +642,9 @@
     // measured from the layout (offsets ignore the title's rise-in transform), so it's right at any moment
     const h1 = title.querySelector("h1"), bottom = title.offsetTop + h1.offsetTop + h1.offsetHeight, left = title.offsetLeft + h1.offsetLeft;
     if (set === SETS.mobile) {
-      const tipY = fit.oy + set.apex[1] * fit.s, y = (bottom + tipY) / 2;
+      const tipY = fit.oy + set.apex[1] * fit.s, y = bottom + (tipY - bottom) * 0.36;   // closer to the name: part of its block
       Object.assign(begin.style, { left: "50%", top: y.toFixed(1) + "px" });
-    } else Object.assign(begin.style, { left: (left - 10).toFixed(1) + "px", top: (bottom + 44).toFixed(1) + "px" });
+    } else Object.assign(begin.style, { left: (left - 10).toFixed(1) + "px", top: (bottom + 36).toFixed(1) + "px" });
   }
   addEventListener("resize", () => requestAnimationFrame(placeEnter));
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => placeEnter());
