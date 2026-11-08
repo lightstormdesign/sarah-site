@@ -1,0 +1,8 @@
+{
+  "name": "sarah-site",
+  "compatibility_date": "2026-08-01",
+  // The private preview (preview/), served as static assets, as on TREV's and Jenn's sites.
+  "assets": {
+    "directory": "./preview"
+  }
+}

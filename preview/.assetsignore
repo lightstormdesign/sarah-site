@@ -1,0 +1,5 @@
+# not part of the site: local test helpers and media the page no longer uses
+start-mac.command
+start-windows.bat
+HOW-TO-TEST.txt
+media/giza-*
