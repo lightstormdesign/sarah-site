@@ -1129,7 +1129,9 @@
       const r = hall.querySelector(".dveil.dr" + i); r.classList.remove("lit"); if (x === d) { void r.offsetWidth; r.classList.add("lit"); } });
     hall.classList.add("chosen"); if (navigator.vibrate) navigator.vibrate(8);
     const i = [...document.querySelectorAll(".door")].indexOf(d);
-    clearTimeout(enterT); enterT = setTimeout(() => enterRoom(i, d), 500);
+    // the preview stops at the choice: the rooms behind the doors come with the full site
+    note.textContent = `Preview · on the full site, the ${d.dataset.room} doorway opens`;
+    note.classList.add("on"); clearTimeout(note._t); note._t = setTimeout(() => note.classList.remove("on"), 3200);
   }));
 
   function replay() {
