@@ -5,12 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="theme-color" content="#0b0a1a">
-<title>Hall of Records · Private Preview</title>
+<title>Sarah Breskman Cosme · The Hall of Records</title>
+<meta name="description" content="Sarah Breskman Cosme, The Holistic Hypnotist: QHHT and past-life regression sessions, courses and books on Atlantis, Avalon and the Sphinx, live events and journeys to Egypt.">
+<meta property="og:title" content="Sarah Breskman Cosme · The Hall of Records">
+<meta property="og:description" content="Master Hypnotist, Level 3 QHHT practitioner and best-selling author. Remember who you are.">
+<meta property="og:image" content="share.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=18" media="(max-aspect-ratio: 9/10)">
-<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=18" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=19" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=19" media="(max-aspect-ratio: 9/10)">
 <!--
   The Hall of Records: private preview for Sarah Breskman Cosme. Built by LightStorm; not public.
 
@@ -103,6 +112,7 @@
   .hall.banded .hallStage { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
     mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%); }
   .hallStage { width: 1080px; height: 1920px; }
+  .hallTilt { position: absolute; inset: 0; will-change: transform; }
   .hallStage video, .hallStage img.hp { position: absolute; inset: 0; width: 100%; height: 100%; }
   .hallVeil { position: absolute; left: 0; right: 0; top: 0; height: 30%; pointer-events: none;
     background: linear-gradient(180deg, rgba(4, 8, 24, .82) 0%, rgba(4, 8, 24, .5) 45%, rgba(4, 8, 24, 0) 100%); }
@@ -378,6 +388,20 @@
   .storyClose { position: absolute; top: calc(env(safe-area-inset-top) + 8px); right: 10px; z-index: 2; width: 44px; height: 44px; background: none; border: 0;
     color: var(--gold-1); font: 300 34px/1 Georgia, serif; cursor: pointer; filter: drop-shadow(0 1px 6px rgba(0, 0, 0, .6)); }
   .storyOpen .nav .burger { visibility: hidden; }
+  .room { background: linear-gradient(180deg, rgba(8, 6, 16, .985), rgba(10, 7, 16, .97) 50%, rgba(8, 6, 16, .99)); }
+  .storyOpen .door b, .storyOpen .door small { opacity: 0 !important; transition: opacity .4s ease; }
+  .roomSigil { width: min(34vw, 150px); margin: 0 auto; }
+  .roomSigil img { display: block; width: 100%; filter: drop-shadow(0 0 16px rgba(255, 205, 120, .45)); }
+  .roomCtas { flex-wrap: wrap; }
+  .room .cta { text-decoration: none; display: inline-block; }
+  .backHall { margin-top: 18px; }
+  .proofLine { margin-top: 12px !important; font: 500 12px/1.4 "Cinzel", serif !important; letter-spacing: .2em; color: #e9c877 !important; }
+  /* stepping through a doorway: the Hall pushes in toward it and the light takes the screen, then the room appears */
+  .hall { transition: opacity 1.5s ease, transform 1.4s cubic-bezier(.55, 0, .45, 1); }
+  .hall.entering { transform: scale(2.4); }
+  .doorLight { position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0; transition: opacity .9s ease;
+    background: radial-gradient(circle at var(--dx, 50%) var(--dy, 60%), #fffaf0 0%, #ffe9bf 35%, #e8c27a 70%, #b98a45 100%); }
+  .doorLight.on { opacity: 1; transition: opacity .9s ease .55s; }
   @media (prefers-reduced-motion: reduce) { .chapter { opacity: 1; transform: none; transition: none; } }
 
   /* the header (TREV's menu button, in gold) */
@@ -401,6 +425,15 @@
   .menu a:hover { color: #fff3cf; }
   .menuClose { position: absolute; top: calc(env(safe-area-inset-top) + 8px); right: 10px; width: 44px; height: 44px; background: none; border: 0;
     color: var(--gold-1); font: 300 34px/1 Georgia, serif; cursor: pointer; }
+
+  /* first load: the page rises out of black (her name is already there beneath it) */
+  .black { position: absolute; inset: 0; z-index: 30; background: #050408; pointer-events: none; transition: opacity 1.2s cubic-bezier(.4, 0, .2, 1); }
+  .black.gone { opacity: 0; }
+  /* a slow connection after the tap: her logo glows gently in the dark until the journey can begin */
+  .loader { position: absolute; left: 50%; top: 46%; width: 110px; margin: -50px 0 0 -55px; z-index: 12; opacity: 0; pointer-events: none; transition: opacity .8s ease; }
+  .loader img { display: block; width: 100%; filter: drop-shadow(0 0 16px rgba(255, 205, 120, .55)); animation: loaderGlow 2.4s ease-in-out infinite; }
+  .loader.on { opacity: 1; }
+  @keyframes loaderGlow { 0%, 100% { opacity: .55; transform: scale(.97); } 50% { opacity: 1; transform: scale(1); } }
 
   @media (prefers-reduced-motion: reduce) {
     .cam.drift, .silver, .enter .glow, .sigil .float, .cta, .dglow, .dlight g, .tapHint svg { animation: none !important; }
@@ -426,7 +459,10 @@
   <div class="slit" id="slit"></div>
 
   <!-- 4. the Hall of Records, its three doorways the buttons -->
+  <div class="black" id="black" aria-hidden="true"></div>
+  <div class="loader" id="loader" aria-hidden="true"><img src="media/sarah-logo.webp?v=19" alt=""></div>
   <div class="hall" id="hall">
+    <div class="hallTilt" id="hallTilt">
     <img class="side" id="hallSide" alt="" aria-hidden="true">
     <div class="hallStage" id="hallStage">
       <img class="hp" id="hallStill" alt="" aria-hidden="true">
@@ -449,6 +485,7 @@
         <b>Events<br>&amp; Trips</b><small>Live, Egypt<br>&amp; community</small>
       </button>
     </div>
+    </div>
     <!-- the vignette, as on TREV's and Soleil's sites: the sides closing in, and the top -->
     <div class="hallDim" aria-hidden="true"></div>
   </div>
@@ -458,6 +495,7 @@
   <div class="veil bottom" id="vBottom"></div>
   <canvas class="dust" id="dust" aria-hidden="true"></canvas>
   <div class="bloom" id="bloom"></div>
+  <div class="doorLight" id="doorLight" aria-hidden="true"></div>
 
   <header class="title" id="title">
     <p class="eyebrow silver">The Holistic Hypnotist</p>
@@ -564,6 +602,30 @@
       </footer>
     </div>
     <button class="storyClose" id="storyClose" type="button" aria-label="Close my story">&times;</button>
+  </section>
+  <section class="story room" id="room0" aria-label="Sessions" hidden>
+    <div class="storyScroll roomScroll">
+      <header class="sHead"><div class="portrait"><img src="media/sarah-portrait.webp?v=19" alt="Sarah Breskman Cosme" decoding="async" loading="lazy"></div><p class="eyebrow">Sessions</p><h2>QHHT &amp; Past Lives</h2><p class="sRoles">One-on-one sessions with a Level 3 QHHT practitioner</p><span class="sRule"></span></header>
+      <article class="chapter"><p class="num">I</p><h3>A journey inward</h3><p>QHHT is an amazing journey inwards in which you can really reconnect with yourself. In a session you can find out valuable information about who you really are, your true purpose, and you can even heal your body.</p></article><article class="chapter"><p class="num">II</p><h3>The method</h3><p>Sarah trained with Dolores Cannon&rsquo;s daughter, Julia Cannon, in Dolores&rsquo;s Quantum Healing Hypnosis Technique, and holds the coveted Level 3 practitioner status. She now assists Julia in teaching it around the world.</p></article><article class="chapter"><p class="num">III</p><h3>Past lives</h3><p>A certified Past-Life Regressionist trained by Dr. Brian Weiss, Sarah guides you to the lives and memories that shape who you are today.</p></article>
+      <footer class="sEnd chapter"><div class="ctas roomCtas"><a class="cta" href="https://app.acuityscheduling.com/schedule.php?owner=25802443" target="_blank" rel="noopener">Book a Session</a></div><button class="cta ghost backHall" type="button">Back to the Hall</button></footer>
+    </div>
+    <button class="storyClose roomClose" type="button" aria-label="Back to the Hall">&times;</button>
+  </section>
+  <section class="story room" id="room1" aria-label="Courses &amp; Books" hidden>
+    <div class="storyScroll roomScroll">
+      <header class="sHead"><div class="roomSigil"><img src="media/sarah-logo.webp?v=19" alt="" decoding="async" loading="lazy"></div><p class="eyebrow">Courses &amp; Books</p><h2>The Records</h2><p class="sRoles">Best-selling books and immersive e-book courses</p><span class="sRule"></span></header>
+      <article class="chapter"><p class="num">I</p><h3>The books</h3><ul class="books"><li><em>A Hypnotist&rsquo;s Journey to Atlantis</em></li><li><em>A Hypnotist&rsquo;s Journey to the Secrets of the Sphinx</em></li><li><em>A Hypnotist&rsquo;s Journey from the Trail to the Star People</em></li></ul><p class="proofLine">&#9733;&#9733;&#9733;&#9733;&#9733; &nbsp;4.65 on Goodreads</p></article><article class="chapter"><p class="num">II</p><h3>The courses</h3><p>Immersive e-book courses on Atlantis, Avalon and the Secrets of the Sphinx, and Heal Yourself with Hypnosis, each a journey through her clients&rsquo; accounts with live Q&amp;A.</p></article>
+      <footer class="sEnd chapter"><div class="ctas roomCtas"><a class="cta" href="https://sarahbreskmancosme.teachable.com/" target="_blank" rel="noopener">Explore the Courses</a><a class="cta ghost" href="https://www.amazon.com/stores/author/B0932XGJ3Q" target="_blank" rel="noopener">Find the Books</a></div><button class="cta ghost backHall" type="button">Back to the Hall</button></footer>
+    </div>
+    <button class="storyClose roomClose" type="button" aria-label="Back to the Hall">&times;</button>
+  </section>
+  <section class="story room" id="room2" aria-label="Events &amp; Trips" hidden>
+    <div class="storyScroll roomScroll">
+      <header class="sHead"><div class="roomSigil"><img src="media/sarah-logo.webp?v=19" alt="" decoding="async" loading="lazy"></div><p class="eyebrow">Events &amp; Trips</p><h2>Gather &amp; Journey</h2><p class="sRoles">Live hypnosis, sacred travel and community</p><span class="sRule"></span></header>
+      <article class="chapter"><p class="num">I</p><h3>Live hypnosis</h3><p>&ldquo;A Journey to the Higher Self&rdquo;: live group hypnosis and open dialogue, online.</p></article><article class="chapter"><p class="num">II</p><h3>Journeys</h3><p>Sarah has taught QHHT with Julia Cannon in Egypt, Mt. Shasta and Peru, and leads journeys to Egypt and healing retreats.</p></article><article class="chapter"><p class="num">III</p><h3>Community</h3><p>The Inner Circle on Patreon: group past-life regressions, live sessions and teachings between the journeys.</p></article>
+      <footer class="sEnd chapter"><div class="ctas roomCtas"><a class="cta" href="https://sarah-breskman.squarespace.com/upcoming-events" target="_blank" rel="noopener">Upcoming Events</a><a class="cta ghost" href="https://www.theholistichypnotist.com/retreats" target="_blank" rel="noopener">Retreats &amp; Egypt</a><a class="cta ghost" href="https://www.patreon.com/15519280/join" target="_blank" rel="noopener">Join the Inner Circle</a></div><button class="cta ghost backHall" type="button">Back to the Hall</button></footer>
+    </div>
+    <button class="storyClose roomClose" type="button" aria-label="Back to the Hall">&times;</button>
   </section>
   <p class="note" id="note"></p>
 </main>
@@ -731,7 +793,7 @@
     };
   })();
   { const sb = $("soundBtn"); const paint = () => { sb.classList.toggle("muted", sound.muted); sb.setAttribute("aria-label", sound.muted ? "Sound on" : "Sound off"); sb.setAttribute("aria-pressed", String(!sound.muted)); };
-    paint(); sb.addEventListener("click", (e) => { e.stopPropagation(); sound.toggle(); paint(); }); }
+    paint(); sb.addEventListener("click", (e) => { e.stopPropagation(); sound.toggle(); paint(); askMotion(); }); }
   document.addEventListener("visibilitychange", () => (document.hidden ? sound.suspend() : sound.resume()));
 
   function warmUp() {
@@ -827,6 +889,8 @@
   function heroUp() {
     // from the very start: her portrait fades in as soon as it's decoded, "Tap to Enter" a moment behind it
     whenLoaded(her).then(() => her.decode?.().catch(() => {})).then(() => requestAnimationFrame(() => her.classList.add("in")));
+    whenLoaded(plateStill).then(() => requestAnimationFrame(() => $("black").classList.add("gone")));
+    later(() => $("black").classList.add("gone"), 2500);   // never stay black
     placeEnter(); requestAnimationFrame(() => { begin.classList.add("show"); view.classList.add("armed"); });
     Promise.all([whenLoaded(plateStill), whenLoaded(her)])
       .then(() => Promise.all([plateStill.decode?.().catch(() => {}), her.decode?.().catch(() => {})]))
@@ -848,10 +912,33 @@
   if (matchMedia("(hover: hover) and (pointer: fine)").matches)
     addEventListener("pointermove", (e) => { if (e.pointerType !== "mouse" || (e.clientX === 0 && e.clientY === 0)) return;
       inX = e.clientX / innerWidth * 2 - 1; inY = e.clientY / innerHeight * 2 - 1; });
-  if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission !== "function") {
-    addEventListener("deviceorientation", (e) => { if (e.gamma == null) return; tiltLive = true;
-      inX = Math.max(-1, Math.min(1, e.gamma / 25)); inY = Math.max(-1, Math.min(1, (e.beta - 45) / 30)); });
+  const onTilt = (e) => { if (e.gamma == null) return; tiltLive = true;
+    inX = Math.max(-1, Math.min(1, e.gamma / 25)); inY = Math.max(-1, Math.min(1, (e.beta - 45) / 30)); };
+  const needsAsk = typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function";
+  if (typeof DeviceOrientationEvent !== "undefined" && !needsAsk) addEventListener("deviceorientation", onTilt);
+  // iPhone asks once; as on TREV's site it is never asked at the enter tap, only when she touches the speaker
+  let asked = false;
+  function askMotion() { if (!needsAsk || asked) return; asked = true;
+    DeviceOrientationEvent.requestPermission().then((r) => { if (r === "granted") addEventListener("deviceorientation", onTilt); }).catch(() => {}); }
+  // the Hall leans with the phone (or the mouse): the room drifts a little, the logo and words a touch the other way
+  let hallRaf = 0;
+  function startHallTilt() {
+    cancelAnimationFrame(hallRaf);
+    let x = 0, y = 0, k = 0, last = performance.now();
+    const ht = $("hallTilt"), t0 = performance.now();
+    const frame = (now) => {
+      hallRaf = requestAnimationFrame(frame);
+      const dt = Math.min(.05, (now - last) / 1000); last = now;
+      k = Math.min(1, (now - t0) / 3000);                     // eases in over 3 s after the arrival
+      const ax = REDUCED ? 0 : inX, ay = REDUCED ? 0 : inY;
+      x += (ax - x) * Math.min(1, dt * 3); y += (ay - y) * Math.min(1, dt * 3);
+      const e = k * k * (3 - 2 * k), s = 1 + .035 * e;
+      ht.style.transform = `translate(${(-x * 12 * e).toFixed(2)}px, ${(-y * 9 * e).toFixed(2)}px) scale(${s.toFixed(4)})`;
+      landing.style.transform = `translate(${(x * 5 * e).toFixed(2)}px, ${(y * 4 * e).toFixed(2)}px)`;
+    };
+    hallRaf = requestAnimationFrame(frame);
   }
+  function stopHallTilt() { cancelAnimationFrame(hallRaf); $("hallTilt").style.transform = ""; landing.style.transform = ""; }
   function startHer() {
     let px = 0, py = 0, vx = 0, vy = 0, t0 = null, last = 0;
     const frame = (now) => {
@@ -890,14 +977,15 @@
     if (!tvSrc) { tv.src = tvSrc = set.video + MV; tv.load(); }   // not in memory yet: from the network
     keep.hidden = false;
     let started = false;
+    const slow = later(() => { if (!started) $("loader").classList.add("on"); }, 700);
     onFirstFrame(tv, () => {
-      if (started) return; started = true;
+      if (started) return; started = true; clearTimeout(slow); $("loader").classList.remove("on");
       [plateStill, plateVid].forEach((e) => { e.style.transition = "opacity .25s linear"; e.style.opacity = "0"; });
       fadeHer();
       later(() => { her.hidden = true; plateVid.pause(); playing(); }, REDUCED ? 500 : 1050);
     });
     tv.play().catch(() => {});
-    later(() => { if (!started) { started = true; tv.pause(); keep.hidden = true; toStaged(); } }, ENTER_WAIT_MS);
+    later(() => { if (!started) { started = true; $("loader").classList.remove("on"); tv.pause(); keep.hidden = true; toStaged(); } }, ENTER_WAIT_MS);
   }
 
   // the transition is drawing: lift the hero off it (identical frame underneath), watch it, hand over to the Hall
@@ -967,6 +1055,7 @@
     hallVid.play().catch(() => {});
     hall.classList.add("on"); dust.hall(); view.classList.add("arrived");
     later(() => hall.classList.add("settled"), 700);
+    later(startHallTilt, 600);
     later(() => {
       stage.style.visibility = "hidden"; dusk.style.opacity = "0"; slit.style.opacity = "0";
       if (fromVideo) { keep.hidden = true; tv.pause(); }
@@ -982,12 +1071,12 @@
     document.querySelectorAll(".door").forEach((x, i) => { x.classList.toggle("lit", x === d); $("dglow" + i).classList.toggle("lit", x === d); hall.querySelector(".dlight .dl" + i).classList.toggle("lit", x === d);
       const r = hall.querySelector(".drise .dr" + i); r.classList.remove("lit"); if (x === d) { void r.getBoundingClientRect(); r.classList.add("lit"); } });
     hall.classList.add("chosen"); if (navigator.vibrate) navigator.vibrate(8);
-    note.textContent = `${d.dataset.room}: this doorway opens in the full build`;
-    note.classList.add("on"); clearTimeout(note._t); note._t = setTimeout(() => note.classList.remove("on"), 2600);
+    const i = [...document.querySelectorAll(".door")].indexOf(d);
+    clearTimeout(enterT); enterT = setTimeout(() => enterRoom(i, d), 1100);
   }));
 
   function replay() {
-    stopAll(); sound.stop(); $("soundBtn").classList.remove("on");
+    stopAll(); stopHallTilt(); closeRoom(true); sound.stop(); $("soundBtn").classList.remove("on");
     phase = "hero";
     view.classList.remove("leaving", "arrived"); landing.classList.remove("on"); credit?.classList.remove("on"); begin.classList.remove("show");
     hall.classList.remove("on", "doors-on", "settled", "chosen"); hall.querySelectorAll(".lit").forEach((e) => e.classList.remove("lit")); $("tapHint").classList.remove("play"); view.classList.remove("offerings"); layoutLanding(); hallVid.pause(); bloom.classList.remove("on"); bloom.style.transition = "";
@@ -1027,11 +1116,13 @@
   const menu = $("menu");
   $("menuBtn").addEventListener("click", (e) => { e.stopPropagation(); menu.hidden = false; });
   $("menuClose").addEventListener("click", (e) => { e.stopPropagation(); menu.hidden = true; });
-  $("homeBtn").addEventListener("click", (e) => { e.stopPropagation(); if (!story.hidden) return closeStory(); if (phase === "landing") replay(); });
+  $("homeBtn").addEventListener("click", (e) => { e.stopPropagation(); if (openRoomEl) return closeRoom(); if (!story.hidden) return closeStory(); if (phase === "landing") replay(); });
   menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", (e) => {
     e.preventDefault(); e.stopPropagation(); menu.hidden = true;
     if (a.dataset.go === "home") { closeStory(); if (phase === "landing") replay(); return; }
     if (a.dataset.go === "story") { openStory(); return; }
+    const doors = [...document.querySelectorAll(".door")], idx = { "Sessions": 0, "Courses & Books": 1, "Events & Trips": 2 }[a.dataset.room];
+    if (idx !== undefined && phase === "landing") { closeStory(); closeRoom(true); if (!view.classList.contains("offerings")) showOfferings(); setTimeout(() => doors[idx].click(), 700); return; }
     note.textContent = `${a.dataset.room}: opens in the full build`;
     note.classList.add("on"); clearTimeout(note._t); note._t = setTimeout(() => note.classList.remove("on"), 2600);
   }));
@@ -1083,6 +1174,35 @@
     setTimeout(() => { if (!story.classList.contains("on")) story.hidden = true; }, 900);
   }
   $("myStory").addEventListener("click", (e) => { e.stopPropagation(); openStory(); });
+  // ---------- the rooms behind the doorways ----------
+  let enterT = 0, openRoomEl = null;
+  function enterRoom(i, d) {
+    const r = d.getBoundingClientRect(), W = view.clientWidth, H = view.clientHeight;
+    const cx = r.left + r.width / 2, cy = r.top + r.height * .55;
+    hall.style.transformOrigin = `${cx}px ${cy}px`;
+    const dl = $("doorLight"); dl.style.setProperty("--dx", (cx / W * 100).toFixed(1) + "%"); dl.style.setProperty("--dy", (cy / H * 100).toFixed(1) + "%");
+    hall.style.transition = "opacity .6s ease, transform 1.4s cubic-bezier(.55, 0, .45, 1)";
+    hall.classList.add("entering"); dl.classList.add("on"); view.classList.add("storyOpen");
+    const room = $("room" + i); openRoomEl = room;
+    setTimeout(() => {
+      room.hidden = false; room.querySelector(".roomScroll").scrollTop = 0;
+      room.querySelectorAll(".chapter").forEach((c) => c.classList.add("seen"));
+      requestAnimationFrame(() => requestAnimationFrame(() => { room.classList.add("on"); dl.classList.remove("on"); }));
+    }, 1500);
+  }
+  function closeRoom(now) {
+    clearTimeout(enterT);
+    const room = openRoomEl; openRoomEl = null;
+    if (room) { room.classList.remove("on"); setTimeout(() => { if (!room.classList.contains("on")) room.hidden = true; }, now ? 0 : 900); }
+    $("doorLight").classList.remove("on"); view.classList.remove("storyOpen");
+    hall.style.transition = "opacity .6s ease, transform 1.2s cubic-bezier(.22, 1, .36, 1)";
+    hall.classList.remove("entering", "chosen");
+    hall.querySelectorAll(".lit").forEach((e) => e.classList.remove("lit"));
+  }
+  document.querySelectorAll(".room").forEach((room) => {
+    room.addEventListener("click", (e) => e.stopPropagation());
+    room.querySelectorAll(".roomClose, .backHall").forEach((b) => b.addEventListener("click", (e) => { e.stopPropagation(); closeRoom(); }));
+  });
   $("storyClose").addEventListener("click", (e) => { e.stopPropagation(); closeStory(); });
   $("storyBack").addEventListener("click", (e) => { e.stopPropagation(); closeStory(); });
   $("storyBook").addEventListener("click", (e) => { e.stopPropagation(); closeStory(); setTimeout(showOfferings, 500); });
