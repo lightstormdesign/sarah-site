@@ -136,6 +136,9 @@
   h1 .last { letter-spacing: .14em; padding-left: .14em; line-height: .95; }
   /* letter-spacing leaves a gap after the last letter: the same space on the left keeps each line truly centred */
   .title .eyebrow { padding-left: .38em; }
+  .title > .hair { position: absolute; left: 50%; width: min(16vw, 72px); height: 1px; margin-left: calc(min(16vw, 72px) / -2);
+    background: linear-gradient(90deg, rgba(217, 178, 95, 0), #e9cf8f 50%, rgba(217, 178, 95, 0)); }
+  .desk .title > .hair { display: none; }
   .silver { background-image: linear-gradient(100deg, #8d939b 0%, #b7bcc4 14%, #f3f5f8 26%, #c3c8cf 38%, #9ea4ac 50%,
       #dfe3e8 62%, #ffffff 70%, #c8ccd2 80%, #8d939b 100%);
     background-size: 260% 100%; background-position: 100% 50%; -webkit-background-clip: text; background-clip: text;
@@ -168,7 +171,7 @@
   .title > * { opacity: 0; transform: translateY(10px); transition: opacity 1.6s var(--ease), transform 1.6s var(--ease); }
   .ready .title > * { opacity: 1; transform: none; }
   .ready .title > :nth-child(2) { transition-delay: .25s; }
-  .ready .title > :nth-child(3) { transition-delay: .7s; }
+  .ready .title > :nth-child(3) { transition-delay: .55s; }
   .ready .title > :nth-child(4) { transition-delay: .9s; }
   .leaving .title > * { opacity: 0; transform: translateY(-8px); transition: opacity .7s ease, transform .9s ease; transition-delay: 0s; }
 
@@ -259,6 +262,7 @@
   <header class="title" id="title">
     <p class="eyebrow silver">The Holistic Hypnotist</p>
     <h1><span class="first">Sarah Breskman</span><span class="last">Cosme</span></h1>
+    <span class="hair" id="hair" aria-hidden="true"></span>
   </header>
 
   <button class="enter" id="begin" type="button" aria-label="Tap to enter"><span class="halo" aria-hidden="true"></span><span class="glow" aria-hidden="true">Tap to Enter</span><span class="word silver" aria-hidden="true">Tap to Enter</span></button>
@@ -642,8 +646,12 @@
     // measured from the layout (offsets ignore the title's rise-in transform), so it's right at any moment
     const h1 = title.querySelector("h1"), bottom = title.offsetTop + h1.offsetTop + h1.offsetHeight, left = title.offsetLeft + h1.offsetLeft;
     if (set === SETS.mobile) {
-      const tipY = fit.oy + set.apex[1] * fit.s, y = bottom + (tipY - bottom) * 0.36;   // closer to the name: part of its block
+      // part of the name block: a third of the way to the pyramid's tip, a little more room for the hairline
+      const tipY = fit.oy + set.apex[1] * fit.s, y = bottom + (tipY - bottom) * 0.36 + 7;
       Object.assign(begin.style, { left: "50%", top: y.toFixed(1) + "px" });
+      // the hairline sits exactly midway between COSME and the top of "Tap to Enter"
+      const word = begin.querySelector(".word"), wordTop = y - word.offsetHeight / 2;
+      $("hair").style.top = ((bottom + wordTop) / 2 - title.offsetTop).toFixed(1) + "px";
     } else Object.assign(begin.style, { left: (left - 10).toFixed(1) + "px", top: (bottom + 36).toFixed(1) + "px" });
   }
   addEventListener("resize", () => requestAnimationFrame(placeEnter));
