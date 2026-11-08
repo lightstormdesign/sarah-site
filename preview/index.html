@@ -1131,7 +1131,8 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => placeEnter());
   // the header: home goes back to the start; the menu lists the doorways (they open in the full build)
   const menu = $("menu");
-  $("menuBtn").addEventListener("click", (e) => { e.stopPropagation(); menu.hidden = false; });
+  // the menu is also where an iPhone is asked, once, for motion (never at "Tap to Enter", which would interrupt the journey)
+  $("menuBtn").addEventListener("click", (e) => { e.stopPropagation(); askMotion(); menu.hidden = false; });
   $("menuClose").addEventListener("click", (e) => { e.stopPropagation(); menu.hidden = true; });
   $("homeBtn").addEventListener("click", (e) => { e.stopPropagation(); if (openRoomEl) return closeRoom(); if (!story.hidden) return closeStory(); if (phase === "landing") replay(); });
   menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", (e) => {
