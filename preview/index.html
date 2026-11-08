@@ -961,7 +961,7 @@
     addEventListener("pointermove", (e) => { if (e.pointerType !== "mouse" || (e.clientX === 0 && e.clientY === 0)) return;
       inX = e.clientX / innerWidth * 2 - 1; inY = e.clientY / innerHeight * 2 - 1; });
   const onTilt = (e) => { if (e.gamma == null) return; tiltLive = true;
-    inX = Math.max(-1, Math.min(1, e.gamma / 22.7)); inY = Math.max(-1, Math.min(1, (e.beta - 45) / 27.3)); };   // 10% more sensitive
+    inX = Math.max(-1, Math.min(1, e.gamma / 19.7)); inY = Math.max(-1, Math.min(1, (e.beta - 45) / 23.7)); };   // 10%, then 15% more sensitive
   const needsAsk = typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function";
   if (typeof DeviceOrientationEvent !== "undefined" && !needsAsk) addEventListener("deviceorientation", onTilt);
   // iPhone asks once; as on TREV's site it is never asked at the enter tap, only when she touches the speaker
