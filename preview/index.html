@@ -285,6 +285,8 @@
   .nav button { pointer-events: auto; width: 44px; height: 44px; display: grid; place-content: center; gap: 6px; background: none; border: 0; padding: 0; cursor: pointer;
     filter: drop-shadow(0 1px 6px rgba(0, 0, 0, .5)); }
   .leaving:not(.arrived) .nav button { pointer-events: none; }
+  .nav .home { width: 52px; }
+  .nav .home img { display: block; width: 40px; height: auto; filter: drop-shadow(0 0 6px rgba(255, 205, 120, .4)) drop-shadow(0 1px 4px rgba(0, 0, 0, .6)); }
   .burger span { display: block; width: 24px; height: 1.5px; background: linear-gradient(90deg, #c09245, #f6e2aa 45%, #deb05a 70%, #c69a4a); }
   .nav button:focus-visible, .menu a:focus-visible { outline: 1px solid var(--gold-1); outline-offset: 4px; }
   .menu { position: fixed; inset: 0; z-index: 20; background: rgba(8, 7, 14, .94); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
@@ -354,10 +356,7 @@
 
   <!-- the header: home on the left, the menu on the right (gold) -->
   <header class="nav" id="nav">
-    <button class="home" id="homeBtn" type="button" aria-label="Home">
-      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><defs><linearGradient id="navgold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e2aa"/><stop offset=".5" stop-color="#d9b25f"/><stop offset="1" stop-color="#f3dc9c"/></linearGradient></defs>
-        <path d="M3.5 11.2 12 4l8.5 7.2M6 9.6V20h4.4v-5.6h3.2V20H18V9.6" fill="none" stroke="url(#navgold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
+    <button class="home" id="homeBtn" type="button" aria-label="Home"><img src="media/sarah-logo.webp?v=19" alt="" width="40" height="36"></button>
     <button class="burger" id="menuBtn" type="button" aria-label="Open menu"><span></span><span></span><span></span></button>
   </header>
   <nav class="menu" id="menu" hidden>
@@ -375,7 +374,7 @@
     <div class="sigil" aria-hidden="true"><span class="sigilGlow"></span><img src="media/sarah-logo.webp?v=18" alt=""></div>
     <div class="stack">
       <div class="intro" id="intro">
-        <p class="bio">Level 3 QHHT practitioner, past-life regressionist and author of <em>A Hypnotist&rsquo;s Journey to Atlantis</em>. Through sessions, courses, live events and journeys to Egypt, Sarah guides you home to your Higher Self.</p>
+        <p class="bio">Master Hypnotist, Level 3 QHHT practitioner and best-selling author of <em>A Hypnotist&rsquo;s Journey to Atlantis</em>, honored with the 2023 Dolores Cannon Award. Through sessions, courses, live events and journeys to Egypt, Sarah guides you home to who you really are.</p>
         <div class="ctas"><button class="cta" id="seeOfferings" type="button">See Offerings</button><button class="cta ghost" id="myStory" type="button">My Story</button></div>
       </div>
       <p class="lede" id="lede">Choose your doorway</p>
