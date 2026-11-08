@@ -227,6 +227,19 @@
   .landing.on .intro > .tag { transition-delay: .55s; }
   .landing.on .intro > .bio { transition-delay: .8s; }
   .landing.on .intro > .ctas { transition-delay: 1.2s; pointer-events: auto; }
+  .landing.on .intro > .proof { transition-delay: 1.7s; pointer-events: auto; }
+  .proof { display: block; width: max-content; max-width: 100%; margin: 22px auto 0; padding-top: 16px; text-decoration: none; color: inherit; position: relative; }
+  .proof::before { content: ""; position: absolute; left: 50%; top: 0; width: 64px; height: 1px; margin-left: -32px;
+    background: linear-gradient(90deg, rgba(217, 178, 95, 0), #e9cf8f 50%, rgba(217, 178, 95, 0)); }
+  .stars { position: relative; display: inline-block; font-size: 15px; letter-spacing: .22em; padding-left: .22em; color: rgba(232, 207, 154, .28); line-height: 1; }
+  .stars .fill { position: absolute; left: 0; top: 0; overflow: hidden; white-space: nowrap; color: #e9c877; padding-left: .22em; text-shadow: 0 0 10px rgba(233, 200, 119, .5); }
+  .pr1 { display: block; margin-top: 8px; font: 500 10.5px/1.2 "Cinzel", serif; letter-spacing: .24em; padding-left: .24em; text-transform: uppercase; color: #efe6d2;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, .8); }
+  .pr2 { display: block; margin-top: 5px; font-size: 15px; color: rgba(239, 217, 166, .85); text-shadow: 0 1px 10px rgba(0, 0, 0, .8); }
+  .proof:hover .pr1 { color: #fff3cf; }
+  /* short screens (an iPhone SE): the proof line keeps its stars and rating, and the preview credit waits for the doorways */
+  @media (max-height: 640px) and (max-aspect-ratio: 9/10) { .pr2 { display: none; } .proof { margin-top: 16px; padding-top: 12px; }
+    .arrived:not(.offerings) .credit { opacity: 0 !important; pointer-events: none; } }
   .tag { font: 500 min(6.4vw, 27px)/1.2 "Cinzel", serif; letter-spacing: .04em; text-transform: none;
     background: linear-gradient(180deg, #ffffff 0%, #d8d8d8 45%, #9a9a9a 75%, #c9c9c9 100%); -webkit-background-clip: text; background-clip: text;
     color: transparent; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 14px rgba(0, 0, 0, .7)); }
@@ -245,7 +258,7 @@
   @keyframes glowpulse { 0%, 100% { box-shadow: 0 0 0 rgba(214, 179, 101, .12); } 50% { box-shadow: 0 0 22px rgba(214, 179, 101, .32); } }
   @media (max-width: 360px) { .cta { font-size: 10px; letter-spacing: .22em; padding: 14px 15px 13px calc(15px + .22em); } .bio { font-size: 16px; } .ctas { gap: 10px; } }
 
-  /* offerings: the bio dissolves; the Hall's title and "Choose your doorway" appear under the logo */
+  /* offerings: the bio dissolves; the Hall's title and "Choose a doorway" appear under the logo */
   /* offerings: the headline, bio and buttons dissolve; the title takes the headline's place */
   .offerings .intro { opacity: 0; filter: blur(8px); pointer-events: none; }
   .offerings .intro .ctas { pointer-events: none !important; }
@@ -254,6 +267,8 @@
   .hallTitle h2, .hallTitle .lede { opacity: 0; filter: blur(8px); transition: opacity 1.6s cubic-bezier(.22, 1, .36, 1), filter 1.6s cubic-bezier(.22, 1, .36, 1); }
   .offerings .hallTitle h2 { opacity: 1; filter: blur(0); transition-delay: .6s; }
   .offerings .hallTitle .lede { opacity: .82; filter: blur(0); transition-delay: 1.4s; }
+  .hallTitle h2 span { display: block; }
+  .hallTitle h2 .big { font-size: 1.32em; letter-spacing: .26em; padding-left: .26em; line-height: 1.1; }
   .hallTitle h2 { margin: 0 0 10px; font: 500 min(6.8vw, 34px)/1.15 "Cinzel", serif; letter-spacing: .08em; text-transform: uppercase;
     background: var(--gold-text); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .6)); }
   .hallTitle .lede { margin-top: 4px; font: 500 11px/1 "Cinzel", serif; letter-spacing: .38em; padding-left: .38em; text-transform: uppercase; color: #efe6d2;
@@ -409,9 +424,14 @@
     <div class="intro" id="intro">
       <p class="tag">Master Hypnotist &amp;<br>Best-Selling Author</p>
       <p class="bio">Level 3 QHHT practitioner, past-life regressionist and recipient of the 2023 Dolores Cannon Award, Sarah guides you inward, to who you really are and your true purpose.</p>
-      <div class="ctas"><button class="cta" id="seeOfferings" type="button">See Offerings</button><button class="cta ghost" id="myStory" type="button">My Story</button></div>
+      <div class="ctas"><button class="cta" id="seeOfferings" type="button">See Offerings</button><button class="cta ghost" id="myStory" type="button">About Sarah</button></div>
+      <a class="proof" href="https://www.goodreads.com/search?q=A+Hypnotist%27s+Journey+to+Atlantis+Breskman" target="_blank" rel="noopener">
+        <span class="stars" aria-hidden="true"><span class="fill" style="width:93%">&#9733;&#9733;&#9733;&#9733;&#9733;</span>&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        <span class="pr1">4.65 on Goodreads &middot; 500+ readers</span>
+        <span class="pr2"><em>A Hypnotist&rsquo;s Journey to Atlantis</em></span>
+      </a>
     </div>
-    <div class="hallTitle" id="hallTitle"><h2>The Hall of Records</h2><p class="lede">Choose a doorway</p></div>
+    <div class="hallTitle" id="hallTitle"><h2><span>The Hall of</span><span class="big">Records</span></h2><p class="lede">Choose a doorway</p></div>
   </section>
   <p class="credit" id="credit">Private preview · Site by LightStorm · <button type="button" id="replay">Replay</button></p>
   <!-- My Story: her story scrolls inside its own frame over the dimmed Hall (the page itself never scrolls) -->
@@ -880,7 +900,7 @@
   // headline, bio and buttons; with the offerings, "The Hall of Records" and "Choose your doorway" in their place
   function layoutLanding() {
     const W = view.clientWidth, H = view.clientHeight, phone = W / H < 0.9, ratio = 574 / 640;
-    const w = phone ? Math.min(W * 0.5, H * 0.24, 210) : Math.min(H * 0.24, 230);
+    const w = phone ? Math.min(W * 0.5, H * (H < 760 ? 0.2 : 0.24), 210) : Math.min(H * 0.24, 230);   // a little smaller on short screens, so the title clears the doorways
     const t = phone ? Math.max(58, H * 0.085) : H * 0.09, gap = Math.max(26, H * 0.038);
     landing.style.setProperty("--lw", w.toFixed(1) + "px"); landing.style.setProperty("--lt", t.toFixed(1) + "px");
     landing.style.setProperty("--it", (t + w * ratio + gap).toFixed(1) + "px");
