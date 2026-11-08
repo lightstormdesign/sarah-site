@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=12" media="(max-aspect-ratio: 9/10)">
-<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=12" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/hall-hero-mobile.jpg?v=13" media="(max-aspect-ratio: 9/10)">
+<link rel="preload" as="image" href="media/sarah-cutout-mobile.webp?v=13" media="(max-aspect-ratio: 9/10)">
 <!--
   The Hall of Records: private preview for Sarah Breskman Cosme. Built by LightStorm; not public.
 
@@ -69,7 +69,12 @@
     background: radial-gradient(circle at var(--gx, 50%) var(--gy, 70%), #fffaf0 0%, #ffe6ad 30%, #f2c46c 60%, #c88b3a 100%); }
   .bloom.on { opacity: 1; }
 
-  .tv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; background: #0b0a1a; }
+  /* the transition: a fixed 1080x1920 box placed in code, so it can glide from the hero's crop to the Hall's (TREV's) */
+  .tv { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 0 0; pointer-events: none; background: #0b0a1a;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%); }
+  /* behind it, the Hall's own soft light, for the screen above and below it on a tall phone */
+  .tvBack { position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover;
+    filter: blur(28px) brightness(.45); opacity: 0; pointer-events: none; }
   .keep { position: absolute; inset: 0; background: rgba(0, 0, 0, .01); pointer-events: none; }   /* keeps iOS off a stall-prone video path */
 
   /* legibility veils */
@@ -88,11 +93,19 @@
   .hall { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 1.5s ease; background: #05081a; }
   .hall.on { opacity: 1; pointer-events: auto; }
   .hall .side { position: absolute; inset: -40px; width: calc(100% + 80px); height: calc(100% + 80px); object-fit: cover; filter: blur(28px) brightness(.45); display: none; }
-  .desk .hall .side { display: block; }
+  .desk .hall .side, .hall.banded .side { display: block; }
+  /* a tall phone: the Hall fits its width (all three doorways whole) and melts into its own light above and below */
+  .hall.banded .hallStage { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%); }
   .hallStage { width: 1080px; height: 1920px; }
   .hallStage video, .hallStage img.hp { position: absolute; inset: 0; width: 100%; height: 100%; }
   .hallVeil { position: absolute; left: 0; right: 0; top: 0; height: 30%; pointer-events: none;
     background: linear-gradient(180deg, rgba(4, 8, 24, .82) 0%, rgba(4, 8, 24, .5) 45%, rgba(4, 8, 24, 0) 100%); }
+  .hallVig, .hallVig > div { position: absolute; left: 0; right: 0; top: 0; pointer-events: none; }
+  .hallVig { bottom: 0; }
+  .hallVig .top { height: 46svh; background: linear-gradient(to bottom, rgba(6,5,16,.49) 0%, rgba(6,5,16,.28) 42%, transparent 100%); }
+  .hallVig .sides { height: 100svh; background: radial-gradient(ellipse 85% 75% at 50% 48%, transparent 52%, rgba(6,5,16,.45) 100%); }
+  .arrived .veil.vig { opacity: 0; }
   .hallVeil.low { top: auto; bottom: 0; height: 14%; background: linear-gradient(0deg, rgba(4, 8, 24, .7), rgba(4, 8, 24, 0)); }
 
   /* the doorways: each button is the arch itself, its words in the light */
@@ -189,6 +202,7 @@
     font: 400 9.5px/1 "Cinzel", serif; letter-spacing: .32em; text-transform: uppercase; color: rgba(240, 220, 170, .72);
     text-shadow: 0 1px 8px rgba(0, 0, 0, .8); opacity: 0; transition: opacity 1.4s ease 2s; pointer-events: none; }
   .credit.on { opacity: 1; pointer-events: auto; }
+  @media (max-width: 360px) { .credit { letter-spacing: .18em; font-size: 8.5px; } }
   .credit button { background: none; border: 0; color: inherit; font: inherit; letter-spacing: inherit; cursor: pointer; text-transform: inherit; padding: 6px; }
   .note { position: absolute; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 6.5svh); transform: translateX(-50%); font-style: italic; font-size: 15px;
     color: #f3ecdc; text-shadow: 0 1px 10px rgba(0, 0, 0, .9); opacity: 0; transition: opacity .5s ease; white-space: nowrap; pointer-events: none; }
@@ -220,6 +234,7 @@
 <body>
 <main class="view" id="view">
   <!-- 3. the transition (Kling clip 1 + clip 2, joined): under the hero, visible, so iOS draws it -->
+  <img class="tvBack" id="tvBack" alt="" aria-hidden="true">
   <video class="tv" id="tv" muted playsinline preload="none" tabindex="-1" aria-hidden="true"></video>
   <div class="keep" hidden id="keep"></div>
 
@@ -240,7 +255,7 @@
     <div class="hallStage" id="hallStage">
       <img class="hp" id="hallStill" alt="" aria-hidden="true">
       <video id="hallVid" muted loop playsinline preload="none" tabindex="-1" aria-hidden="true"></video>
-      <div class="hallVeil"></div><div class="hallVeil low"></div>
+      <div class="hallVeil low"></div>
       <button class="door" type="button" data-room="Sessions" style="left:55px;top:1067px;width:268px;height:396px">
         <b>Sessions</b><small>QHHT &amp;<br>past lives</small><i>Enter</i>
       </button>
@@ -251,6 +266,8 @@
         <b>Events<br>&amp; Trips</b><small>Live, Egypt<br>&amp; community</small><i>Enter</i>
       </button>
     </div>
+    <!-- the vignette, as on TREV's and Soleil's sites: the sides closing in, and the top -->
+    <div class="hallVig" aria-hidden="true"><div class="sides"></div><div class="top"></div></div>
   </div>
 
   <div class="veil vig" id="vVig"></div>
@@ -310,7 +327,7 @@
 //  - every full-bleed layer shares one framing; the page never scrolls; media carry a cache-buster
 (() => {
   "use strict";
-  const MV = "?v=12";   // bump whenever a video or still is replaced, or phones keep the old file
+  const MV = "?v=13";   // bump whenever a video or still is replaced, or phones keep the old file
   const SETS = {
     mobile:  { w: 1080, h: 1920, still: "media/hall-hero-mobile.jpg", loop: "media/hall-hero-mobile.mp4",
                her: "media/sarah-cutout-mobile.webp", cut: { x: 374, y: 872, w: 578, h: 1048 },
@@ -337,6 +354,13 @@
   const stopAll = () => { timers.splice(0).forEach(clearTimeout); intervals.splice(0).forEach(clearInterval); };
 
   let set = null, fit = { s: 1, ox: 0, oy: 0 }, phase = "hero", tvSrc = "", blobUrl = "";
+  let tvFrom = { s: 1, ox: 0, oy: 0 }, tvTo = tvFrom, tvPos = 0, tvRaf = 0;
+  // e: 0 = the hero's crop, 1 = the Hall's. Transform only (no layout), per frame
+  function placeTv(e) {
+    tvPos = e; const L = (a, b) => a + (b - a) * e;
+    tv.style.transform = `translate(${L(tvFrom.ox, tvTo.ox).toFixed(1)}px, ${L(tvFrom.oy, tvTo.oy).toFixed(1)}px) scale(${L(tvFrom.s, tvTo.s).toFixed(5)})`;
+    document.getElementById("tvBack").style.opacity = (e * .999).toFixed(3);
+  }
 
   // a loop only shows once it's really playing; until then (or in Low Power Mode) its still shows
   function showWhenPlaying(v) {
@@ -373,11 +397,20 @@
     }
     fit = cover(W, H, set.w, set.h, set.fx, set.fy);
     stage.style.transform = `translate(${fit.ox.toFixed(1)}px, ${fit.oy.toFixed(1)}px) scale(${fit.s.toFixed(5)})`;
-    tv.style.objectPosition = `${(set.fx * 100).toFixed(1)}% ${(set.fy * 100).toFixed(1)}%`;   // one framing for every layer
-    const hf = W / H < 0.9 ? cover(W, H, HALL.w, HALL.h, HALL.fx, HALL.fy)
-                           : (() => { const s = H / HALL.h; return { s, ox: (W - HALL.w * s) / 2, oy: 0 }; })();
+    // the Hall: on a phone it covers the screen, but never crops the three doorways (they span ~990 of its 1080
+    // px): on a tall phone it fits that width instead and the screen above and below takes its own soft light.
+    // On a wide screen it stands as a column.
+    let hf, banded = false;
+    if (W / H < 0.9) {
+      const c = cover(W, H, HALL.w, HALL.h, HALL.fx, HALL.fy), sFit = W / 990;
+      if (sFit < c.s) { banded = true; hf = { s: sFit, ox: (W - HALL.w * sFit) / 2, oy: (H - HALL.h * sFit) / 2 }; } else hf = c;
+    } else { const s = H / HALL.h; hf = { s, ox: (W - HALL.w * s) / 2, oy: 0 }; }
+    hall.classList.toggle("banded", banded);
     hallStage.style.transform = `translate(${hf.ox.toFixed(1)}px, ${hf.oy.toFixed(1)}px) scale(${hf.s.toFixed(5)})`;
-    if (!hallStill.getAttribute("src")) { hallStill.src = HALL.still + MV; hallSide.src = HALL.still + MV; }
+    if (!hallStill.getAttribute("src")) { hallStill.src = HALL.still + MV; hallSide.src = HALL.still + MV; $("tvBack").src = HALL.still + MV; }
+    // the transition starts on the hero's crop and ends on the Hall's
+    tvFrom = cover(W, H, 1080, 1920, set.fx, set.fy); tvTo = hf;
+    placeTv(tvPos);
     dust.resize();
   }
 
@@ -547,6 +580,11 @@
   function playing() {
     phase = "video";
     stage.style.visibility = "hidden"; veils(false); dust.quiet();
+    // over its last 1.3 s it glides from the hero's crop to the Hall's (one smooth ease), so the hand-off is exact
+    const glide = () => { if (phase !== "video" && phase !== "landing") return;
+      const d = tv.duration || 6, u = Math.min(1, Math.max(0, (tv.currentTime - (d - 1.3)) / 1.05));
+      placeTv(u * u * (3 - 2 * u)); if (u < 1) tvRaf = requestAnimationFrame(glide); };
+    cancelAnimationFrame(tvRaf); tvRaf = requestAnimationFrame(glide);
     const dur = tv.duration || 9;
     // watchdogs: a stalled clock (resume, then nudge once), or a picture that stopped while the clock runs
     let lastT = -1, still = 0, kicked = false, frames = 0, lastFrames = -1, frozen = 0;
@@ -629,7 +667,7 @@
     cam.style.transformOrigin = `${set.base[0]}px ${set.base[1]}px`;
     dusk.style.transition = "none"; dusk.style.opacity = "0";
     slit.style.transition = "none"; slit.style.opacity = "0"; slit.style.transform = "";
-    tv.pause(); tv.onended = null; keep.hidden = true; try { tv.currentTime = 0; } catch (e) { /* ignore */ }
+    tv.pause(); tv.onended = null; keep.hidden = true; cancelAnimationFrame(tvRaf); placeTv(0); try { tv.currentTime = 0; } catch (e) { /* ignore */ }
     if (set.loop) { plateVid.loop = true; plateVid.style.transition = ""; plateVid.currentTime = 0; showWhenPlaying(plateVid); plateVid.play().catch(() => {}); }
     [plateStill, plateVid].forEach((e) => { e.style.transition = "none"; e.style.opacity = ""; });
     her.style.transform = ""; startHer();
