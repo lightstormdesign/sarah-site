@@ -1270,8 +1270,25 @@
   $("storyBack").addEventListener("click", (e) => { e.stopPropagation(); closeStory(); });
   $("storyBook").addEventListener("click", (e) => { e.stopPropagation(); closeStory(); setTimeout(showOfferings, 500); });
   story.addEventListener("click", (e) => e.stopPropagation());
-  addEventListener("resize", () => choose());
-  choose();
+  // Lay everything out again whenever the page's real size changes. On a fresh load iPhone Safari can measure
+  // the page before its mobile viewport applies (a desktop-wide size, so her portrait looks zoomed in) and then
+  // correct itself without a resize event, so: watch the page itself, plus load, pageshow, the visual viewport,
+  // rotation, and a couple of late checks.
+  let lastWH = "";
+  function relayout() {
+    const wh = view.clientWidth + "x" + view.clientHeight;
+    if (wh === lastWH) return; lastWH = wh;
+    choose(); placeEnter(); layoutLanding();
+  }
+  const relayoutSoon = () => requestAnimationFrame(relayout);
+  addEventListener("resize", relayoutSoon);
+  addEventListener("orientationchange", () => setTimeout(relayoutSoon, 250));
+  addEventListener("load", relayoutSoon);
+  addEventListener("pageshow", relayoutSoon);
+  if (window.visualViewport) visualViewport.addEventListener("resize", relayoutSoon);
+  if ("ResizeObserver" in window) new ResizeObserver(relayoutSoon).observe(view);
+  [100, 400, 1000, 2500].forEach((ms) => setTimeout(relayoutSoon, ms));
+  choose(); lastWH = view.clientWidth + "x" + view.clientHeight;
   heroUp();
 })();
 </script>
